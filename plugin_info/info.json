@@ -1,11 +1,11 @@
 {
-	"id" : "template",
-	"name" : "Template",
-	"description" : "Plugin template pour la création de plugin",
+	"id" : "SmartLife",
+	"name" : "SmartLife",
+	"description" : "Plugin de gestion des objets connectés SmartLife",
 	"licence" : "AGPL",
-	"author" : "Jeedom SAS",
-	"require" : "3.2",
-	"category" : "programming",
+	"author" : "Sabinus52",
+	"require" : "3.0",
+	"category" : "devicecommunication",
 	"hasDependency" : false,
 	"hasOwnDeamon" : false,
 	"maxDependancyInstallTime" : 0,
@@ -15,6 +15,6 @@
 		"forum":"Lien vers le forum",
 		"video" : "Lien vers une video"
 	},
-	"language" : ["fr_FR","en_US","de_DE","sp_SP","ru_RU","id_ID","it_IT"],
-	"compatibility" : ["miniplus","smart","rpi","docker","diy","mobile"]
+	"language" : ["fr_FR","en_US"],
+	"compatibility" : ["miniplus","smart","rpi","diy","mobile"]
 }

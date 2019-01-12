@@ -18,16 +18,16 @@
 
 require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 
-function template_install() {
+function SmartLife_install() {
     
 }
 
-function template_update() {
+function SmartLife_update() {
     
 }
 
 
-function template_remove() {
+function SmartLife_remove() {
     
 }
 
