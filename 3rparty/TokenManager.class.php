@@ -28,7 +28,7 @@ class TokenManager
             $this->session->getPlatform()->setRegionFromToken($this->tokenAccess);
         }
         if ( !$this->isValidToken() ) {
-            $this->refreshAccessToken();
+            $this->refreshToken();
         }
         return $this->tokenAccess;
     }
@@ -45,7 +45,7 @@ class TokenManager
             'bizType'     => $this->session->getPlatform()->getBizType(),
             'from'        => 'tuya',
         ));
-        print 'CREATE : '.$response."\n";
+        //print 'CREATE : '.$response."\n";
         $response = json_decode($response, true); // TODO gestion erreur
         $this->setTokenFromArray($response);
     }
@@ -56,10 +56,11 @@ class TokenManager
         $url = $this->session->getBaseUrl('/homeassistant/access.do');
         $response = $this->client->getQuery($url, array(
             'grant_type'    => 'refresh_token',
-            'refresh_token' => $this->tokenManager->getToken()->getRefreshToken(),
+            'refresh_token' => $this->refreshToken,
         ));
-        print 'REFRESH : '.$response."\n";
+        //print 'REFRESH : '.$response."\n";
         $response = json_decode($response, true); // TODO gestion erreur
+        if (!$response) return null;
         $this->setTokenFromArray($response);
     }
 
@@ -85,7 +86,7 @@ class TokenManager
     }
 
 
-        private function checkAccessToken()
+    private function checkAccessToken()
     {
         if (!$this->tokenManager->hasToken()) {
             $token = $this->getAccessToken();

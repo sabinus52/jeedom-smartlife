@@ -18,6 +18,8 @@
 
 /* * ***************************Includes********************************* */
 require_once __DIR__  . '/../../../../core/php/core.inc.php';
+require_once __DIR__  . '/../../3rparty/SmartLifeClient.class.php';
+
 
 class SmartLife extends eqLogic {
     /*     * *************************Attributs****************************** */
@@ -25,6 +27,29 @@ class SmartLife extends eqLogic {
 
 
     /*     * ***********************Methode static*************************** */
+
+    public static function searchDevice()
+    {
+        log::add('SmartLife', 'debug', 'SEARCH DEVICE : Start');
+        $user = config::byKey('user', 'SmartLife');
+        $password = config::byKey('password', 'SmartLife');
+        $country = config::byKey('country', 'SmartLife');
+        $api = new SmartLifeClient(new Session($user, $password, $country));
+
+        $result = array();
+        $devices = $api->discoverDevices();
+        if (!$devices) {
+            log::add('SmartLife', 'error', 'Erreur de connexion au cloud Tuya');
+            return null;
+        }
+        foreach ($devices as $device) {
+            log::add('SmartLife', 'debug', 'SEARCH DEVICE : Objet "'.$device->getName().'" ('.$device->getId().') trouvé');
+            $result[$device->getId()] = $device->getName();
+        }
+        
+        log::add('SmartLife', 'debug', 'SEARCH DEVICE : End');
+        return $result;
+    }
 
     /*
      * Fonction exécutée automatiquement toutes les minutes par Jeedom
@@ -65,6 +90,56 @@ class SmartLife extends eqLogic {
     }
 
     public function postSave() {
+
+        $command = $this->getCmd(null, 'state');
+		if (!is_object($command)) {
+			$command = new SmartLifeCmd();
+		}
+		$command->setName(__('Etat', __FILE__));
+		$command->setLogicalId('state');
+		$command->setEqLogic_id($this->getId());
+		$command->setType('info');
+        $command->setSubType('binary');
+        $command->setOrder(1);
+        $command->setDisplay('forceReturnLineAfter', 1);
+        $command->save();
+
+        $command = $this->getCmd(null, 'REFRESH');
+		if (!is_object($command)) {
+			$command = new SmartLifeCmd();
+		}
+		$command->setName(__('Refresh', __FILE__));
+		$command->setLogicalId('REFRESH');
+		$command->setEqLogic_id($this->getId());
+		$command->setType('action');
+        $command->setSubType('other');
+        $command->setOrder(2);
+        $command->setDisplay('forceReturnLineAfter', 1);
+        $command->save();
+
+        $command = $this->getCmd(null, 'ON');
+		if (!is_object($command)) {
+			$command = new SmartLifeCmd();
+		}
+		$command->setName(__('Allume', __FILE__));
+		$command->setLogicalId('ON');
+		$command->setEqLogic_id($this->getId());
+		$command->setType('action');
+        $command->setSubType('other');
+        $command->setOrder(3);
+        $command->save();
+
+        $command = $this->getCmd(null, 'OFF');
+		if (!is_object($command)) {
+			$command = new SmartLifeCmd();
+		}
+		$command->setName(__('Eteins', __FILE__));
+		$command->setLogicalId('OFF');
+		$command->setEqLogic_id($this->getId());
+		$command->setType('action');
+        $command->setSubType('other');
+        $command->setOrder(4);
+        $command->save();      
         
     }
 
@@ -104,6 +179,50 @@ class SmartLife extends eqLogic {
      */
 
     /*     * **********************Getteur Setteur*************************** */
+
+    public function updateInfos()
+    {
+        log::add('SmartLife', 'debug', '=== REFRESH ==================================================');
+        $idDevice = $this->getConfiguration('iddevice');
+        $deviceCurrent = new SwitchDevice($idDevice, ''); // TODO mettre le nom
+
+        $user = config::byKey('user', 'SmartLife');
+        $password = config::byKey('password', 'SmartLife');
+        $country = config::byKey('country', 'SmartLife');
+        $api = new SmartLifeClient(new Session($user, $password, $country));
+
+        $devices = $api->discoverDevices();
+        foreach ($devices as $device) {
+            log::add('SmartLife', 'debug', 'TEST '.$device->getId().' : '.$device->getState());
+            if ($device->getId() != $deviceCurrent->getId())
+                continue;
+            $deviceCurrent->setState($device->getState());
+            log::add('SmartLife', 'debug', 'REFRESH de '.$deviceCurrent->getId().' = '.(($deviceCurrent->getState()) ? 'ON' : 'OFF'));
+            $this->checkAndUpdateCmd('state', $deviceCurrent->getState());
+        }
+    }
+
+
+    public function sendAction($action)
+    {
+        $user = config::byKey('user', 'SmartLife');
+        $password = config::byKey('password', 'SmartLife');
+        $country = config::byKey('country', 'SmartLife');
+        $api = new SmartLifeClient(new Session($user, $password, $country));
+        //log::add('SmartLife', 'debug', "TEST : $user - $password - $country");
+
+        $idDevice = $this->getConfiguration('iddevice');
+        $device = new SwitchDevice($idDevice, ''); // TODO mettre le nom
+        switch ($action) {
+            case 'ON'   : $api->sendEvent($device->getOnEvent()); break;
+            case 'OFF'  : $api->sendEvent($device->getOffEvent()); break;
+        }
+        log::add('SmartLife', 'debug', "ACTION : $action sur l'objet '".$device->getId()."'");
+        sleep(3);
+        $this->updateInfos();
+
+    }
+
 }
 
 class SmartLifeCmd extends cmd {
@@ -123,6 +242,26 @@ class SmartLifeCmd extends cmd {
      */
 
     public function execute($_options = array()) {
+
+        $smartlife = $this->getEqLogic();
+
+        $idCommand = $this->getLogicalId();
+        log::add('SmartLife', 'debug', "ACTION TEST : $idCommand");
+
+        switch ($idCommand) {
+            case 'REFRESH':
+                $smartlife->updateInfos();
+                break;
+            
+            case 'ON':
+                $smartlife->sendAction('ON');
+                break;
+            case 'OFF':
+                $smartlife->sendAction('OFF');
+                break;
+        }
+
+        return;
         
     }
 

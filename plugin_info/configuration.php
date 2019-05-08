@@ -25,26 +25,52 @@ if (!isConnect()) {
 <form class="form-horizontal">
     <fieldset>
         <div class="form-group">
-            <label class="col-lg-4 control-label">{{Global param 1}}</label>
+            <label class="col-lg-4 control-label">{{Utilisateur/Téléphone}}</label>
             <div class="col-lg-2">
-                <input class="configKey form-control" data-l1key="param1" />
+                <input class="configKey form-control" data-l1key="user" />
             </div>
         </div>
         <div class="form-group">
-            <label class="col-lg-4 control-label">{{Global param 2}}</label>
+            <label class="col-lg-4 control-label">{{Mot de passe}}</label>
             <div class="col-lg-2">
-                <input class="configKey form-control" data-l1key="param2" value="80" />
+                <input class="configKey form-control" data-l1key="password" value="" />
             </div>
         </div>
         <div class="form-group">
-            <label class="col-lg-4 control-label">{{Global param 2}}</label>
+            <label class="col-lg-4 control-label">{{Code pays}}</label>
             <div class="col-lg-2">
-                <select class="configKey form-control" data-l1key="param3">
-                    <option value="value1">value1</option>
-                    <option value="value2">value2</option>
-                </select>
+                <input class="configKey form-control" data-l1key="country" value="33" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">{{Test et Découverte}}</label>
+            <div class="col-lg-2">
+                <a class="btn btn-default" id="btSearchDevice"><i class='fa fa-refresh'></i> {{Tester la connexion et Rechercher les objets}}</a>
             </div>
         </div>
   </fieldset>
 </form>
+
+<script>
+  $('#btSearchDevice').on('click', function () {
+        $.ajax({// fonction permettant de faire de l'ajax
+            type: "POST", // methode de transmission des données au fichier php
+            url: "plugins/SmartLife/core/ajax/SmartLife.ajax.php", // url du fichier php
+            data: {
+            	action: "searchDevice",
+            },
+            dataType: 'json',
+            error: function (request, status, error) {
+            	handleAjaxError(request, status, error);
+            },
+            success: function (data) { // si l'appel a bien fonctionné
+            if (data.state != 'ok') {
+            	$('#div_alert').showAlert({message: data.result, level: 'danger'});
+            	return;
+            }
+            $('#div_alert').showAlert({message: '{{Synchronisation réussie}}', level: 'success'});
+          }
+        });
+      });
+    </script>
 
