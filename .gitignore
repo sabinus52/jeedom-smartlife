@@ -10,6 +10,7 @@ Thumbs.db
 
 # Visual Studio Code
 .vs/
+.vscode/
 
 # Espace de travail
 workspace/
