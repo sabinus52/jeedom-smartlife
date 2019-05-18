@@ -26,6 +26,11 @@ try {
     
     ajax::init();
 
+    if (init('action') == 'checkConnection') {
+        $res = SmartLife::checkConnection();
+        if ($res !== null)
+		    ajax::success();
+	}
 
 
     throw new Exception(__('Aucune méthode correspondante à : ', __FILE__) . init('action'));

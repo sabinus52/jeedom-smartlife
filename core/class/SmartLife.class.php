@@ -18,6 +18,10 @@
 
 /* * ***************************Includes********************************* */
 require_once __DIR__  . '/../../../../core/php/core.inc.php';
+require_once __DIR__  . '/../config/SmartLife.config.php';
+use Sabinus\TuyaCloudApi\TuyaCloudApi;
+use Sabinus\TuyaCloudApi\Session\Session;
+
 
 class SmartLife extends eqLogic {
     /*     * *************************Attributs****************************** */
@@ -25,6 +29,42 @@ class SmartLife extends eqLogic {
 
 
     /*     * ***********************Methode static*************************** */
+
+    /**
+     * Retourne mon API
+     * 
+     * @return TuyaCloudApi
+     */
+    static public function createTuyaCloudAPI()
+    {
+        $user = config::byKey('user', 'SmartLife');
+        $password = config::byKey('password', 'SmartLife');
+        $country = config::byKey('country', 'SmartLife');
+        $platform = config::byKey('platform', 'SmartLife');
+
+        return new TuyaCloudApi(new Session($user, $password, $country, $platform));
+    }
+
+
+    /**
+     * Teste la connection au Cloud Tuya
+     * 
+     * @return Boolean
+     */
+    static public function checkConnection()
+    {
+        log::add('SmartLife', 'debug', 'CHECK CONNECTION : Start');
+        $api = SmartLife::createTuyaCloudAPI();
+        $devices = $api->discoverDevices();
+        if (!$devices) {
+            log::add('SmartLife', 'error', 'Erreur de connexion au cloud Tuya');
+            return null;
+        }
+        log::add('SmartLife', 'debug', 'CHECK CONNECTION : OK');
+        log::add('SmartLife', 'debug', 'CHECK CONNECTION : End');
+        return true;
+    }
+
 
     /*
      * Fonction exécutée automatiquement toutes les minutes par Jeedom
@@ -65,7 +105,7 @@ class SmartLife extends eqLogic {
     }
 
     public function postSave() {
-        
+       
     }
 
     public function preUpdate() {
