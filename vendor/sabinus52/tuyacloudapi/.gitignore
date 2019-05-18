@@ -1,0 +1,15 @@
+composer.lock
+vendor/
+
+# Temporaire
+*.php~
+*.bak
+
+# Espace de travail
+.vs/
+.vscode/
+workspace/
+.project
+
+# Test
+test.php

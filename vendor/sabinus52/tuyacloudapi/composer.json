@@ -1,0 +1,23 @@
+{
+    "name": "sabinus52/tuyacloudapi",
+    "description": "API to control Tuya device.",
+    "type": "library",
+    "keywords": ["API", "Tuya", "SmartLife"],
+    "license": "MIT",
+    "homepage" : "https://github.com/sabinus52/TuyaCloudApi",
+    "authors": [
+        {
+            "name": "Olivier (Sabinus52)",
+            "email": "sabinus52@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^5.2||^7",
+        "guzzlehttp/guzzle": "~6"
+    },
+    "autoload": {
+        "psr-4" : {
+            "Sabinus\\TuyaCloudApi\\" : "src/"
+        }
+    }
+}
