@@ -93,10 +93,21 @@ foreach (object::all() as $object) {
 			<label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isVisible" checked/>{{Visible}}</label>
 		</div>
 	</div>
-       <div class="form-group">
-        <label class="col-sm-3 control-label">{{template param 1}}</label>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">{{ID equipement}}</label>
         <div class="col-sm-3">
-            <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="city" placeholder="param1"/>
+            <select class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="deviceID">
+            <?php
+                $devicesAll = SmartLife::discoverDevices();
+                foreach ($devicesAll as $type => $devices) {
+                    echo "<optgroup label=\"$type\">";
+                    foreach ($devices as $id => $device) {
+                        echo '<option value="'.$id.'">'.$device['name'].'</option>';
+                    }
+                    echo "</optgroup>";
+                }
+            ?>
+            </select>
         </div>
     </div>
 </fieldset>
