@@ -200,6 +200,24 @@ class SmartLifeConfig
 
 
     /**
+     * Retourne les infos d'un équipement en fonction de son type
+     * 
+     * @param String $type
+     * @return Array
+     */
+    static public function getConfigInfos($type)
+    {
+        $configs = self::getConfig($type);
+        if ($configs == null) return null;
+        $result = array();
+        foreach ($configs as $config) {
+            if ($config['type'] == 'info') $result[] = $config;
+        }
+        return $result;
+    }
+
+
+    /**
      * Retourne la configuration d'un volet roulant
      * 
      * @return Array
@@ -208,6 +226,7 @@ class SmartLifeConfig
     {
         return array(
             self::$infos[self::STATE],
+            self::$actions[self::REFRESH],
             self::$actions[self::OPEN],
             self::$actions[self::CLOSE],
             self::$actions[self::STOP],
@@ -223,6 +242,7 @@ class SmartLifeConfig
     {
         return array(
             self::$infos[self::STATE],
+            self::$actions[self::REFRESH],
             self::$actions[self::TURN_ON],
             self::$actions[self::TURN_OFF],
         );
@@ -253,6 +273,7 @@ class SmartLifeConfig
             self::$infos[self::TEMPERATURE],
             self::$infos[self::COLORHUE],
             self::$infos[self::SATURATION],
+            self::$actions[self::REFRESH],
             self::$actions[self::TURN_ON],
             self::$actions[self::TURN_OFF],
             self::$actions[self::SET_BRIGHTNESS],

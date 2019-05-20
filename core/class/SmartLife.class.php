@@ -27,7 +27,7 @@ class SmartLife extends eqLogic {
     /*     * *************************Attributs****************************** */
 
 
-    
+
     /*     * ***********************Methode static*************************** */
 
     /**
@@ -214,6 +214,24 @@ class SmartLife extends eqLogic {
      */
 
     /*     * **********************Getteur Setteur*************************** */
+
+    public function updateInfos()
+    {
+        log::add('SmartLife', 'debug', '=== REFRESH ==================================================');
+        $api = SmartLife::createTuyaCloudAPI();
+        $api->discoverDevices();
+        $device = $api->getDeviceById($this->getConfiguration('deviceID'));
+
+        // Mise à jour
+        $device->update($api);
+        log::add('SmartLife', 'debug', 'REFRESH : '.$device->getId().' '.$device->getName());
+        foreach (SmartLifeConfig::getConfigInfos($device->getType()) as $info) {
+            $value = call_user_func( array($device, 'get'.ucfirst($info['logicalId'])) );
+            $this->checkAndUpdateCmd($info['logicalId'],  $value);
+            log::add('SmartLife', 'debug', 'Response '.$info['logicalId'].' = '.$value);
+        }
+    }
+
 }
 
 class SmartLifeCmd extends cmd {
@@ -232,8 +250,20 @@ class SmartLifeCmd extends cmd {
       }
      */
 
-    public function execute($_options = array()) {
-        
+    public function execute($_options = array())
+    {
+        $smartlife = $this->getEqLogic();
+
+        $idCommand = $this->getLogicalId();
+        log::add('SmartLife', 'debug', "ACTION EXECUTE : $idCommand");
+
+        switch ($idCommand) {
+            case 'REFRESH':
+                $smartlife->updateInfos();
+                break;
+        }
+
+        return;    
     }
 
     /*     * **********************Getteur Setteur*************************** */
