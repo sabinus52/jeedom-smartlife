@@ -232,6 +232,18 @@ class SmartLife extends eqLogic {
         }
     }
 
+
+    public function sendAction($action)
+    {
+        $api = SmartLife::createTuyaCloudAPI();
+        $api->discoverDevices();
+        $device = $api->getDeviceById($this->getConfiguration('deviceID'));
+
+        log::add('SmartLife', 'debug', 'ACTION $action : '.$device->getId().' '.$device->getName());
+
+        $api->sendEvent( call_user_func( array($device, 'get'.$action.'Event') ) );
+    }
+
 }
 
 class SmartLifeCmd extends cmd {
@@ -260,6 +272,9 @@ class SmartLifeCmd extends cmd {
         switch ($idCommand) {
             case 'REFRESH':
                 $smartlife->updateInfos();
+                break;
+            default:
+                $smartlife->sendAction($idCommand);
                 break;
         }
 

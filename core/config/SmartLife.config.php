@@ -26,15 +26,15 @@ class SmartLifeConfig
      * Constantes des actions
      */
     const REFRESH           = 'REFRESH';
-    const TURN_ON           = 'TURN_ON';
-    const TURN_OFF          = 'TURN_OFF';
-    const ACTIVATE          = 'ACTIVATE';
-    const SET_BRIGHTNESS    = 'SET_BRIGHTNESS';
-    const SET_COLOR         = 'SET_COLOR';
-    const SET_TEMPERATURE   = 'SET_TEMPERATURE';
-    const OPEN              = 'OPEN';
-    const CLOSE             = 'CLOSE';
-    const STOP              = 'STOP';
+    const TURN_ON           = 'TurnOn';
+    const TURN_OFF          = 'TurnOff';
+    const ACTIVATE          = 'Activate';
+    const SET_BRIGHTNESS    = 'SetBrightness';
+    const SET_COLOR         = 'SetColor';
+    const SET_TEMPERATURE   = 'SetTemperature';
+    const OPEN              = 'Open';
+    const CLOSE             = 'Close';
+    const STOP              = 'Stop';
 
 
     /**
