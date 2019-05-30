@@ -1,2 +1,7 @@
 # jeedoom-smart-life
-Scripts Jeedom for my house (virtualbox, bose)
+
+
+Plugin Jeedom pour la gestion des objets connectés SmartLife / Tuya
+
+Pour le moment, il ne prend en compte que les prises connectées.
+

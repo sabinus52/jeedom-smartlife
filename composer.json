@@ -1,0 +1,14 @@
+{
+    "name": "jeedom/smartlife",
+    "description": "Plugin Jeedom pour la gestion des objets connectés SmartLife ou Tuya",
+    "homepage" : "https://github.com/sabinus52/jeedom-smartlife",
+    "license" : "AGPL-3.0-or-later",
+    "authors" : [{
+            "name" : "Olivier",
+            "email" : "sabinus52@gmail.com"
+        }
+    ],
+    "require": {
+        "sabinus52/tuyacloudapi": "*"
+    }    
+}
