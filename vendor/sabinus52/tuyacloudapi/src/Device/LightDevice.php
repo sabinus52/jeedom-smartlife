@@ -94,6 +94,7 @@ class LightDevice extends Device implements DeviceInterface
         else
             return 0;
     }
+    public function getSaturation() { return $this->getColorSaturation(); }
 
 
     /**

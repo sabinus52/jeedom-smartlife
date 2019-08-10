@@ -53,11 +53,16 @@ class ComposerStaticInit2f8b093fee39f02e3b1d0e00489f0051
         ),
     );
 
+    public static $classMap = array (
+        'Mexitek\\PHPColors\\Color' => __DIR__ . '/..' . '/mexitek/phpcolors/src/Mexitek/PHPColors/Color.php',
+    );
+
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit2f8b093fee39f02e3b1d0e00489f0051::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit2f8b093fee39f02e3b1d0e00489f0051::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit2f8b093fee39f02e3b1d0e00489f0051::$classMap;
 
         }, null, ClassLoader::class);
     }
