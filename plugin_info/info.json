@@ -1,6 +1,6 @@
 {
 	"id" : "SmartLife",
-	"name" : "Objets connectés SmartLife/Tuya",
+	"name" : "Objets SmartLife/Tuya",
 	"description" : "Plugin de gestion des objets connectés SmartLife ou Tuya",
 	"licence" : "AGPL",
 	"author" : "Sabinus52",
@@ -9,11 +9,11 @@
 	"hasDependency" : false,
 	"hasOwnDeamon" : false,
 	"maxDependancyInstallTime" : 0,
-	"changelog" : "https://jeedom.github.io/plugin-template/#language#/changelog",
-	"documentation" : "https://jeedom.github.io/plugin-template/#language#/",
+	"changelog" : "https://sabinus52.github.io/jeedom-smartlife/#language#/changelog",
+	"documentation" : "https://sabinus52.github.io/jeedom-smartlife/#language#/",
 	"link" : {
-		"forum":"Lien vers le forum",
-		"video" : "Lien vers une video"
+		"forum":"",
+		"video" : ""
 	},
 	"language" : ["fr_FR","en_US"],
 	"compatibility" : ["miniplus","smart","rpi","docker","diy","mobile"]

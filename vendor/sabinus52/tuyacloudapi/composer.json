@@ -13,7 +13,8 @@
     ],
     "require": {
         "php": "^5.2||^7",
-        "guzzlehttp/guzzle": "~6"
+        "guzzlehttp/guzzle": "~6",
+        "mexitek/phpcolors": "*"
     },
     "autoload": {
         "psr-4" : {

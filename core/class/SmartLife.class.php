@@ -19,8 +19,10 @@
 /* * ***************************Includes********************************* */
 require_once __DIR__  . '/../../../../core/php/core.inc.php';
 require_once __DIR__  . '/../config/SmartLife.config.php';
+
 use Sabinus\TuyaCloudApi\TuyaCloudApi;
 use Sabinus\TuyaCloudApi\Session\Session;
+use Sabinus\TuyaCloudApi\Tools\Color;
 
 
 class SmartLife extends eqLogic {
@@ -84,6 +86,10 @@ class SmartLife extends eqLogic {
             return null;
         }
         foreach ($devices as $device) {
+            if ($device == null) {
+                log::add('SmartLife', 'debug', 'SEARCH DEVICE : Objet non pris en compte'); // TODO LOG inconnu
+                continue;
+            }
             log::add('SmartLife', 'debug', 'SEARCH DEVICE : Objet '.$device->getType().' "'.$device->getName().'" ('.$device->getId().') trouvé');
             $result[$device->getType()][$device->getId()] = [ 'type' => $device->getType(), 'name' => $device->getName() ];
         }
@@ -191,6 +197,19 @@ class SmartLife extends eqLogic {
         if (isset($config['icon'])) $cmdDevice->setDisplay( 'icon', '<i class="fa '.$config['icon'].'"></i>' );
         if (isset($config['forceReturnLineAfter'])) $cmdDevice->setDisplay( 'forceReturnLineAfter', $config['forceReturnLineAfter'] );
         if (isset($config['unity'])) $cmdDevice->setUnite( $config['unity'] );
+        if (isset($config['value'])) {
+            foreach ($this->getCmd() as $eqLogic_cmd) {
+				//foreach ($link_cmds as $cmd_id => $link_cmd) {
+					if ($config['value'] == $eqLogic_cmd->getLogicalId()) {
+						//$cmd = cmd::byId($cmd_id);
+						//if (is_object($cmd)) {
+							$cmdDevice->setValue($eqLogic_cmd->getId());
+							//$cmd->save();
+						//}
+					}
+				//}
+			}
+        }
         $cmdDevice->save();
     }
 
@@ -226,22 +245,34 @@ class SmartLife extends eqLogic {
         $device->update($api);
         log::add('SmartLife', 'debug', 'REFRESH : '.$device->getId().' '.$device->getName());
         foreach (SmartLifeConfig::getConfigInfos($device->getType()) as $info) {
-            $value = call_user_func( array($device, 'get'.ucfirst($info['logicalId'])) );
-            $this->checkAndUpdateCmd($info['logicalId'],  $value);
-            log::add('SmartLife', 'debug', 'Response '.$info['logicalId'].' = '.$value);
+            
+            if ($info['logicalId'] == SmartLifeConfig::COLORHUE) {
+                $value = array('H' => $device->getColorHue(), 'S' => $device->getColorSaturation(), 'L' => $device->getBrightness());
+                log::add('SmartLife', 'debug', 'Response '.$info['logicalId'].' = '.print_r($value, true));
+                log::add('SmartLife', 'debug', 'Response '.$info['logicalId'].' = '.Color::hslToHex($value));
+                $this->checkAndUpdateCmd($info['logicalId'], '#'.Color::hslToHex($value));
+            } else {
+                $value = call_user_func( array($device, 'get'.ucfirst($info['logicalId'])) );
+                $this->checkAndUpdateCmd($info['logicalId'], $value);
+                log::add('SmartLife', 'debug', 'Response '.$info['logicalId'].' = '.$value);
+            }
+            
         }
     }
 
 
-    public function sendAction($action)
+    public function sendAction($action, $value1 = null, $value2 = null)
     {
         $api = SmartLife::createTuyaCloudAPI();
         $api->discoverDevices();
         $device = $api->getDeviceById($this->getConfiguration('deviceID'));
 
-        log::add('SmartLife', 'debug', 'ACTION $action : '.$device->getId().' '.$device->getName());
+        log::add('SmartLife', 'debug', 'ACTION '.$action.'('.$value1.','.$value2.') : '.$device->getId().' '.$device->getName());
 
-        $api->sendEvent( call_user_func( array($device, 'get'.$action.'Event') ) );
+        $api->sendEvent( call_user_func( array($device, 'get'.$action.'Event'), $value1, $value2 ) );
+
+        sleep(3);
+        $this->updateInfos();
     }
 
 }
@@ -267,14 +298,21 @@ class SmartLifeCmd extends cmd {
         $smartlife = $this->getEqLogic();
 
         $idCommand = $this->getLogicalId();
-        log::add('SmartLife', 'debug', "ACTION EXECUTE : $idCommand");
+        log::add('SmartLife', 'debug', "ACTION EXECUTE : $idCommand ".print_r($_options, true));
 
         switch ($idCommand) {
             case 'REFRESH':
                 $smartlife->updateInfos();
                 break;
             default:
-                $smartlife->sendAction($idCommand);
+                if (isset($_options['slider'])) {
+                    $smartlife->sendAction($idCommand, $_options['slider']);
+                } elseif (isset($_options['color'])) {
+                    $ret = Color::hexToHsl($_options['color']);
+                    $smartlife->sendAction($idCommand, round($ret['H']), round($ret['S']) );
+                } else {
+                    $smartlife->sendAction($idCommand);
+                }
                 break;
         }
 

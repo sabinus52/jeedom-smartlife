@@ -6,4 +6,5 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Mexitek\\PHPColors\\Color' => $vendorDir . '/mexitek/phpcolors/src/Mexitek/PHPColors/Color.php',
 );
