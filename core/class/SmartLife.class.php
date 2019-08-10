@@ -86,6 +86,10 @@ class SmartLife extends eqLogic {
             return null;
         }
         foreach ($devices as $device) {
+            if ($device == null) {
+                log::add('SmartLife', 'debug', 'SEARCH DEVICE : Objet non pris en compte'); // TODO LOG inconnu
+                continue;
+            }
             log::add('SmartLife', 'debug', 'SEARCH DEVICE : Objet '.$device->getType().' "'.$device->getName().'" ('.$device->getId().') trouvé');
             $result[$device->getType()][$device->getId()] = [ 'type' => $device->getType(), 'name' => $device->getName() ];
         }
@@ -266,6 +270,9 @@ class SmartLife extends eqLogic {
         log::add('SmartLife', 'debug', 'ACTION '.$action.'('.$value1.','.$value2.') : '.$device->getId().' '.$device->getName());
 
         $api->sendEvent( call_user_func( array($device, 'get'.$action.'Event'), $value1, $value2 ) );
+
+        sleep(3);
+        $this->updateInfos();
     }
 
 }
