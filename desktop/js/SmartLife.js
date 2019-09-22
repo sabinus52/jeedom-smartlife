@@ -16,6 +16,34 @@
  */
 
 
+/**
+ * Bouton Découverte des objets
+ */
+$('.discover').on('click', function () {
+    $('#div_alert').showAlert({message: '{{Détection en cours}}', level: 'warning'});
+    $.ajax({
+        type: "POST",
+        url: "plugins/SmartLife/core/ajax/SmartLife.ajax.php", 
+        data: {
+            action: "discover",
+            mode: $(this).attr('data-action'),
+        },
+        dataType: 'json',
+        global: false,
+        error: function (request, status, error) {
+            handleAjaxError(request, status, error);
+        },
+        success: function (data) { 
+            if (data.state != 'ok') {
+                $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                return;
+            }
+            $('#div_alert').showAlert({message: '{{Opération réalisée avec succès : Rafraichir la page F5}}', level: 'success'});
+        }
+    });
+});
+
+
 $("#table_cmd").sortable({axis: "y", cursor: "move", items: ".cmd", placeholder: "ui-state-highlight", tolerance: "intersect", forcePlaceholderSize: true});
 /*
  * Fonction pour l'ajout de commande, appellé automatiquement par plugin.template

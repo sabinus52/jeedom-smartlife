@@ -16,11 +16,16 @@ $eqLogics = eqLogic::byType($plugin->getId());
         <br>
         <span>{{Ajouter}}</span>
     </div>
-      <div class="cursor eqLogicAction logoSecondary" data-action="gotoPluginConf">
+    <div class="cursor eqLogicAction logoSecondary" data-action="gotoPluginConf">
       <i class="fas fa-wrench"></i>
-    <br>
-    <span>{{Configuration}}</span>
-  </div>
+      <br>
+      <span>{{Configuration}}</span>
+    </div>
+    <div class="cursor eqLogicAction logoSecondary discover" data-action="scanTuya">
+      <i class="fas fa-bullseye"></i>
+      <br>
+      <span>{{Découverte des objets}}</span>
+    </div>
   </div>
   <legend><i class="fas fa-table"></i> {{Mes équipements}}</legend>
 	   <input class="form-control" placeholder="{{Rechercher}}" id="in_searchEqlogic" />
