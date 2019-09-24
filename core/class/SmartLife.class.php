@@ -103,8 +103,8 @@ class SmartLife extends eqLogic {
                 log::add('SmartLife', 'debug', 'SEARCH DEVICE : Objet trouvé "'.$device->getName().'" ('.$device->getId().') de type \''.$device->getType().'\'');
             } else {
                 log::add('SmartLife', 'debug', 'SEARCH DEVICE : Nouvel objet trouvé "'.$device->getName().'" ('.$device->getId().') de type \''.$device->getType().'\'');
-                if ($mode == 'scanTuya') self::createDevice($device);
             }
+            if ($mode == 'scanTuya') self::createDevice($device);
             $result[$device->getId()] = [ 'type' => $device->getType(), 'name' => $device->getName() ];
         }
 
@@ -112,6 +112,30 @@ class SmartLife extends eqLogic {
         config::save('devices', serialize($result), 'SmartLife');
         log::add('SmartLife', 'debug', 'SEARCH DEVICE : End');
 
+        return $result;
+    }
+
+
+    /**
+     * Retourne la liste des equipements par type pour la listebox
+     * 
+     * @return Array
+     */
+    static public function getDevicesByType()
+    {
+        // Récupération des équipements depuis la configuration Jeedom
+        $devices = config::byKey('devices', 'SmartLife');
+        if (empty($devices)) {
+            $devices = self::discoverDevices('fetch');
+        } else {
+            $devices = unserialize($devices);
+        }
+
+        // Regroupement par type
+        $result = array();
+        foreach ($devices as $id => $device) {
+            $result[$device['type']][$id] = $device;
+        }
         return $result;
     }
 
@@ -168,22 +192,30 @@ class SmartLife extends eqLogic {
 		if ( !is_object($smartlife) ) {
 			$smartlife = new SmartLife();
 			$smartlife->setEqType_name('SmartLife');
-			$smartlife->setLogicalId($logicalID);
-			$smartlife->setIsEnable(1); // TODO is online
-			$smartlife->setIsVisible(1);
-            $smartlife->setName($device->getName() . ' ' . $logicalID);
-            $smartlife->setConfiguration('deviceID', $logicalID);
-            $smartlife->setConfiguration('deviceType', $device->getType());
+            $smartlife->setLogicalId($logicalID);
+            $smartlife->setName($device->getName() . ' ' . $logicalID);           
 			event::add('jeedom::alert', array(
 				'level' => 'warning',
 				'page' => 'SmartLife',
 				'message' => __('Objet ajouté avec succès "'.$device->getName().'" de type "'.$device->getType().'"', __FILE__),
             ));
-            
-            // Sauvegarde
-            $smartlife->save();
-            log::add('SmartLife', 'info', 'CREATE DEVICE : Objet ajouté avec succès "'.$device->getName().'" ('.$device->getId().') de type \''.$device->getType().'\'');
-		}
+        }
+
+        $smartlife->setConfiguration('deviceID', $logicalID);
+        $smartlife->setConfiguration('deviceType', $device->getType());
+        $smartlife->setConfiguration('device', serialize($device));
+        if ($device->isOnline()) {
+			$smartlife->setIsEnable(1);
+            $smartlife->setIsVisible(1);
+        } else {
+            $smartlife->setIsEnable(0);
+            $smartlife->setIsVisible(0);
+        }
+
+        // Sauvegarde
+        $smartlife->save();
+        log::add('SmartLife', 'info', 'CREATE DEVICE : Objet ajouté avec succès "'.$device->getName().'" ('.$device->getId().') de type \''.$device->getType().'\'');
+
 		return $smartlife;
 	}
 
@@ -225,12 +257,23 @@ class SmartLife extends eqLogic {
 
     public function preSave()
     {
-        $deviceID = $this->getConfiguration('deviceID');
-        $device = self::getDeviceInfos($deviceID);
-        log::add('SmartLife', 'debug', 'PRESAVE : set LogicalId = '.$deviceID);
-        $this->setLogicalId($deviceID);
-        log::add('SmartLife', 'debug', 'PRESAVE : set deviceType = '.$device['type']);
-        $this->setConfiguration('deviceType', $device['type']);
+        // Uniquement pour les anciens objets créés manuellement
+        // mets à jour le LogicalID pour éviter les doublons lors du scan
+        // OU
+        // Si changement d'ID de l'équipement
+        if ( empty($this->getLogicalId()) || ( $this->getLogicalId() !=  $this->getConfiguration('deviceID') ) ) {
+            $deviceID = $this->getConfiguration('deviceID');
+            log::add('SmartLife', 'info', 'PRESAVE '.$deviceID.' : Changement ID de "'.$this->getLogicalId().'" vers "'.$deviceID.'"');
+            $api = SmartLife::createTuyaCloudAPI();
+            $api->discoverDevices();
+            log::add('SmartLife', 'debug', 'PRESAVE '.$deviceID.' : SET LogicalId');
+            $this->setLogicalId($deviceID);
+            $device = $api->getDeviceById($deviceID);
+            log::add('SmartLife', 'debug', 'PRESAVE '.$deviceID.' : SET deviceType = '.$device->getType());
+            $this->setConfiguration('deviceType', $device->getType());
+            log::add('SmartLife', 'debug', 'PRESAVE '.$deviceID.' : SET device = '.print_r($device, true));
+            $this->setConfiguration('device', serialize($device));
+        }
     }
 
     public function postSave()
