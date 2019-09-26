@@ -22,12 +22,14 @@ require_once __DIR__  . '/../config/SmartLife.config.php';
 
 use Sabinus\TuyaCloudApi\TuyaCloudApi;
 use Sabinus\TuyaCloudApi\Session\Session;
+use Sabinus\TuyaCloudApi\Device\DeviceFactory;
 use Sabinus\TuyaCloudApi\Tools\Color;
 
 
 class SmartLife extends eqLogic {
     /*     * *************************Attributs****************************** */
 
+    static public $api = null;
 
 
     /*     * ***********************Methode static*************************** */
@@ -300,6 +302,7 @@ class SmartLife extends eqLogic {
         if (!$this->getConfiguration('deviceID')) {
             throw new Exception(__('Merci de choisir un équipement.',__FILE__));	
         }
+        // TODO alerte si changement
     }
 
     public function postUpdate() {
@@ -369,12 +372,11 @@ class SmartLife extends eqLogic {
     public function updateInfos()
     {
         log::add('SmartLife', 'debug', '=== REFRESH ==================================================');
-        $api = SmartLife::createTuyaCloudAPI();
-        $api->discoverDevices();
-        $device = $api->getDeviceById($this->getConfiguration('deviceID'));
+        if ( !SmartLife::$api) SmartLife::$api = SmartLife::createTuyaCloudAPI();
+        $device = unserialize($this->getConfiguration('device'));
 
         // Mise à jour
-        $device->update($api);
+        $device->update(SmartLife::$api);
         log::add('SmartLife', 'debug', 'REFRESH : '.$device->getId().' '.$device->getName());
         foreach (SmartLifeConfig::getConfigInfos($device->getType()) as $info) {
             
@@ -390,18 +392,20 @@ class SmartLife extends eqLogic {
             }
             
         }
+        $this->setConfiguration('device', serialize($device));
+        $this->save(true);
     }
 
 
     public function sendAction($action, $value1 = null, $value2 = null)
     {
-        $api = SmartLife::createTuyaCloudAPI();
-        $api->discoverDevices();
-        $device = $api->getDeviceById($this->getConfiguration('deviceID'));
+        if ( !SmartLife::$api) SmartLife::$api = SmartLife::createTuyaCloudAPI();
+        $device = unserialize($this->getConfiguration('device'));
+        log::add('SmartLife', 'debug', 'SEND EVENT '.$this->getLogicalId().' : '.$this->getName());
+        log::add('SmartLife', 'debug', 'SEND EVENT '.$this->getLogicalId().' : '.print_r($device, true));
+        log::add('SmartLife', 'info',  'SEND EVENT '.$this->getLogicalId().' : '.$action.'('.$value1.','.$value2.')');
 
-        log::add('SmartLife', 'debug', 'ACTION '.$action.'('.$value1.','.$value2.') : '.$device->getId().' '.$device->getName());
-
-        $api->sendEvent( call_user_func( array($device, 'get'.$action.'Event'), $value1, $value2 ) );
+        SmartLife::$api->sendEvent( call_user_func( array($device, 'get'.$action.'Event'), $value1, $value2 ) );
 
         sleep(3);
         $this->updateInfos();
