@@ -283,14 +283,13 @@ class SmartLife extends eqLogic {
         $deviceID = $this->getConfiguration('deviceID');
         if (!$deviceID) return;
         $deviceType = $this->getConfiguration('deviceType');
-        log::add('SmartLife', 'debug', 'POSTSAVE : get id = '.$deviceID);
-        log::add('SmartLife', 'debug', 'POSTSAVE : get type = '.$deviceType);
+        log::add('SmartLife', 'debug', 'POSTSAVE '.$deviceID.' : '.$this->getName().'('.$deviceType.')');
 
         $configs = SmartLifeConfig::getConfig($deviceType);
         if ($configs) {
             foreach ($configs as $config) {
                 $this->addCommand($config);
-                log::add('SmartLife', 'debug', 'POSTSAVE : set command '.$deviceID.' = '.$config['logicalId']);
+                log::add('SmartLife', 'debug', 'POSTSAVE '.$deviceID.' : SET command  = '.$config['logicalId']);
             }
         } else {
             throw new Exception(__('Type d\'équipement non pris en charge',__FILE__));
@@ -371,24 +370,23 @@ class SmartLife extends eqLogic {
 
     public function updateInfos()
     {
-        log::add('SmartLife', 'debug', '=== REFRESH ==================================================');
         if ( !SmartLife::$api) SmartLife::$api = SmartLife::createTuyaCloudAPI();
         $device = unserialize($this->getConfiguration('device'));
 
         // Mise à jour
         $device->update(SmartLife::$api);
-        log::add('SmartLife', 'debug', 'REFRESH : '.$device->getId().' '.$device->getName());
+        log::add('SmartLife', 'info', 'REFRESH '.$this->getLogicalId().' : '.$this->getName());
+        log::add('SmartLife', 'debug', 'REFRESH '.$this->getLogicalId().' : '.print_r($device, true));
         foreach (SmartLifeConfig::getConfigInfos($device->getType()) as $info) {
             
             if ($info['logicalId'] == SmartLifeConfig::COLORHUE) {
                 $value = array('H' => $device->getColorHue(), 'S' => $device->getColorSaturation(), 'L' => $device->getBrightness());
-                log::add('SmartLife', 'debug', 'Response '.$info['logicalId'].' = '.print_r($value, true));
-                log::add('SmartLife', 'debug', 'Response '.$info['logicalId'].' = '.Color::hslToHex($value));
+                log::add('SmartLife', 'debug', 'REFRESH '.$this->getLogicalId().' : checkAndUpdateCmd '.$info['logicalId'].' = #'.Color::hslToHex($value).' '.print_r($value, true));
                 $this->checkAndUpdateCmd($info['logicalId'], '#'.Color::hslToHex($value));
             } else {
                 $value = call_user_func( array($device, 'get'.ucfirst($info['logicalId'])) );
+                log::add('SmartLife', 'debug', 'REFRESH '.$this->getLogicalId().' : checkAndUpdateCmd '.$info['logicalId'].' = '.$value);
                 $this->checkAndUpdateCmd($info['logicalId'], $value);
-                log::add('SmartLife', 'debug', 'Response '.$info['logicalId'].' = '.$value);
             }
             
         }
