@@ -60,7 +60,7 @@ class SmartLife extends eqLogic {
     {
         log::add('SmartLife', 'debug', 'CHECK CONNECTION : Start');
         $api = SmartLife::createTuyaCloudAPI();
-        $devices = $api->discoverDevices();
+            $devices = $api->discoverDevices();
         if (!$devices) {
             log::add('SmartLife', 'error', 'Erreur de connexion au cloud Tuya');
             return null;
@@ -91,14 +91,14 @@ class SmartLife extends eqLogic {
 
         // Recherche des équipements depuis le Cloud
         $result = array();
-        $devices = $api->discoverDevices();
+            $devices = $api->discoverDevices();
         if (!$devices) {
             log::add('SmartLife', 'error', 'Erreur de connexion au cloud Tuya');
             return null;
         }
         foreach ($devices as $device) {
-            if ($device == null) {
-                log::add('SmartLife', 'debug', 'SEARCH DEVICE : Objet non pris en compte '.print_r($device, true)); // TODO LOG inconnu
+            if ($device->getType() == DeviceFactory::UNKNOWN) {
+                log::add('SmartLife', 'debug', 'SEARCH DEVICE : Objet non pris en compte '.print_r($device, true));
                 continue;
             }
             if (in_array($device->getId(), $devicesExisting)) {
@@ -139,26 +139,6 @@ class SmartLife extends eqLogic {
             $result[$device['type']][$id] = $device;
         }
         return $result;
-    }
-
-
-    /**
-     * Retourne les infos du device depuis la configuration Jeedom
-     * 
-     * @param String $id : Identifiant Tuya du device
-     * @return Array
-     */
-    static public function getDeviceInfos($id)
-    {
-        // Récupération des équipements depuis la configuration Jeedom
-        $devices = config::byKey('devices', 'SmartLife');
-        if (empty($devices)) {
-            $devices = self::discoverDevices('fetch');
-        } else {
-            $devices = unserialize($devices);
-        }
-
-        return ( isset($devices[$id]) ) ? $devices[$id] : null;
     }
 
 
@@ -267,7 +247,7 @@ class SmartLife extends eqLogic {
             $deviceID = $this->getConfiguration('deviceID');
             log::add('SmartLife', 'info', 'PRESAVE '.$deviceID.' : Changement ID de "'.$this->getLogicalId().'" vers "'.$deviceID.'"');
             $api = SmartLife::createTuyaCloudAPI();
-            $api->discoverDevices();
+                $api->discoverDevices();
             log::add('SmartLife', 'debug', 'PRESAVE '.$deviceID.' : SET LogicalId');
             $this->setLogicalId($deviceID);
             $device = $api->getDeviceById($deviceID);
@@ -286,7 +266,7 @@ class SmartLife extends eqLogic {
         log::add('SmartLife', 'debug', 'POSTSAVE '.$deviceID.' : '.$this->getName().'('.$deviceType.')');
 
         $configs = SmartLifeConfig::getConfig($deviceType);
-        if ($configs) {
+        if ( $configs !== null ) {
             foreach ($configs as $config) {
                 $this->addCommand($config);
                 log::add('SmartLife', 'debug', 'POSTSAVE '.$deviceID.' : SET command  = '.$config['logicalId']);
@@ -299,9 +279,8 @@ class SmartLife extends eqLogic {
     public function preUpdate()
     {
         if (!$this->getConfiguration('deviceID')) {
-            throw new Exception(__('Merci de choisir un équipement.',__FILE__));	
+            throw new Exception(__('Merci de choisir un équipement.',__FILE__));
         }
-        // TODO alerte si changement
     }
 
     public function postUpdate() {
@@ -374,7 +353,7 @@ class SmartLife extends eqLogic {
         $device = unserialize($this->getConfiguration('device'));
 
         // Mise à jour
-        $device->update(SmartLife::$api);
+            $device->update(SmartLife::$api);
         log::add('SmartLife', 'info', 'REFRESH '.$this->getLogicalId().' : '.$this->getName());
         log::add('SmartLife', 'debug', 'REFRESH '.$this->getLogicalId().' : '.print_r($device, true));
         foreach (SmartLifeConfig::getConfigInfos($device->getType()) as $info) {
@@ -403,7 +382,7 @@ class SmartLife extends eqLogic {
         log::add('SmartLife', 'debug', 'SEND EVENT '.$this->getLogicalId().' : '.print_r($device, true));
         log::add('SmartLife', 'info',  'SEND EVENT '.$this->getLogicalId().' : '.$action.'('.$value1.','.$value2.')');
 
-        SmartLife::$api->sendEvent( call_user_func( array($device, 'get'.$action.'Event'), $value1, $value2 ) );
+            SmartLife::$api->sendEvent( call_user_func( array($device, 'get'.$action.'Event'), $value1, $value2 ) );
 
         sleep(3);
         $this->updateInfos();

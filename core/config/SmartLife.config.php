@@ -193,10 +193,11 @@ class SmartLifeConfig
     static public function getConfig($type)
     {
         switch ($type) {
-            case DeviceFactory::COVER  : return self::getConfigCover(); break;
-            case DeviceFactory::SWITCH : return self::getConfigSwitch(); break;
-            case DeviceFactory::LIGHT  : return self::getConfigLight(); break;
-            case DeviceFactory::SCENE  : return self::getConfigScene(); break;
+            case DeviceFactory::COVER   : return self::getConfigCover(); break;
+            case DeviceFactory::SWITCH  : return self::getConfigSwitch(); break;
+            case DeviceFactory::LIGHT   : return self::getConfigLight(); break;
+            case DeviceFactory::SCENE   : return self::getConfigScene(); break;
+            case DeviceFactory::UNKNOWN : return array(); break;
             default : return null;
         }
     }
