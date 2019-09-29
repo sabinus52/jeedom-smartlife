@@ -60,10 +60,13 @@ class SmartLife extends eqLogic {
     {
         log::add('SmartLife', 'debug', 'CHECK CONNECTION : Start');
         $api = SmartLife::createTuyaCloudAPI();
+        try {
             $devices = $api->discoverDevices();
-        if (!$devices) {
-            log::add('SmartLife', 'error', 'Erreur de connexion au cloud Tuya');
-            return null;
+        } catch (Throwable $th) {
+            log::add('SmartLife', 'error', 'Erreur de connexion au cloud Tuya : '.$th->getMessage());
+            log::add('SmartLife', 'debug', 'CHECK CONNECTION : '.print_r($th, true));
+            log::add('SmartLife', 'debug', 'CHECK CONNECTION : End');
+            throw new Exception(__($th->getMessage(),__FILE__));
         }
         log::add('SmartLife', 'debug', 'CHECK CONNECTION : OK');
         log::add('SmartLife', 'debug', 'CHECK CONNECTION : End');
@@ -91,9 +94,17 @@ class SmartLife extends eqLogic {
 
         // Recherche des équipements depuis le Cloud
         $result = array();
+        try {
             $devices = $api->discoverDevices();
-        if (!$devices) {
-            log::add('SmartLife', 'error', 'Erreur de connexion au cloud Tuya');
+        } catch (Throwable $th) {
+            log::add('SmartLife', 'error', 'Erreur de connexion au cloud Tuya : '.$th->getMessage());
+            log::add('SmartLife', 'debug', 'SEARCH DEVICE : '.print_r($th, true));
+            log::add('SmartLife', 'debug', 'SEARCH DEVICE : End');
+            event::add('jeedom::alert', array(
+				'level' => 'danger',
+				'page' => 'SmartLife',
+				'message' => __('Erreur de connexion au cloud Tuya : '.$th->getMessage(), __FILE__),
+			));
             return null;
         }
         foreach ($devices as $device) {
@@ -241,13 +252,17 @@ class SmartLife extends eqLogic {
     {
         // Uniquement pour les anciens objets créés manuellement
         // mets à jour le LogicalID pour éviter les doublons lors du scan
-        // OU
-        // Si changement d'ID de l'équipement
-        if ( empty($this->getLogicalId()) || ( $this->getLogicalId() !=  $this->getConfiguration('deviceID') ) ) {
+        if ( empty($this->getLogicalId()) ) { // || ( $this->getLogicalId() !=  $this->getConfiguration('deviceID') )
             $deviceID = $this->getConfiguration('deviceID');
             log::add('SmartLife', 'info', 'PRESAVE '.$deviceID.' : Changement ID de "'.$this->getLogicalId().'" vers "'.$deviceID.'"');
             $api = SmartLife::createTuyaCloudAPI();
+            try {
                 $api->discoverDevices();
+            } catch (Throwable $th) {
+                log::add('SmartLife', 'error', 'Erreur de connexion au cloud Tuya : '.$th->getMessage());
+                log::add('SmartLife', 'debug', 'PRESAVE : '.print_r($th, true));
+                throw new Exception(__('Erreur de connexion au cloud Tuya : '.$th->getMessage(),__FILE__));
+            }
             log::add('SmartLife', 'debug', 'PRESAVE '.$deviceID.' : SET LogicalId');
             $this->setLogicalId($deviceID);
             $device = $api->getDeviceById($deviceID);
@@ -255,6 +270,11 @@ class SmartLife extends eqLogic {
             $this->setConfiguration('deviceType', $device->getType());
             log::add('SmartLife', 'debug', 'PRESAVE '.$deviceID.' : SET device = '.print_r($device, true));
             $this->setConfiguration('device', serialize($device));
+        }
+
+        // Si changement d'ID de l'équipement
+        if ( $this->getLogicalId() !=  $this->getConfiguration('deviceID') ) {
+            throw new Exception(__('Impossible de changer l\'équipement. Il faut utiliser le mode "Découverte"',__FILE__));
         }
     }
 
@@ -351,11 +371,18 @@ class SmartLife extends eqLogic {
     {
         if ( !SmartLife::$api) SmartLife::$api = SmartLife::createTuyaCloudAPI();
         $device = unserialize($this->getConfiguration('device'));
-
-        // Mise à jour
-            $device->update(SmartLife::$api);
         log::add('SmartLife', 'info', 'REFRESH '.$this->getLogicalId().' : '.$this->getName());
         log::add('SmartLife', 'debug', 'REFRESH '.$this->getLogicalId().' : '.print_r($device, true));
+
+        // Mise à jour
+        try {
+            $device->update(SmartLife::$api);
+        } catch (Throwable $th) {
+            log::add('SmartLife', 'error', 'Erreur de connexion au cloud Tuya : '.$th->getMessage());
+            log::add('SmartLife', 'debug', 'REFRESH : '.print_r($th, true));
+            throw new Exception(__('Erreur de connexion au cloud Tuya : '.$th->getMessage(),__FILE__));
+        }
+
         foreach (SmartLifeConfig::getConfigInfos($device->getType()) as $info) {
             
             if ($info['logicalId'] == SmartLifeConfig::COLORHUE) {
@@ -382,7 +409,13 @@ class SmartLife extends eqLogic {
         log::add('SmartLife', 'debug', 'SEND EVENT '.$this->getLogicalId().' : '.print_r($device, true));
         log::add('SmartLife', 'info',  'SEND EVENT '.$this->getLogicalId().' : '.$action.'('.$value1.','.$value2.')');
 
+        try {
             SmartLife::$api->sendEvent( call_user_func( array($device, 'get'.$action.'Event'), $value1, $value2 ) );
+        } catch (Throwable $th) {
+            log::add('SmartLife', 'error', 'Erreur de connexion au cloud Tuya : '.$th->getMessage());
+            log::add('SmartLife', 'debug', 'SEND EVENT : '.print_r($th, true));
+            throw new Exception(__('Erreur de connexion au cloud Tuya : '.$th->getMessage(),__FILE__));
+        }
 
         sleep(3);
         $this->updateInfos();
