@@ -1,6 +1,12 @@
 # Changelog
 
 
+### v0.3 - 29/09/2019
+
+- Implementation of requests exceptions
+- Implementation of unknown devices
+
+
 ### v0.2.1 - 01/07/2019
 
 - Change version `PhpColor` in Composer

@@ -121,17 +121,17 @@
     },
     {
         "name": "guzzlehttp/psr7",
-        "version": "1.6.0",
-        "version_normalized": "1.6.0.0",
+        "version": "1.6.1",
+        "version_normalized": "1.6.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/guzzle/psr7.git",
-            "reference": "dc784032a3f6f4e7a4b882e272b771f6fe4c37cf"
+            "reference": "239400de7a173fe9901b9ac7c06497751f00727a"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/guzzle/psr7/zipball/dc784032a3f6f4e7a4b882e272b771f6fe4c37cf",
-            "reference": "dc784032a3f6f4e7a4b882e272b771f6fe4c37cf",
+            "url": "https://api.github.com/repos/guzzle/psr7/zipball/239400de7a173fe9901b9ac7c06497751f00727a",
+            "reference": "239400de7a173fe9901b9ac7c06497751f00727a",
             "shasum": ""
         },
         "require": {
@@ -149,7 +149,7 @@
         "suggest": {
             "zendframework/zend-httphandlerrunner": "Emit PSR-7 responses"
         },
-        "time": "2019-06-30T00:37:05+00:00",
+        "time": "2019-07-01T23:21:34+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -335,17 +335,17 @@
     },
     {
         "name": "sabinus52/tuyacloudapi",
-        "version": "0.2.1",
-        "version_normalized": "0.2.1.0",
+        "version": "0.3",
+        "version_normalized": "0.3.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/sabinus52/TuyaCloudApi.git",
-            "reference": "9320e9006031d011b4e6d9fce49096676b0cb07c"
+            "reference": "29d63c607e9e264e35e9dfd98cf269712799f928"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/sabinus52/TuyaCloudApi/zipball/9320e9006031d011b4e6d9fce49096676b0cb07c",
-            "reference": "9320e9006031d011b4e6d9fce49096676b0cb07c",
+            "url": "https://api.github.com/repos/sabinus52/TuyaCloudApi/zipball/29d63c607e9e264e35e9dfd98cf269712799f928",
+            "reference": "29d63c607e9e264e35e9dfd98cf269712799f928",
             "shasum": ""
         },
         "require": {
@@ -353,7 +353,7 @@
             "mexitek/phpcolors": "*",
             "php": "^5.2||^7"
         },
-        "time": "2019-07-01T17:25:24+00:00",
+        "time": "2019-09-29T18:52:54+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
