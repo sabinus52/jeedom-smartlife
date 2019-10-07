@@ -12,6 +12,7 @@ composer.lock
 # Visual Studio Code
 .vs/
 .vscode/
+*.code-workspace
 
 # Espace de travail
 workspace/

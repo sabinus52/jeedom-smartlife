@@ -11,16 +11,16 @@ $eqLogics = eqLogic::byType($plugin->getId());
    <div class="col-xs-12 eqLogicThumbnailDisplay">
   <legend><i class="fas fa-cog"></i>  {{Gestion}}</legend>
   <div class="eqLogicThumbnailContainer">
-      <div class="cursor eqLogicAction logoPrimary" data-action="add">
-        <i class="fas fa-plus-circle"></i>
-        <br>
-        <span>{{Ajouter}}</span>
+    <div class="cursor eqLogicAction logoPrimary discover" data-action="scanTuya">
+      <i class="fas fa-bullseye"></i>
+      <br>
+      <span>{{Découverte des objets}}</span>
     </div>
-      <div class="cursor eqLogicAction logoSecondary" data-action="gotoPluginConf">
+    <div class="cursor eqLogicAction logoSecondary" data-action="gotoPluginConf">
       <i class="fas fa-wrench"></i>
-    <br>
-    <span>{{Configuration}}</span>
-  </div>
+      <br>
+      <span>{{Configuration}}</span>
+    </div>
   </div>
   <legend><i class="fas fa-table"></i> {{Mes équipements}}</legend>
 	   <input class="form-control" placeholder="{{Rechercher}}" id="in_searchEqlogic" />
@@ -98,7 +98,7 @@ foreach (object::all() as $object) {
         <div class="col-sm-3">
             <select class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="deviceID">
             <?php
-                $devicesAll = SmartLife::discoverDevices();
+                $devicesAll = SmartLife::getDevicesByType();
                 foreach ($devicesAll as $type => $devices) {
                     echo "<optgroup label=\"$type\">";
                     foreach ($devices as $id => $device) {
@@ -118,7 +118,7 @@ foreach (object::all() as $object) {
 <table id="table_cmd" class="table table-bordered table-condensed">
     <thead>
         <tr>
-            <th>{{Nom}}</th><th>{{Type}}</th><th>{{Action}}</th>
+            <th>{{Nom}}</th><th>{{Type}}</th><th>{{Paramètres}}</th><th>{{Action}}</th>
         </tr>
     </thead>
     <tbody>

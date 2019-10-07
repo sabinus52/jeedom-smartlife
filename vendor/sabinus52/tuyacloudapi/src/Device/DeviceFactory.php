@@ -16,10 +16,11 @@ class DeviceFactory
     /**
      * Types des différents devices
      */
-    const SWITCH = 'switch';
-    const LIGHT  = 'light';
-    const COVER  = 'cover';
-    const SCENE  = 'scene';
+    const UNKNOWN = 'unknown';
+    const SWITCH  = 'switch';
+    const LIGHT   = 'light';
+    const COVER   = 'cover';
+    const SCENE   = 'scene';
 
     
     /**
@@ -48,7 +49,9 @@ class DeviceFactory
                 $device->setData($datas['data']);
                 break;
             default:
-                return null;
+                $device = new UnknownDevice($datas['id'], $datas['name'], $datas['icon']);
+                $device->setData($datas['data']);
+                $device->setDevType($datas['dev_type']);
                 break;
         }
         return $device;
@@ -66,16 +69,16 @@ class DeviceFactory
     {
         switch ($type) {
             case self::SWITCH :
-                $device = new SwitchDevice($datas['id']);
+                $device = new SwitchDevice($id);
                 break;
             case self::LIGHT :
-                $device = new LightDevice($datas['id']);
+                $device = new LightDevice($id);
                 break;
             case self::COVER :
-                $device = new CoverDevice($datas['id']);
+                $device = new CoverDevice($id);
                 break;
             case self::SCENE :
-                $device = new SceneDevice($datas['id']);
+                $device = new SceneDevice($id);
                 break;
             default:
                 return null;

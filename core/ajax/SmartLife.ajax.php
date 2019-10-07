@@ -29,9 +29,16 @@ try {
     if (init('action') == 'checkConnection') {
         $res = SmartLife::checkConnection();
         if ($res !== null)
-		    ajax::success();
+		    ajax::success(); // TODO si erreur
+    }
+    
+    if (init('action') == 'discover') {
+		SmartLife::discoverDevices(init('mode')); // TODO get error message
+		if ($res === null)
+            ajax::success();
+        else
+            throw new Exception(__('Une erreur est survenue lors de la recherche des équipements ', __FILE__));
 	}
-
 
     throw new Exception(__('Aucune méthode correspondante à : ', __FILE__) . init('action'));
     /*     * *********Catch exeption*************** */

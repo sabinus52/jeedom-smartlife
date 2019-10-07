@@ -16,6 +16,34 @@
  */
 
 
+/**
+ * Bouton Découverte des objets
+ */
+$('.discover').on('click', function () {
+    $('#div_alert').showAlert({message: '{{Détection en cours}}', level: 'warning'});
+    $.ajax({
+        type: "POST",
+        url: "plugins/SmartLife/core/ajax/SmartLife.ajax.php", 
+        data: {
+            action: "discover",
+            mode: $(this).attr('data-action'),
+        },
+        dataType: 'json',
+        global: false,
+        error: function (request, status, error) {
+            handleAjaxError(request, status, error);
+        },
+        success: function (data) { 
+            if (data.state != 'ok') {
+                $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                return;
+            }
+            $('#div_alert').showAlert({message: '{{Opération réalisée avec succès : Rafraichir la page F5}}', level: 'success'});
+        }
+    });
+});
+
+
 $("#table_cmd").sortable({axis: "y", cursor: "move", items: ".cmd", placeholder: "ui-state-highlight", tolerance: "intersect", forcePlaceholderSize: true});
 /*
  * Fonction pour l'ajout de commande, appellé automatiquement par plugin.template
@@ -35,6 +63,11 @@ function addCmdToTable(_cmd) {
     tr += '<td>';
     tr += '<span class="type" type="' + init(_cmd.type) + '">' + jeedom.cmd.availableType() + '</span>';
     tr += '<span class="subType" subType="' + init(_cmd.subType) + '"></span>';
+    tr += '</td>';
+    tr += '<td>';
+    tr += '<span><label class="checkbox-inline"><input type="checkbox" class="cmdAttr checkbox-inline" data-l1key="isVisible" checked/>{{Afficher}}</label></span> ';
+    tr += '<span><label class="checkbox-inline"><input type="checkbox" class="cmdAttr checkbox-inline" data-l1key="isHistorized" checked/>{{Historiser}}</label></span> ';
+    tr += '<span><label class="checkbox-inline"><input type="checkbox" class="cmdAttr" data-l1key="display" data-l2key="invertBinary"/>{{Inverser}}</label></span> ';
     tr += '</td>';
     tr += '<td>';
     if (is_numeric(_cmd.id)) {

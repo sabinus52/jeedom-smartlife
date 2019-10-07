@@ -137,7 +137,8 @@ class Session
             ),
         ));
         //print 'CREATE : '.$response->getBody()."\n";
-        $response = json_decode((string) $response->getBody(), true); // TODO gestion erreur
+        $response = json_decode((string) $response->getBody(), true);
+        $this->checkResponse($response, 'Failed to get a token');
 
         // Affecte le résultat dans le token
         $this->token->set($response);
@@ -161,10 +162,27 @@ class Session
             ),
         ));
         //print 'REFRESH : '.$response->getBody()."\n";
-        $response = json_decode((string) $response->getBody(), true); // TODO gestion erreur
+        $response = json_decode((string) $response->getBody(), true);
+        $this->checkResponse($response, 'Failed to refresh token');
 
         // Affecte le résultat dans le token
         $this->token->set($response);
+    }
+
+
+    /**
+     * Vérifie si pas d'erreur dans le retour de la requête
+     * 
+     * @param Array $response : Réponse de la requete http
+     * @param String $message : Message par défaut
+     * @throws Exception
+     */
+    public function checkResponse(array $response, $message = null)
+    {
+        if ( isset($response['responseStatus']) && $response['responseStatus'] === 'error' ) {
+            $message = isset($response['errorMsg']) ? $response['errorMsg'] : $message;
+            throw new \Exception($message);
+        }
     }
 
 }

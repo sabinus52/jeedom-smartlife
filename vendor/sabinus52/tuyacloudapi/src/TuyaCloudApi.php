@@ -131,7 +131,8 @@ class TuyaCloudApi
                 ),
             ),
         ));
-        $response = json_decode((string) $response->getBody(), true); // TODO gestion erreur
+        $response = json_decode((string) $response->getBody(), true);
+        $this->session->checkResponse($response, sprintf('Failed to get response from %s', $name));
 
         return $response;
     }
