@@ -24,19 +24,23 @@ Après téléchargement du plugin, il vous suffit juste d’activer celui-ci et 
 - Code du pays ou indicatif du téléphone
 - Nom de l'application qui a été utilisée lors de l'inscription
 
+Sauvegarder les informations et après il est possible de faire un test pour vérifier la bonne connexion avec les serveurs Tuya.
 
 
 # Configuration des équipements
 
-Pour ajouter un nouvel objet, cliquer sur *Plugins / Objets connectés / Objets SmartLife/Tuya*
+> **ATTENTION à partir de la version 0.2** : Refonte du système de création des objets. Après la mise à jour du plugin, et **avant de cliquer** sur "Découverte", il faut pour chaque objet, recliquer sur "Sauvegarder" pour mettre à jour certains éléments et éviter la création des objets en double lors de la "Découverte".
 
-Puis cliquer sur l'icône **Ajouter** et définir :
+Il n'y a pas besoin d'ajouter un objet, aller sur *Plugins / Objets connectés / Objets SmartLife/Tuya*
 
-- Nom de l'équipement
-- Objet parent
-- Cocher *Activer* pour que l'équipement soit utilisable
-- Cocher *Visible* pour le rendre visible sur le dashboard
-- Identifiant de l'équipement depuis la liste déroulante des objets récupérés depuis son compte SmartLife
+Puis cliquer simplement sur l'icône **Découverte des objets** pour ajouter automatiquement tous vos objets reconnus par le plugin.
 
-Pour terminer, cliquer sur **Sauvegarder** et l'objet est prêt à être contrôler
+Il ne reste plus qu'à aller sur chaque objet pour changer son nom et redéfinir d'autres paramètres au besoin.
 
+Les objets détectés en mode *Online* par les serveurs Tuya sont en mode *activer* et *visible* dans Jeedom.
+
+
+# Notes importantes
+
+- L'état de l'objet est rafraichit après une action effectuée dans Jeedom.
+- Si une action est réalisée depuis l'application SmartLife ou Tuya sur son smartphone, alors l'état de l'objet **ne sera pas mis à jour** dans ce cas. Pour contourner, il est possible de créer un scénario de type récurrent et ajouter la commande de rafaichissement des  objets SmartLife désirés.
