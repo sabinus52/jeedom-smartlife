@@ -374,13 +374,21 @@ class SmartLife extends eqLogic {
         log::add('SmartLife', 'info', 'REFRESH '.$this->getLogicalId().' : '.$this->getName());
         log::add('SmartLife', 'debug', 'REFRESH '.$this->getLogicalId().' : '.print_r($device, true));
 
-        // Mise à jour
-        try {
-            $device->update(SmartLife::$api);
-        } catch (Throwable $th) {
-            log::add('SmartLife', 'error', 'Erreur de connexion au cloud Tuya : '.$th->getMessage());
-            log::add('SmartLife', 'debug', 'REFRESH : '.print_r($th, true));
-            throw new Exception(__('Erreur de connexion au cloud Tuya : '.$th->getMessage(),__FILE__));
+        // Mise à jour avec 3 tentatives
+        $retry = 3;
+        while ($retry > 0) {
+            $retry--;
+            log::add('SmartLife', 'debug', 'REFRESH : tentative '.(3-$retry));
+            try {
+                $device->update(SmartLife::$api);
+                $retry = 0;
+            } catch (Throwable $th) {
+                log::add('SmartLife', 'debug', 'Erreur de connexion au cloud Tuya : '.$th->getMessage());
+                if ($retry > 0) continue;
+                log::add('SmartLife', 'debug', 'REFRESH : '.print_r($th, true));
+                log::add('SmartLife', 'error', 'Erreur de connexion au cloud Tuya : '.$th->getMessage());
+                throw new Exception(__('Erreur de connexion au cloud Tuya : '.$th->getMessage(),__FILE__));
+            }
         }
 
         foreach (SmartLifeConfig::getConfigInfos($device->getType()) as $info) {
@@ -409,12 +417,21 @@ class SmartLife extends eqLogic {
         log::add('SmartLife', 'debug', 'SEND EVENT '.$this->getLogicalId().' : '.print_r($device, true));
         log::add('SmartLife', 'info',  'SEND EVENT '.$this->getLogicalId().' : '.$action.'('.$value1.','.$value2.')');
 
-        try {
-            SmartLife::$api->sendEvent( call_user_func( array($device, 'get'.$action.'Event'), $value1, $value2 ) );
-        } catch (Throwable $th) {
-            log::add('SmartLife', 'error', 'Erreur de connexion au cloud Tuya : '.$th->getMessage());
-            log::add('SmartLife', 'debug', 'SEND EVENT : '.print_r($th, true));
-            throw new Exception(__('Erreur de connexion au cloud Tuya : '.$th->getMessage(),__FILE__));
+        // Exécution en 3 tentatives
+        $retry = 3;
+        while ($retry > 0) {
+            $retry--;
+            log::add('SmartLife', 'debug', 'SEND EVENT : tentative '.(3-$retry));
+            try {
+                SmartLife::$api->sendEvent( call_user_func( array($device, 'get'.$action.'Event'), $value1, $value2 ) );
+                $retry = 0;
+            } catch (Throwable $th) {
+                log::add('SmartLife', 'error', 'Erreur de connexion au cloud Tuya : '.$th->getMessage());
+                if ($retry > 0) continue;
+                log::add('SmartLife', 'debug', 'SEND EVENT : '.print_r($th, true));
+                log::add('SmartLife', 'error', 'Erreur de connexion au cloud Tuya : '.$th->getMessage());
+                throw new Exception(__('Erreur de connexion au cloud Tuya : '.$th->getMessage(),__FILE__));
+            }
         }
 
         sleep(3);
