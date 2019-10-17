@@ -237,6 +237,42 @@ class SmartLife extends eqLogic {
      */
 
 
+    public static function update()
+    {
+        log::add('SmartLife', 'debug', 'UPDATE : Start');
+    
+        $api = SmartLife::createTuyaCloudAPI();
+        try {
+            $api->discoverDevices();
+        } catch (Throwable $th) {
+            log::add('SmartLife', 'error', 'UPDATE : Erreur de connexion au cloud Tuya : '.$th->getMessage());
+            log::add('SmartLife', 'debug', 'UPDATE : '.print_r($th, true));
+            log::add('SmartLife', 'debug', 'UPDATE : End');
+            return null;
+        }
+
+		foreach (self::byType('SmartLife') as $eqLogic) {
+            $deviceID = $eqLogic->getLogicalId();
+            $device = $api->getDeviceById($deviceID);
+            if ($device == null) {
+                log::add('SmartLife', 'debug', 'UPDATE '.$deviceID.' : '.$eqLogic->getName().' non trouvé lors de la récupération des status');
+                continue;
+            }
+            if ($device->getType() == DeviceFactory::SCENE) continue;
+            log::add('SmartLife', 'debug', 'UPDATE '.$deviceID.' : '.$eqLogic->getName());
+			if ($eqLogic->getIsEnable() == 0) {
+                log::add('SmartLife', 'debug', 'UPDATE '.$deviceID.' : Non activé -> PAS DE MISE à JOUR');
+				continue;
+            }
+            log::add('SmartLife', 'debug', 'UPDATE '.$deviceID.' : '.print_r($device, true));
+
+            $eqLogic->updateDevice($device);
+            
+        }
+    
+        log::add('SmartLife', 'debug', 'UPDATE : End');
+    }
+
 
     /*     * *********************Méthodes d'instance************************* */
 
@@ -367,6 +403,27 @@ class SmartLife extends eqLogic {
 
     /*     * **********************Getteur Setteur*************************** */
 
+    private function updateDevice($device)
+    {
+        $deviceID = $this->getLogicalId();
+        foreach (SmartLifeConfig::getConfigInfos($device->getType()) as $info) {
+            
+            if ($info['logicalId'] == SmartLifeConfig::COLORHUE) {
+                $value = array('H' => $device->getColorHue(), 'S' => $device->getColorSaturation(), 'L' => $device->getBrightness());
+                log::add('SmartLife', 'debug', 'UPDATE '.$deviceID.' : checkAndUpdateCmd '.$info['logicalId'].' = #'.Color::hslToHex($value).' '.print_r($value, true));
+                $this->checkAndUpdateCmd($info['logicalId'], '#'.Color::hslToHex($value));
+            } else {
+                $value = call_user_func( array($device, 'get'.ucfirst($info['logicalId'])) );
+                log::add('SmartLife', 'debug', 'UPDATE '.$deviceID.' : checkAndUpdateCmd '.$info['logicalId'].' = '.$value);
+                $this->checkAndUpdateCmd($info['logicalId'], $value);
+            }
+            
+        }
+        $this->setConfiguration('device', serialize($device));
+        $this->save(true);
+    }
+
+
     public function updateInfos()
     {
         if ( !SmartLife::$api) SmartLife::$api = SmartLife::createTuyaCloudAPI();
@@ -391,21 +448,7 @@ class SmartLife extends eqLogic {
             }
         }
 
-        foreach (SmartLifeConfig::getConfigInfos($device->getType()) as $info) {
-            
-            if ($info['logicalId'] == SmartLifeConfig::COLORHUE) {
-                $value = array('H' => $device->getColorHue(), 'S' => $device->getColorSaturation(), 'L' => $device->getBrightness());
-                log::add('SmartLife', 'debug', 'REFRESH '.$this->getLogicalId().' : checkAndUpdateCmd '.$info['logicalId'].' = #'.Color::hslToHex($value).' '.print_r($value, true));
-                $this->checkAndUpdateCmd($info['logicalId'], '#'.Color::hslToHex($value));
-            } else {
-                $value = call_user_func( array($device, 'get'.ucfirst($info['logicalId'])) );
-                log::add('SmartLife', 'debug', 'REFRESH '.$this->getLogicalId().' : checkAndUpdateCmd '.$info['logicalId'].' = '.$value);
-                $this->checkAndUpdateCmd($info['logicalId'], $value);
-            }
-            
-        }
-        $this->setConfiguration('device', serialize($device));
-        $this->save(true);
+        $this->updateDevice($device);
     }
 
 
