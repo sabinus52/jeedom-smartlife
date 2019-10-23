@@ -18,7 +18,7 @@
 
 /* * ***************************Includes********************************* */
 require_once __DIR__  . '/../../../../core/php/core.inc.php';
-require_once __DIR__  . '/../config/SmartLife.config.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 use Sabinus\TuyaCloudApi\TuyaCloudApi;
 use Sabinus\TuyaCloudApi\Session\Session;
@@ -108,6 +108,12 @@ class SmartLife extends eqLogic {
             return null;
         }
         foreach ($devices as $device) {
+            // Vérification de l'équipement
+            if ( empty($device) || empty($device->getId()) || empty($device->getName()) || empty($device->getType()) ) {
+                log::add('SmartLife', 'error', 'CREATE DEVICE : Information manquante pour ajouter l\'équipement : '.print_r($device, true));
+                continue;
+            }
+            // Si objet reconnu
             if ($device->getType() == DeviceFactory::UNKNOWN) {
                 log::add('SmartLife', 'debug', 'SEARCH DEVICE : Objet non pris en compte '.print_r($device, true));
                 continue;
@@ -154,39 +160,29 @@ class SmartLife extends eqLogic {
 
 
     /**
-     * Crée l'objet Jeedom de l'équipement trouvé syr le Cloud Tuya
+     * Crée l'objet Jeedom de l'équipement trouvé sur le Cloud Tuya
      * 
      * @param Device $device
      * @return SmartLife
      */
     public static function createDevice($device)
     {
-		event::add('jeedom::alert', array(
-			'level' => 'warning',
-			'page' => 'SmartLife',
-			'message' => __('Nouvel objet trouvé', __FILE__),
-        ));
-        log::add('SmartLife', 'info', 'CREATE DEVICE : Objet en cours d\'inclusion "'.$device->getName().'" ('.$device->getId().') de type \''.$device->getType().'\'');
-        
-        // Vérification
-		if ( empty($device) || empty($device->getId()) || empty($device->getName()) || empty($device->getType()) ) {
-			log::add('SmartLife', 'error', 'CREATE DEVICE : Information manquante pour ajouter l\'équipement : '.print_r($device, true));
-			event::add('jeedom::alert', array(
-				'level' => 'danger',
-				'page' => 'SmartLife',
-				'message' => __('Information manquante pour ajouter l\'équipement. Inclusion impossible', __FILE__),
-			));
-			return false;
+        log::add('SmartLife', 'info', 'CREATE DEVICE '.$device->getId().': Objet en cours d\'inclusion "'.$device->getName().'" de type \''.$device->getType().'\'');
+
+        // Vérification de la configuration de l'équipement
+        $configs = SmartLife::loadParametersDevice($device->getType());
+        if ( ! $configs ) {
+            log::add('SmartLife', 'error', 'CREATE DEVICE '.$device->getId().' : Type d\'équipement non pris en charge "'.$device->getType().'" pour "'.$device->getName().'"');
+            return false;
         }
 
-		$logicalID = $device->getId();
-        $smartlife = self::byLogicalId($logicalID, 'SmartLife');
+        $smartlife = self::byLogicalId($device->getId(), 'SmartLife');
         // Créer le nouvel équipement s'il n'existe pas
 		if ( !is_object($smartlife) ) {
 			$smartlife = new SmartLife();
 			$smartlife->setEqType_name('SmartLife');
-            $smartlife->setLogicalId($logicalID);
-            $smartlife->setName($device->getName() . ' ' . $logicalID);           
+            $smartlife->setLogicalId($device->getId());
+            $smartlife->setName($device->getName() . ' ' . $device->getId());           
 			event::add('jeedom::alert', array(
 				'level' => 'warning',
 				'page' => 'SmartLife',
@@ -194,9 +190,15 @@ class SmartLife extends eqLogic {
             ));
         }
 
-        $smartlife->setConfiguration('deviceID', $logicalID);
+        // Affecte la configuration
+        $smartlife->setConfiguration('deviceID', $device->getId());
         $smartlife->setConfiguration('deviceType', $device->getType());
         $smartlife->setConfiguration('device', serialize($device));
+        $cmdInfos = array();
+        foreach ($configs['commands'] as $config) {
+            if ( $config['type'] == 'info' ) $cmdInfos[] = $config['logicalId'];
+        }
+        $smartlife->setConfiguration('deviceCmdInfos', serialize($cmdInfos));
         if ($device->isOnline()) {
 			$smartlife->setIsEnable(1);
             $smartlife->setIsVisible(1);
@@ -204,14 +206,40 @@ class SmartLife extends eqLogic {
             $smartlife->setIsEnable(0);
             $smartlife->setIsVisible(0);
         }
-
         // Sauvegarde
-        $smartlife->save();
-        log::add('SmartLife', 'info', 'CREATE DEVICE : Objet ajouté avec succès "'.$device->getName().'" ('.$device->getId().') de type \''.$device->getType().'\'');
+        $smartlife->save(true);
 
+        // Création des commandes
+        $order = 0;
+        foreach ($configs['commands'] as $config) {
+            $config['order'] = $order++;
+            $smartlife->addCommand($config);
+            log::add('SmartLife', 'debug', 'CREATE DEVICE '.$device->getId().' : SET command  = '.$config['logicalId']);
+        }
+
+
+        log::add('SmartLife', 'info', 'CREATE DEVICE '.$device->getId().' : Objet ajouté avec succès "'.$device->getName().'" ('.$device->getId().') de type \''.$device->getType().'\'');
 		return $smartlife;
 	}
 
+
+    /**
+     * Chargement de la configuration d'un équipement depuis le fichier JSON
+     * 
+     * @param String $type : Type du device (switch|cover|light|...)
+     * @return Array
+     */
+    private static function loadParametersDevice($type)
+    {
+        $filecfg = __DIR__.'/../config/'.$type.'/'.$type.'.json';
+        $content = file_get_contents($filecfg);
+        if (is_json($content)) {
+            $result = json_decode($content, true);
+        } else {
+            log::add('SmartLife', 'debug', 'ERROR : Impossible de charger le fichier '.$filecfg);
+        }
+        return ( isset($result[$type]) ) ? $result[$type] : null;
+    }
 
 
     /*
@@ -316,20 +344,7 @@ class SmartLife extends eqLogic {
 
     public function postSave()
     {
-        $deviceID = $this->getConfiguration('deviceID');
-        if (!$deviceID) return;
-        $deviceType = $this->getConfiguration('deviceType');
-        log::add('SmartLife', 'debug', 'POSTSAVE '.$deviceID.' : '.$this->getName().'('.$deviceType.')');
 
-        $configs = SmartLifeConfig::getConfig($deviceType);
-        if ( $configs !== null ) {
-            foreach ($configs as $config) {
-                $this->addCommand($config);
-                log::add('SmartLife', 'debug', 'POSTSAVE '.$deviceID.' : SET command  = '.$config['logicalId']);
-            }
-        } else {
-            throw new Exception(__('Type d\'équipement non pris en charge',__FILE__));
-        }
     }
 
     public function preUpdate()
@@ -361,17 +376,27 @@ class SmartLife extends eqLogic {
     {
         $cmdDevice = $this->getCmd(null, $config['logicalId']);
         if ( !is_object($cmdDevice) ) {
+
             $cmdDevice = new SmartLifeCmd();
+            $cmdDevice->setName(__($config['name'], __FILE__));
+            $cmdDevice->setLogicalId( $config['logicalId'] );
+            $cmdDevice->setEqLogic_id( $this->getId() );
+
+            if ( isset($config['display']) ) {
+                foreach ($config['display'] as $key => $value) {
+                    $cmdDevice->setDisplay($key, $value);
+                }
+                unset($config['display']);
+            }
+
+            // Assigne les paramètres du JSON à chaque fonction de l'eqLogic
+            utils::a2o($cmdDevice, $config);
+            log::add('SmartLife', 'debug', 'CREATE DEVICE '.$this->getLogicalId().' : ADD COMMAND '.$config['logicalId']);
         }
-        $cmdDevice->setName(__($config['name'], __FILE__));
-        $cmdDevice->setLogicalId( $config['logicalId'] );
-        $cmdDevice->setEqLogic_id( $this->getId() );
+
+        // Ne doit pas être changé
         $cmdDevice->setType( $config['type'] );
         $cmdDevice->setSubType( $config['subType'] );
-        $cmdDevice->setOrder( $config['order'] );
-        if (isset($config['icon'])) $cmdDevice->setDisplay( 'icon', '<i class="fa '.$config['icon'].'"></i>' );
-        if (isset($config['forceReturnLineAfter'])) $cmdDevice->setDisplay( 'forceReturnLineAfter', $config['forceReturnLineAfter'] );
-        if (isset($config['unity'])) $cmdDevice->setUnite( $config['unity'] );
         if (isset($config['value'])) {
             foreach ($this->getCmd() as $eqLogic_cmd) {
 				if ($config['value'] == $eqLogic_cmd->getLogicalId()) {
@@ -379,6 +404,8 @@ class SmartLife extends eqLogic {
 				}
 			}
         }
+
+        // Sauvegarde
         $cmdDevice->save();
     }
 
@@ -406,16 +433,17 @@ class SmartLife extends eqLogic {
     private function updateDevice($device)
     {
         $deviceID = $this->getLogicalId();
-        foreach (SmartLifeConfig::getConfigInfos($device->getType()) as $info) {
+        $cmdInfos = unserialize($this->getConfiguration('deviceCmdInfos'));
+        foreach ($cmdInfos as $info) {
             
-            if ($info['logicalId'] == SmartLifeConfig::COLORHUE) {
+            if ($info == 'COLORHUE') {
                 $value = array('H' => $device->getColorHue(), 'S' => $device->getColorSaturation(), 'L' => $device->getBrightness());
-                log::add('SmartLife', 'debug', 'UPDATE '.$deviceID.' : checkAndUpdateCmd '.$info['logicalId'].' = #'.Color::hslToHex($value).' '.print_r($value, true));
-                $this->checkAndUpdateCmd($info['logicalId'], '#'.Color::hslToHex($value));
+                log::add('SmartLife', 'debug', 'UPDATE '.$deviceID.' : checkAndUpdateCmd '.$info.' = #'.Color::hslToHex($value).' '.print_r($value, true));
+                $this->checkAndUpdateCmd($info, '#'.Color::hslToHex($value));
             } else {
-                $value = call_user_func( array($device, 'get'.ucfirst($info['logicalId'])) );
-                log::add('SmartLife', 'debug', 'UPDATE '.$deviceID.' : checkAndUpdateCmd '.$info['logicalId'].' = '.$value);
-                $this->checkAndUpdateCmd($info['logicalId'], $value);
+                $value = call_user_func( array($device, 'get'.ucfirst($info)) );
+                log::add('SmartLife', 'debug', 'UPDATE '.$deviceID.' : checkAndUpdateCmd '.$info.' = '.$value);
+                $this->checkAndUpdateCmd($info, $value);
             }
             
         }

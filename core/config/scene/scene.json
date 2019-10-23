@@ -1,0 +1,15 @@
+{
+	"scene": {
+		"name": "Scène",
+		"group" : "",
+		"commands": [
+			{
+				"name" : "Activer",
+                "logicalId" : "Activate",
+                "type" : "action",
+                "subType" : "other",
+                "isVisible" : true
+			}
+		]
+	}
+}

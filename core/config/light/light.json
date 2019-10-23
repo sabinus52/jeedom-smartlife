@@ -1,0 +1,125 @@
+{
+	"light": {
+		"name": "Lampe",
+		"group" : "",
+		"commands": [
+			{
+                "name" : "Status",
+                "logicalId" : "STATE",
+                "type" : "info",
+                "subType" : "binary",
+                "generic_type": "LIGHT_STATE",
+                "isVisible" : true,
+				"isHistorized": false,
+				"template": {
+					"dashboard": "light",
+					"mobile": "light"
+				}
+            },
+            {
+                "name": "Luminosité-Info",
+                "logicalId": "BRIGHTNESS",
+				"type": "info",
+				"subType": "numeric",
+				"configuration": {
+					"minValue": 0,
+					"maxValue": 100
+				},
+				"isVisible": 0
+            },
+            {
+                "name": "Blanc-Info",
+                "logicalId": "TEMPERATURE",
+				"type": "info",
+				"subType": "numeric",
+				"generic_type" : "LIGHT_COLOR_TEMP",
+				"configuration": {
+					"minValue": 0,
+					"maxValue": 100
+				},
+				"isVisible": 0
+            },
+            {
+                "name": "Couleur-Info",
+                "logicalId": "COLORHUE",
+				"type": "info",
+				"subType": "string",
+				"generic_type" : "LIGHT_COLOR",
+				"configuration": {
+					"minValue": 0,
+					"maxValue": 100
+				},
+				"isVisible": 0
+            },
+            {
+                "name": "Saturation-Info",
+                "logicalId": "SATURATION",
+				"type": "info",
+				"subType": "numeric",
+				"configuration": {
+					"minValue": 0,
+					"maxValue": 360
+				},
+				"isVisible": 0
+			},
+            {
+                "name" : "Refresh",
+                "logicalId" : "REFRESH",
+                "type" : "action",
+                "subType" : "other",
+                "isVisible" : true
+			},
+			{
+                "name" : "Allumer",
+                "logicalId" : "TurnOn",
+                "type" : "action",
+                "subType" : "other",
+                "generic_type" : "LIGHT_ON",
+                "isVisible" : true
+			},
+			{
+				"name" : "Eteindre",
+                "logicalId" : "TurnOff",
+                "type" : "action",
+                "subType" : "other",
+                "generic_type" : "LIGHT_OFF",
+                "isVisible" : true
+            },
+            {
+                "name": "Luminosité",
+                "logicalId": "SetBrightness",
+				"type": "action",
+				"subType": "slider",
+				"generic_type" : "LIGHT_SLIDER",
+				"configuration": {
+					"minValue": 0,
+					"maxValue": 100
+				},
+				"isVisible": 1,
+				"value": "BRIGHTNESS"
+            },
+            {
+                "name": "Blanc",
+                "logicalId": "SetTemperature",
+				"type": "action",
+				"subType": "slider",
+				"generic_type" : "LIGHT_SET_COLOR_TEMP",
+				"configuration": {
+					"minValue": 0,
+					"maxValue": 100
+				},
+				"isVisible": 1,
+				"value": "TEMPERATURE"
+			},
+			{
+				"name": "Couleur",
+				"logicalId": "SetColor",
+				"type": "action",
+				"subType": "color",
+				"generic_type" : "LIGHT_SET_COLOR",
+				"isVisible": 1,
+				"value": "COLORHUE"
+			}
+		]
+	}
+}
