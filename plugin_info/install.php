@@ -20,11 +20,11 @@ require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 
 function SmartLife_install() {
 
-    $cron = cron::byClassAndFunction('SmartLife', 'update');
+    $cron = cron::byClassAndFunction('SmartLife', 'updateAll');
 	if (!is_object($cron)) {
 		$cron = new cron();
 		$cron->setClass('SmartLife');
-		$cron->setFunction('update');
+		$cron->setFunction('updateAll');
 		$cron->setEnable(0);
 		$cron->setDeamon(0);
 		$cron->setSchedule('*/7 * * * *');
@@ -36,11 +36,11 @@ function SmartLife_install() {
 
 function SmartLife_update() {
 
-    $cron = cron::byClassAndFunction('SmartLife', 'update');
+    $cron = cron::byClassAndFunction('SmartLife', 'updateAll');
     if (!is_object($cron)) {
 		$cron = new cron();
 		$cron->setClass('SmartLife');
-		$cron->setFunction('update');
+		$cron->setFunction('updateAll');
 		$cron->setEnable(0);
 		$cron->setDeamon(0);
     	$cron->setSchedule('*/7 * * * *');
@@ -52,7 +52,7 @@ function SmartLife_update() {
 
 function SmartLife_remove() {
 
-    $cron = cron::byClassAndFunction('SmartLife', 'update');
+    $cron = cron::byClassAndFunction('SmartLife', 'updateAll');
 	if (is_object($cron)) {
 		$cron->remove();
     }
