@@ -99,6 +99,7 @@ class Platform
             case 'AY' : $this->region = self::CN; break;
             case 'EU' : $this->region = self::EU; break;
             case 'US' : $this->region = self::US; break;
+            default   : $this->region = self::US; break;
         }
     }
 

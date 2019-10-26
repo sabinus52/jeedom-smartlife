@@ -1,6 +1,12 @@
 # Changelog
 
 
+### v0.4 - 25/10/2019
+
+- Get list of type device available
+- Fix server tuya default
+
+
 ### v0.3 - 29/09/2019
 
 - Implementation of requests exceptions

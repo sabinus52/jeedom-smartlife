@@ -22,6 +22,17 @@ class DeviceFactory
     const COVER   = 'cover';
     const SCENE   = 'scene';
 
+
+    /**
+     * Retourne les liste des types disponibles
+     * 
+     * @return Array
+     */
+    static public function getTypeAvailable()
+    {
+        return array(self::SCENE, self::SWITCH, self::COVER, self::LIGHT);
+    }
+
     
     /**
      * Créer l'objet de l'équipement à partir des données reçus par la découverte des devices
