@@ -1,3 +1,14 @@
+# Version 0.3 beta du 26 octobre 2019 (NON STABLE)
+
+> **ATTENTION** : Il obligatoire de relancer une "Découverte des objets" pour mettre à jour des paramètres pour le bon fonctionnement.
+
+- Correction de bogue de l'API
+- Amélioration du mode "Découverte"
+- Mise en place d'une tâche planifiée pour mise à jour des statuts des objets
+- Essaie de plusieurs tentatives si le serveur Tuya ne répond pas
+- Amélioration du code
+
+
 # Version 0.2 beta du 7 octobre 2019 (NON STABLE)
 
 > **ATTENTION** : Refonte du système de création des objets. Après la mise à jour du plugin, et **avant de cliquer** sur "Découverte", il faut pour chaque objet, recliquer sur "Sauvegarder" pour mettre à jour certains éléments et éviter la création des objets en double lors de la "Découverte".
