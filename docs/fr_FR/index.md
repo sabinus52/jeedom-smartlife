@@ -14,6 +14,8 @@ Ce plugin permet de contrôler les objects connectés SmartLife ou Tuya.
 - Interrupteurs pour volets roulants
 - Ampoules connectées
 
+Les autres objets ne sont pas encore pris en compte. Certains objets comme le détecteur de porte, la sirène ne sont pas reconnus par l'API et ne seront donc pas gérés par le plugin.
+
 
 # Configuration du plugin
 
@@ -40,7 +42,16 @@ Il ne reste plus qu'à aller sur chaque objet pour changer son nom et redéfinir
 Les objets détectés en mode *Online* par les serveurs Tuya sont en mode *activer* et *visible* dans Jeedom.
 
 
-# Notes importantes
+# Rafraîchissement des états des objets
+
+Une tâche planifiée est disponible mais **n'est pas activée** par défaut.
+
+Pour l'activer et choisir la fréquence de mise à jour, aller dans le *Moteur de tâches* depuis le menu d'administration.
+
+![Tache planifiée](../images/cron.png)
+
+
+**Notes importantes à ce sujet :**
 
 - L'état de l'objet est rafraichit après une action effectuée dans Jeedom.
-- Si une action est réalisée depuis l'application SmartLife ou Tuya sur son smartphone, alors l'état de l'objet **ne sera pas mis à jour** dans ce cas. Pour contourner, il est possible de créer un scénario de type récurrent et ajouter la commande de rafaichissement des  objets SmartLife désirés.
+- Si une action est réalisée depuis l'application SmartLife ou Tuya sur son smartphone, alors l'état de l'objet **ne sera pas mis à jour** dans ce cas. Pour contourner, il est possible d'intéragir avec le plugin IFTTT.

@@ -1,0 +1,56 @@
+{
+	"cover": {
+		"name": "Volet",
+		"group" : "",
+		"commands": [
+			{
+                "name" : "Status",
+                "logicalId" : "STATE",
+                "type" : "info",
+                "subType" : "numeric",
+                "generic_type": "FLAP_STATE",
+                "configuration": {
+					"minValue": 1,
+					"maxValue": 3
+				},
+                "isVisible" : true,
+                "isHistorized": false,
+				"template": {
+					"dashboard": "shutter",
+					"mobile": "shutter"
+				}
+            },
+            {
+                "name" : "Refresh",
+                "logicalId" : "REFRESH",
+                "type" : "action",
+                "subType" : "other",
+                "isVisible" : true
+			},
+			{
+                "name" : "Ouvrir",
+                "logicalId" : "Open",
+                "type" : "action",
+                "subType" : "other",
+                "generic_type" : "FLAP_UP",
+                "isVisible" : true
+			},
+			{
+				"name" : "Fermer",
+                "logicalId" : "Close",
+                "type" : "action",
+                "subType" : "other",
+                "generic_type" : "FLAP_DOWN",
+                "isVisible" : true
+			},
+			{
+				"name" : "Stopper",
+                "logicalId" : "Stop",
+                "type" : "action",
+                "subType" : "other",
+                "generic_type" : "FLAP_STOP",
+                "isVisible" : true
+			}
+		]
+	}
+}
