@@ -1,3 +1,14 @@
+# Version 0.4 RC du 4 novembre 2019 (QUASI STABLE)
+
+> **ATTENTION** : Il obligatoire de relancer une "Découverte des objets" pour mettre à jour des paramètres pour le bon fonctionnement.
+
+> **VOLET ROULANT** : Il faut supprimer l'objet et relancer une "Découverte des objets" pour avoir un code retour correct du statut de l'ouverture.
+
+- Correction de bogue de l'API
+- Quelques changements dans les paramètres des objets
+- Corrections sur le code retour des volets roulants
+
+
 # Version 0.3 beta du 26 octobre 2019 (NON STABLE)
 
 > **ATTENTION** : Il obligatoire de relancer une "Découverte des objets" pour mettre à jour des paramètres pour le bon fonctionnement.
