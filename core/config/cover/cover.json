@@ -10,8 +10,8 @@
                 "subType" : "numeric",
                 "generic_type": "FLAP_STATE",
                 "configuration": {
-					"minValue": 1,
-					"maxValue": 3
+					"minValue": 0,
+					"maxValue": 2
 				},
                 "isVisible" : true,
                 "isHistorized": false,

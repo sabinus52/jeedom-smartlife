@@ -113,6 +113,19 @@ class SmartLifeDevice
                 $value = array('H' => $this->device->getColorHue(), 'S' => $this->device->getColorSaturation(), 'L' => $this->device->getBrightness());
                 return  '#'.Color::hslToHex($value);
                 break;
+            case 'STATE' :
+                $value = $this->device->getState();
+                if ( $this->device->getType() == DeviceFactory::COVER ) {
+                    switch ($value) {
+                        case 3 : return 1; // Entre ouvert
+                        case 2 : return 0; // Fermé
+                        case 1 : return 2; // Ouvert
+                        default: return $value;
+                    }
+                } else {
+                    return $value;
+                }
+                break;
             default:
                 $functionName = 'get'.ucfirst($cmdInfo);
                 return $this->device->$functionName();
