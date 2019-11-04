@@ -6,6 +6,7 @@
 use Sabinus\TuyaCloudApi\TuyaCloudApi;
 use Sabinus\TuyaCloudApi\Device\Device;
 use Sabinus\TuyaCloudApi\Device\DeviceFactory;
+use Sabinus\TuyaCloudApi\Tools\Color;
 
 
 class SmartLifeDevice
@@ -100,6 +101,40 @@ class SmartLifeDevice
 
 
     /**
+     * Retourne la valeur d'un paramètre d'un équipement Tuya
+     * 
+     * @param String $cmdInfo : Nom de la commande info = nom du paramètre Tuya
+     * @param String|Integer
+     */
+    public function getValueCommandInfo($cmdInfo)
+    {
+        switch ($cmdInfo) {
+            case 'COLORHUE':
+                $value = array('H' => $this->device->getColorHue(), 'S' => $this->device->getColorSaturation(), 'L' => $this->device->getBrightness());
+                return  '#'.Color::hslToHex($value);
+                break;
+            case 'STATE' :
+                $value = $this->device->getState();
+                if ( $this->device->getType() == DeviceFactory::COVER ) {
+                    switch ($value) {
+                        case 3 : return 1; // Entre ouvert
+                        case 2 : return 0; // Fermé
+                        case 1 : return 2; // Ouvert
+                        default: return $value;
+                    }
+                } else {
+                    return $value;
+                }
+                break;
+            default:
+                $functionName = 'get'.ucfirst($cmdInfo);
+                return $this->device->$functionName();
+                break;
+        }
+    }
+
+
+    /**
      * Crée l'objet Jeedom de l'équipement trouvé sur le Cloud Tuya
      * 
      * @return SmartLife
@@ -147,9 +182,10 @@ class SmartLifeDevice
         }
 
         // Affecte la configuration du device
-        $smartlife->setConfiguration('deviceID', $this->device->getId());
-        $smartlife->setConfiguration('deviceType', $this->device->getType());
-        $smartlife->setConfiguration('device', serialize($this->device));
+        $smartlife->setConfiguration('tuyaID', $this->device->getId());
+        $smartlife->setConfiguration('tuyaType', $this->device->getType());
+        $smartlife->setConfiguration('tuyaName', $this->device->getName());
+        $smartlife->setConfiguration('tuya', serialize($this->device));
 
         // Enregistre les commandes de type "infos" pour la mise à jour des états
         $cmdInfos = array();

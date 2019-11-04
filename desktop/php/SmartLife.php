@@ -67,7 +67,7 @@ foreach ($eqLogics as $eqLogic) {
                     <select id="sel_object" class="eqLogicAttr form-control" data-l1key="object_id">
                         <option value="">{{Aucun}}</option>
                         <?php
-foreach (object::all() as $object) {
+foreach (jeeObject::all() as $object) {
 	echo '<option value="' . $object->getId() . '">' . $object->getName() . '</option>';
 }
 ?>
@@ -94,20 +94,15 @@ foreach (object::all() as $object) {
 		</div>
 	</div>
     <div class="form-group">
-        <label class="col-sm-3 control-label">{{ID equipement}}</label>
+        <label class="col-sm-3 control-label">{{Nom equipement SmartLife}}</label>
         <div class="col-sm-3">
-            <select class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="deviceID">
-            <?php
-                $devicesAll = SmartLife::getDevicesByType();
-                foreach ($devicesAll as $type => $devices) {
-                    echo "<optgroup label=\"$type\">";
-                    foreach ($devices as $id => $device) {
-                        echo '<option value="'.$id.'">'.$device['name'].'</option>';
-                    }
-                    echo "</optgroup>";
-                }
-            ?>
-            </select>
+            <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="tuyaName" readonly="readonly"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">{{Type equipement SmartLife}}</label>
+        <div class="col-sm-3">
+            <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="tuyaType" readonly="readonly"/>
         </div>
     </div>
 </fieldset>
