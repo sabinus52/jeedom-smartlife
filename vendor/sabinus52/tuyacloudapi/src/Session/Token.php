@@ -65,7 +65,7 @@ class Token
     {
         $this->tokenAccess = $data['access_token'];
         $this->tokenRefresh = $data['refresh_token'];
-        $this->expireTime = $data['expires_in'];
+        $this->expireTime = $data['expires_in'] + time();
     }
 
 
@@ -90,7 +90,7 @@ class Token
      */
     public function isValid()
     {
-        return time() + $this->expireTime > time();
+        return $this->expireTime > time();
     }
 
 }

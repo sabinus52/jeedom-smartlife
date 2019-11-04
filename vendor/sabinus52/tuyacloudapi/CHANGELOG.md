@@ -1,5 +1,9 @@
 # Changelog
 
+### v0.5 - 04/11/2019
+
+- Fix expiration time of token
+
 
 ### v0.4 - 25/10/2019
 
