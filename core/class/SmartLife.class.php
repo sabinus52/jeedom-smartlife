@@ -90,8 +90,8 @@ class SmartLife extends eqLogic {
         // Récupération des équipements déjà existants
         $devicesExisting = array();
         foreach (self::byType('SmartLife') as $eqLogic) {
-            $devicesExisting[$eqLogic->getId()] = $eqLogic->getConfiguration('deviceID');
-            log::add('SmartLife', 'debug', 'SEARCH DEVICE : Objet déjà existant -> '.$eqLogic->getName().' ('.$eqLogic->getConfiguration('deviceID').')');
+            $devicesExisting[$eqLogic->getId()] = $eqLogic->getLogicalId();
+            log::add('SmartLife', 'debug', 'SEARCH DEVICE : Objet déjà existant -> '.$eqLogic->getName().' ('.$eqLogic->getLogicalId().')');
         }
 
         // Recherche des équipements depuis le Cloud
@@ -272,10 +272,6 @@ class SmartLife extends eqLogic {
             $this->setConfiguration('device', serialize($device));
         }
 
-        // Si changement d'ID de l'équipement
-        if ( $this->getLogicalId() !=  $this->getConfiguration('deviceID') ) {
-            throw new Exception(__('Impossible de changer l\'équipement. Il faut utiliser le mode "Découverte"',__FILE__));
-        }
     }
 
     public function postSave()
@@ -285,9 +281,7 @@ class SmartLife extends eqLogic {
 
     public function preUpdate()
     {
-        if (!$this->getConfiguration('deviceID')) {
-            throw new Exception(__('Merci de choisir un équipement.',__FILE__));
-        }
+
     }
 
     public function postUpdate() {
@@ -399,7 +393,7 @@ class SmartLife extends eqLogic {
     public function refresh()
     {
         if ( !SmartLife::$api) SmartLife::$api = SmartLife::createTuyaCloudAPI();
-        $device = unserialize($this->getConfiguration('device'));
+        $device = unserialize($this->getConfiguration('tuya'));
         log::add('SmartLife', 'info', 'REFRESH '.$this->getLogicalId().' : '.$this->getName());
         log::add('SmartLife', 'debug', 'REFRESH '.$this->getLogicalId().' : '.print_r($device, true));
 
@@ -420,7 +414,7 @@ class SmartLife extends eqLogic {
     public function sendAction($action, array $params = array())
     {
         if ( !SmartLife::$api) SmartLife::$api = SmartLife::createTuyaCloudAPI();
-        $device = unserialize($this->getConfiguration('device'));
+        $device = unserialize($this->getConfiguration('tuya'));
         log::add('SmartLife', 'debug', 'SEND EVENT '.$this->getLogicalId().' : '.$this->getName());
         log::add('SmartLife', 'debug', 'SEND EVENT '.$this->getLogicalId().' : '.print_r($device, true));
         log::add('SmartLife', 'info',  'SEND EVENT '.$this->getLogicalId().' : '.$action.'('.implode(',', $params).')');

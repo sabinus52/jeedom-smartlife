@@ -147,9 +147,10 @@ class SmartLifeDevice
         }
 
         // Affecte la configuration du device
-        $smartlife->setConfiguration('deviceID', $this->device->getId());
-        $smartlife->setConfiguration('deviceType', $this->device->getType());
-        $smartlife->setConfiguration('device', serialize($this->device));
+        $smartlife->setConfiguration('tuyaID', $this->device->getId());
+        $smartlife->setConfiguration('tuyaType', $this->device->getType());
+        $smartlife->setConfiguration('tuyaName', $this->device->getName());
+        $smartlife->setConfiguration('tuya', serialize($this->device));
 
         // Enregistre les commandes de type "infos" pour la mise à jour des états
         $cmdInfos = array();
