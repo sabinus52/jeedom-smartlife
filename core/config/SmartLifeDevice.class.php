@@ -6,6 +6,7 @@
 use Sabinus\TuyaCloudApi\TuyaCloudApi;
 use Sabinus\TuyaCloudApi\Device\Device;
 use Sabinus\TuyaCloudApi\Device\DeviceFactory;
+use Sabinus\TuyaCloudApi\Tools\Color;
 
 
 class SmartLifeDevice
@@ -95,6 +96,27 @@ class SmartLifeDevice
                 log::add('SmartLife', 'error', 'Erreur de connexion au cloud Tuya : '.$th->getMessage());
                 throw new Exception(__('Erreur de connexion au cloud Tuya : '.$th->getMessage(),__FILE__));
             }
+        }
+    }
+
+
+    /**
+     * Retourne la valeur d'un paramètre d'un équipement Tuya
+     * 
+     * @param String $cmdInfo : Nom de la commande info = nom du paramètre Tuya
+     * @param String|Integer
+     */
+    public function getValueCommandInfo($cmdInfo)
+    {
+        switch ($cmdInfo) {
+            case 'COLORHUE':
+                $value = array('H' => $this->device->getColorHue(), 'S' => $this->device->getColorSaturation(), 'L' => $this->device->getBrightness());
+                return  '#'.Color::hslToHex($value);
+                break;
+            default:
+                $functionName = 'get'.ucfirst($cmdInfo);
+                return $this->device->$functionName();
+                break;
         }
     }
 

@@ -369,18 +369,11 @@ class SmartLife extends eqLogic {
     {
         $deviceID = $this->getLogicalId();
         $cmdInfos = unserialize($this->getConfiguration('deviceCmdInfos'));
+        $smartlifeDevice = new SmartLifeDevice($device);
         foreach ($cmdInfos as $info) {
-            
-            if ($info == 'COLORHUE') {
-                $value = array('H' => $device->getColorHue(), 'S' => $device->getColorSaturation(), 'L' => $device->getBrightness());
-                log::add('SmartLife', 'debug', 'UPDATE '.$deviceID.' : checkAndUpdateCmd '.$info.' = #'.Color::hslToHex($value).' '.print_r($value, true));
-                $this->checkAndUpdateCmd($info, '#'.Color::hslToHex($value));
-            } else {
-                $value = call_user_func( array($device, 'get'.ucfirst($info)) );
-                log::add('SmartLife', 'debug', 'UPDATE '.$deviceID.' : checkAndUpdateCmd '.$info.' = '.$value);
-                $this->checkAndUpdateCmd($info, $value);
-            }
-            
+            $value = $smartlifeDevice->getValueCommandInfo($info);
+            log::add('SmartLife', 'debug', 'UPDATE '.$deviceID.' : checkAndUpdateCmd '.$info.' = '.$value);
+            $this->checkAndUpdateCmd($info, $value);
         }
         $this->setConfiguration('device', serialize($device));
         $this->save(true);
