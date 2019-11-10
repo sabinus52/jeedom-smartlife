@@ -27,3 +27,6 @@ https://sabinus52.github.io/jeedom-smartlife/
 
 https://sabinus52.github.io/jeedom-smartlife/fr_FR/changelog
 
+## Lien vers le forum / community
+
+https://community.jeedom.com/t/plugin-smartlife-tuya-discussion-generale
