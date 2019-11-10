@@ -1,4 +1,10 @@
-# Version 0.4 RC du 4 novembre 2019 (QUASI STABLE)
+# Version 1.0 du 10 novembre 2019
+
+- Mise à jour de la documentation
+- Création d'une branche pour jeedom V3
+
+
+# Version 0.4 RC du 4 novembre 2019
 
 > **ATTENTION** : Il obligatoire de relancer une "Découverte des objets" pour mettre à jour des paramètres pour le bon fonctionnement.
 
@@ -9,7 +15,7 @@
 - Corrections sur le code retour des volets roulants
 
 
-# Version 0.3 beta du 26 octobre 2019 (NON STABLE)
+# Version 0.3 beta du 26 octobre 2019
 
 > **ATTENTION** : Il obligatoire de relancer une "Découverte des objets" pour mettre à jour des paramètres pour le bon fonctionnement.
 
@@ -20,7 +26,7 @@
 - Amélioration du code
 
 
-# Version 0.2 beta du 7 octobre 2019 (NON STABLE)
+# Version 0.2 beta du 7 octobre 2019
 
 > **ATTENTION** : Refonte du système de création des objets. Après la mise à jour du plugin, et **avant de cliquer** sur "Découverte", il faut pour chaque objet, recliquer sur "Sauvegarder" pour mettre à jour certains éléments et éviter la création des objets en double lors de la "Découverte".
 
@@ -34,7 +40,7 @@
 - Quelques corrections
 
 
-# Version 0.1 alpha du 10 août 2019 (NON STABLE)
+# Version 0.1 alpha du 10 août 2019
 
 - Mise à jour de l'API
 - Intégration du changement de couleur de la lampe
@@ -42,7 +48,7 @@
 - Bug sur problème d'objet non reconnu
 
 
-# Version 0.0 alpha du 30 mai 2019 (NON STABLE)
+# Version 0.0 alpha du 30 mai 2019
 
 - Développement initial
 - Ajout des commandes d'informations

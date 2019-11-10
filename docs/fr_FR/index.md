@@ -1,7 +1,5 @@
 ![capture](../images/icon-48.png) **Documentation du plugin SmartLife**
 
-**Plugin en cours de développement, il est encore pour le moment en version NON STABLE**
-
 
 # Description 
 
@@ -55,3 +53,11 @@ Pour l'activer et choisir la fréquence de mise à jour, aller dans le *Moteur d
 
 - L'état de l'objet est rafraichit après une action effectuée dans Jeedom.
 - Si une action est réalisée depuis l'application SmartLife ou Tuya sur son smartphone, alors l'état de l'objet **ne sera pas mis à jour** dans ce cas. Pour contourner, il est possible d'intéragir avec le plugin IFTTT.
+
+
+## Liens utiles
+
+- *Topic sur forum Jeedom Community* : https://community.jeedom.com/t/plugin-smartlife-tuya-discussion-generale
+- *Notes de version* : https://sabinus52.github.io/jeedom-smartlife/fr_FR/changelog
+- *Dépôt Github* : https://github.com/sabinus52/jeedom-smartlife
+- *Soumettre un bogue* : https://github.com/sabinus52/jeedom-smartlife/issues
