@@ -371,6 +371,8 @@ class SmartLife extends eqLogic {
         $cmdInfos = unserialize($this->getConfiguration('deviceCmdInfos'));
         $smartlifeDevice = new SmartLifeDevice($device);
         foreach ($cmdInfos as $info) {
+            // FIXME : API tuya ne retourne plus le statut sur la couleur et la température
+            if ($info == 'TEMPERATURE' || $info == 'COLORHUE' || $info == 'SATURATION') continue;
             $value = $smartlifeDevice->getValueCommandInfo($info);
             log::add('SmartLife', 'debug', 'UPDATE '.$deviceID.' : checkAndUpdateCmd '.$info.' = '.$value);
             $this->checkAndUpdateCmd($info, $value);
@@ -393,6 +395,7 @@ class SmartLife extends eqLogic {
         // Mise à jour avec 3 tentatives
         $smartlifeDevice = new SmartLifeDevice($device);
         $smartlifeDevice->callFunctionEvent(SmartLife::$api, 'update', array(), 'REFRESH');
+        log::add('SmartLife', 'debug', 'REFRESH '.$this->getLogicalId().' : '.print_r($device, true));
 
         $this->update($device);
     }
