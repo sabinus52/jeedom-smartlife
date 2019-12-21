@@ -1,17 +1,17 @@
 [
     {
         "name": "guzzlehttp/guzzle",
-        "version": "6.4.1",
-        "version_normalized": "6.4.1.0",
+        "version": "6.5.0",
+        "version_normalized": "6.5.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/guzzle/guzzle.git",
-            "reference": "0895c932405407fd3a7368b6910c09a24d26db11"
+            "reference": "dbc2bc3a293ed6b1ae08a3651e2bfd213d19b6a5"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/guzzle/guzzle/zipball/0895c932405407fd3a7368b6910c09a24d26db11",
-            "reference": "0895c932405407fd3a7368b6910c09a24d26db11",
+            "url": "https://api.github.com/repos/guzzle/guzzle/zipball/dbc2bc3a293ed6b1ae08a3651e2bfd213d19b6a5",
+            "reference": "dbc2bc3a293ed6b1ae08a3651e2bfd213d19b6a5",
             "shasum": ""
         },
         "require": {
@@ -26,13 +26,14 @@
             "psr/log": "^1.1"
         },
         "suggest": {
+            "ext-intl": "Required for Internationalized Domain Name (IDN) support",
             "psr/log": "Required for using the Log middleware"
         },
-        "time": "2019-10-23T15:58:00+00:00",
+        "time": "2019-12-07T18:20:45+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "6.3-dev"
+                "dev-master": "6.5-dev"
             }
         },
         "installation-source": "dist",
@@ -336,17 +337,17 @@
     },
     {
         "name": "sabinus52/tuyacloudapi",
-        "version": "0.5",
-        "version_normalized": "0.5.0.0",
+        "version": "0.6",
+        "version_normalized": "0.6.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/sabinus52/TuyaCloudApi.git",
-            "reference": "beaa443a86abd26d073de88e0177f78dc5317dda"
+            "reference": "aa1ae2095fd92c6aa38abb79eef6492479f3db89"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/sabinus52/TuyaCloudApi/zipball/beaa443a86abd26d073de88e0177f78dc5317dda",
-            "reference": "beaa443a86abd26d073de88e0177f78dc5317dda",
+            "url": "https://api.github.com/repos/sabinus52/TuyaCloudApi/zipball/aa1ae2095fd92c6aa38abb79eef6492479f3db89",
+            "reference": "aa1ae2095fd92c6aa38abb79eef6492479f3db89",
             "shasum": ""
         },
         "require": {
@@ -354,7 +355,7 @@
             "mexitek/phpcolors": "*",
             "php": "^5.2||^7"
         },
-        "time": "2019-11-04T09:17:46+00:00",
+        "time": "2019-12-21T11:19:15+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {

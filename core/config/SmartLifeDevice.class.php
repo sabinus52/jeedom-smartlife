@@ -51,7 +51,7 @@ class SmartLifeDevice
      */
     public function isUnknow()
     {
-        return ( $this->device->getType() == DeviceFactory::UNKNOWN );
+        return ( $this->device->getType() == DeviceFactory::TUYA_UNKNOWN );
     }
 
 
@@ -115,7 +115,7 @@ class SmartLifeDevice
                 break;
             case 'STATE' :
                 $value = $this->device->getState();
-                if ( $this->device->getType() == DeviceFactory::COVER ) {
+                if ( $this->device->getType() == DeviceFactory::TUYA_COVER ) {
                     switch ($value) {
                         case 3 : return 1; // Entre ouvert
                         case 2 : return 0; // Fermé

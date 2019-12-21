@@ -1,5 +1,11 @@
 # Changelog
 
+
+### v0.6 - 11/12/2019
+
+- Fix reserved word "switch"
+
+
 ### v0.5 - 04/11/2019
 
 - Fix expiration time of token

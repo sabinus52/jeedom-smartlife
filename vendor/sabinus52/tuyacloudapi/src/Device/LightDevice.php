@@ -21,7 +21,7 @@ class LightDevice extends Device implements DeviceInterface
     public function __construct($id, $name = '', $icon = '')
     {
         parent::__construct($id, $name, $icon);
-        $this->type = DeviceFactory::LIGHT;
+        $this->type = DeviceFactory::TUYA_LIGHT;
     }
 
 
@@ -43,9 +43,9 @@ class LightDevice extends Device implements DeviceInterface
      */
     public function getBrightness()
     {
-        if ($this->data['color_mode'] == 'colour')
+        /*if ($this->data['color_mode'] == 'colour')
             return $this->data['color']['brightness'];
-        else
+        else*/
             return round($this->data['brightness'] / 255 * 100);
     }
 
