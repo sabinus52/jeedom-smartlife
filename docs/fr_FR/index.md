@@ -15,6 +15,7 @@ Ce plugin permet de contrôler les objects connectés SmartLife ou Tuya.
 Les autres objets ne sont pas encore pris en compte. Certains objets comme le détecteur de porte, la sirène ne sont pas reconnus par l'API et ne seront donc pas gérés par le plugin.
 
 
+
 # Configuration du plugin
 
 Après téléchargement du plugin, il vous suffit juste d’activer celui-ci et de saisir son compte de connexion qui a été créé depuis l'application mobile :
@@ -25,6 +26,7 @@ Après téléchargement du plugin, il vous suffit juste d’activer celui-ci et 
 - Nom de l'application qui a été utilisée lors de l'inscription
 
 Sauvegarder les informations et après il est possible de faire un test pour vérifier la bonne connexion avec les serveurs Tuya.
+
 
 
 # Configuration des équipements
@@ -38,6 +40,7 @@ Puis cliquer simplement sur l'icône **Découverte des objets** pour ajouter aut
 Il ne reste plus qu'à aller sur chaque objet pour changer son nom et redéfinir d'autres paramètres au besoin.
 
 Les objets détectés en mode *Online* par les serveurs Tuya sont en mode *activer* et *visible* dans Jeedom.
+
 
 
 # Rafraîchissement des états des objets
@@ -55,7 +58,38 @@ Pour l'activer et choisir la fréquence de mise à jour, aller dans le *Moteur d
 - Si une action est réalisée depuis l'application SmartLife ou Tuya sur son smartphone, alors l'état de l'objet **ne sera pas mis à jour** dans ce cas. Pour contourner, il est possible d'intéragir avec le plugin IFTTT.
 
 
-## Liens utiles
+
+# Dépannage
+
+Voici une liste non exhautive de différents problèmes que l'on peut rencontrer
+
+### 1. Problème de connexion ou bouton `Tester la connexion` ne fonctionne pas
+
+Pour analyser ce problème, il faut lancer la commande `curl` depuis la box jeedom
+
+Avec une utilisation de l'application Smartlife
+~~~ bash
+curl -v -X POST -k -H 'Content-Type: application/x-www-form-urlencoded' -i 'https://px1.tuyaus.com/homeassistant/auth.do' --data 'userName=LOGIN&password=PASSORD&countryCode=33&bizType=smart_life&from=tuya'
+~~~
+
+Avec une utilisation de l'application Tuya
+~~~ bash
+curl -v -X POST -k -H 'Content-Type: application/x-www-form-urlencoded' -i 'https://px1.tuyaus.com/homeassistant/auth.do' --data 'userName=LOGIN&password=PASSORD&countryCode=33&bizType=smart_life&from=tuya'
+~~~
+
+Il faut remplacer LOGIN et PASSWORD par ton nom d'utilisateur et ton mot de passe
+
+Si la commmande fonctionne, un retour correct doit être de la forme suivante :
+> {"access_token":"EUheu15446X6245Y31WxJAC5HRxarNDgj","refresh_token":"EUheu15446062XY731WxJAhCRkP8zBQ7b","token_type":"bearer","expires_in":864000}
+
+
+### 2. Erreur : `cURL error 28: Resolving timed out after XXXX milliseconds ...`
+
+C'est un problème de configuration réseau de la box Jeedom. Merci de vérifier les serveurs DNS.
+
+
+
+# Liens utiles
 
 - *Topic sur forum Jeedom Community* : https://community.jeedom.com/t/plugin-smartlife-tuya-discussion-generale
 - *Notes de version* : https://sabinus52.github.io/jeedom-smartlife/fr_FR/changelog
