@@ -222,7 +222,7 @@ class SmartLife extends eqLogic {
                 log::add('SmartLife', 'debug', 'UPDATE '.$deviceID.' : '.$eqLogic->getName().' non trouvé lors de la récupération des status');
                 continue;
             }
-            if ($device->getType() == DeviceFactory::SCENE) continue;
+            if ($device->getType() == DeviceFactory::TUYA_SCENE) continue;
             log::add('SmartLife', 'debug', 'UPDATE '.$deviceID.' : '.$eqLogic->getName());
 			if ($eqLogic->getIsEnable() == 0) {
                 log::add('SmartLife', 'debug', 'UPDATE '.$deviceID.' : Non activé -> PAS DE MISE à JOUR');

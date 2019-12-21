@@ -21,7 +21,7 @@ class LightDevice extends Device implements DeviceInterface
     public function __construct($id, $name = '', $icon = '')
     {
         parent::__construct($id, $name, $icon);
-        $this->type = DeviceFactory::LIGHT;
+        $this->type = DeviceFactory::TUYA_LIGHT;
     }
 
 

@@ -21,7 +21,7 @@ class SceneDevice extends Device implements DeviceInterface
     public function __construct($id, $name = '', $icon = '')
     {
         parent::__construct($id, $name, $icon);
-        $this->type = DeviceFactory::SCENE;
+        $this->type = DeviceFactory::TUYA_SCENE;
     }
 
 

@@ -21,7 +21,7 @@ class SwitchDevice extends Device implements DeviceInterface
     public function __construct($id, $name = '', $icon = '')
     {
         parent::__construct($id, $name, $icon);
-        $this->type = DeviceFactory::SWITCH;
+        $this->type = DeviceFactory::TUYA_SWITCH;
     }
 
 

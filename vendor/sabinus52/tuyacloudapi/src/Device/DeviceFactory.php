@@ -16,11 +16,11 @@ class DeviceFactory
     /**
      * Types des différents devices
      */
-    const UNKNOWN = 'unknown';
-    const SWITCH  = 'switch';
-    const LIGHT   = 'light';
-    const COVER   = 'cover';
-    const SCENE   = 'scene';
+    const TUYA_UNKNOWN = 'unknown';
+    const TUYA_SWITCH  = 'switch';
+    const TUYA_LIGHT   = 'light';
+    const TUYA_COVER   = 'cover';
+    const TUYA_SCENE   = 'scene';
 
 
     /**
@@ -30,7 +30,7 @@ class DeviceFactory
      */
     static public function getTypeAvailable()
     {
-        return array(self::SCENE, self::SWITCH, self::COVER, self::LIGHT);
+        return array(self::TUYA_SCENE, self::TUYA_SWITCH, self::TUYA_COVER, self::TUYA_LIGHT);
     }
 
     
@@ -43,19 +43,19 @@ class DeviceFactory
     static public function createDeviceFromDatas(array $datas)
     {
         switch ($datas['dev_type']) {
-            case self::SWITCH :
+            case self::TUYA_SWITCH :
                 $device = new SwitchDevice($datas['id'], $datas['name'], $datas['icon']);
                 $device->setData($datas['data']);
                 break;
-            case self::LIGHT :
+            case self::TUYA_LIGHT :
                 $device = new LightDevice($datas['id'], $datas['name'], $datas['icon']);
                 $device->setData($datas['data']);
                 break;
-            case self::COVER :
+            case self::TUYA_COVER :
                 $device = new CoverDevice($datas['id'], $datas['name'], $datas['icon']);
                 $device->setData($datas['data']);
                 break;
-            case self::SCENE :
+            case self::TUYA_SCENE :
                 $device = new SceneDevice($datas['id'], $datas['name']);
                 $device->setData($datas['data']);
                 break;
@@ -79,16 +79,16 @@ class DeviceFactory
     static public function createDeviceFromId($id, $type)
     {
         switch ($type) {
-            case self::SWITCH :
+            case self::TUYA_SWITCH :
                 $device = new SwitchDevice($id);
                 break;
-            case self::LIGHT :
+            case self::TUYA_LIGHT :
                 $device = new LightDevice($id);
                 break;
-            case self::COVER :
+            case self::TUYA_COVER :
                 $device = new CoverDevice($id);
                 break;
-            case self::SCENE :
+            case self::TUYA_SCENE :
                 $device = new SceneDevice($id);
                 break;
             default:

@@ -20,7 +20,7 @@ class CoverDevice extends Device implements DeviceInterface
     public function __construct($id, $name = '', $icon = '')
     {
         parent::__construct($id, $name, $icon);
-        $this->type = DeviceFactory::COVER;
+        $this->type = DeviceFactory::TUYA_COVER;
     }
 
 
