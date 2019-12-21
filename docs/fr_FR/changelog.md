@@ -1,3 +1,12 @@
+# Version 1.1 du 21 décembre 2019
+
+> **ATTENTION** : Depuis le 17 décembre 2019, le CLoud Tuya ne retourne plus le statut de la couleur pour les ampoules d'où l'erreur : `Param was not an HSL array`. C'est peut être un problème temporaire chez Tuya, j'ai donc désactivé la mise à jour de ce statut pour éviter les erreurs. L'action sur le changement de la couleur semble toujours fonctionner.
+
+- Mise à jour de la documentation avec ajout d'un chapitre "Dépannage"
+- Correction sur certaines versions de PHP
+- Désactivation temporaire de la mise à jour des statuts de la couleur et la température pour les ampoules
+
+
 # Version 1.0 du 10 novembre 2019
 
 - Mise à jour de la documentation
