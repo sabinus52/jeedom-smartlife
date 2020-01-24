@@ -1,5 +1,9 @@
 # Changelog
 
+### v0.6.1 - 24/01/2020
+
+- Fix compatibility
+
 
 ### v0.6 - 11/12/2019
 

@@ -82,7 +82,7 @@ abstract class Device
      * 
      * @return String
      */
-    public function getId(): string
+    public function getId()
     {
         return $this->id;
     }
@@ -93,7 +93,7 @@ abstract class Device
      * 
      * @return String
      */
-    public function getType(): string
+    public function getType()
     {
         return $this->type;
     }
@@ -104,7 +104,7 @@ abstract class Device
      * 
      * @return String
      */
-    public function getName(): string
+    public function getName()
     {
         return $this->name;
     }
@@ -115,7 +115,7 @@ abstract class Device
      * 
      * @return String
      */
-    public function getIcon(): string
+    public function getIcon()
     {
         return $this->icon;
     }
