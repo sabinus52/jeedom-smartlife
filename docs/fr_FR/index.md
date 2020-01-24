@@ -6,13 +6,15 @@
 Ce plugin permet de contrôler les objects connectés SmartLife ou Tuya.
 
 
-**Objets compatibles pour le moment** :
+**Objets UNIQUEMENT compatibles** :
 - Prises connectées
 - Scènes
 - Interrupteurs pour volets roulants
 - Ampoules connectées
 
-Les autres objets ne sont pas encore pris en compte. Certains objets comme le détecteur de porte, la sirène ne sont pas reconnus par l'API et ne seront donc pas gérés par le plugin.
+Tous les autres objets ne sont pas pris en compte. Certains objets comme le détecteur de porte, le détecteur de mouvement, la sirène ne sont pas reconnus par l'API et ne seront donc **JAMAIS** gérés par le plugin.
+
+A partir de différents retours de chacun, certains objets de type `lampe` ont un comportement différent en fonction du fabriquant. Avec ce constat, il est particulièrement difficile d'adapter et d'apporter des corrections pour ces équipements.
 
 > <span style="color:red">**ATTENTION**</span> : Depuis le 17 décembre 2019, le CLoud Tuya ne retourne plus le statut de la couleur pour les ampoules d'où l'erreur : `Param was not an HSL array`. C'est peut être un problème temporaire chez Tuya, j'ai donc désactivé la mise à jour de ce statut pour éviter les erreurs. L'action sur le changement de la couleur semble toujours fonctionner.
 
@@ -26,7 +28,7 @@ Après téléchargement du plugin, il vous suffit juste d’activer celui-ci et 
 - Code du pays ou indicatif du téléphone
 - Nom de l'application qui a été utilisée lors de l'inscription
 
-Sauvegarder les informations et après il est possible de faire un test pour vérifier la bonne connexion avec les serveurs Tuya.
+**Sauvegarder les informations précédemment saisies** et après il est possible de faire un test pour vérifier la bonne connexion avec les serveurs Tuya.
 
 
 
