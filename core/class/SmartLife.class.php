@@ -390,7 +390,6 @@ class SmartLife extends eqLogic {
         if ( !SmartLife::$api) SmartLife::$api = SmartLife::createTuyaCloudAPI();
         $device = unserialize($this->getConfiguration('tuya'));
         log::add('SmartLife', 'info', 'REFRESH '.$this->getLogicalId().' : '.$this->getName());
-        log::add('SmartLife', 'debug', 'REFRESH '.$this->getLogicalId().' : '.print_r($device, true));
 
         // Mise à jour avec 3 tentatives
         $smartlifeDevice = new SmartLifeDevice($device);
