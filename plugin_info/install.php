@@ -30,7 +30,11 @@ function SmartLife_install() {
 		$cron->setSchedule('*/7 * * * *');
 		$cron->setTimeout(30);
 		$cron->save();
-    }
+	}
+
+	if (config::byKey('autoenable') == '') {
+		config::save('autoenable', '1');
+	}
 
 }
 
@@ -46,6 +50,10 @@ function SmartLife_update() {
     	$cron->setSchedule('*/7 * * * *');
     	$cron->setTimeout(30);
 		$cron->save();
+	}
+
+	if (config::byKey('autoenable') == '') {
+		config::save('autoenable', '1');
 	}
 
 }
