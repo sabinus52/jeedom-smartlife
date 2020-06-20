@@ -32,8 +32,11 @@ function SmartLife_install() {
 		$cron->save();
 	}
 
-	if (config::byKey('autoenable') == '') {
-		config::save('autoenable', '1');
+	if (config::byKey('autoenable', 'SmartLife') == '') {
+		config::save('autoenable', '1', 'SmartLife');
+	}
+	if (config::byKey('timeout', 'SmartLife') == '') {
+		config::save('timeout', '5', 'SmartLife');
 	}
 
 }
@@ -52,8 +55,11 @@ function SmartLife_update() {
 		$cron->save();
 	}
 
-	if (config::byKey('autoenable') == '') {
-		config::save('autoenable', '1');
+	if (config::byKey('autoenable', 'SmartLife') == '') {
+		config::save('autoenable', '1', 'SmartLife');
+	}
+	if (config::byKey('timeout', 'SmartLife') == '') {
+		config::save('timeout', '5', 'SmartLife');
 	}
 
 }

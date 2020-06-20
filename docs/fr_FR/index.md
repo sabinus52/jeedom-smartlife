@@ -27,6 +27,7 @@ Après téléchargement du plugin, il vous suffit juste d’activer celui-ci et 
 **Sauvegarder les informations précédemment saisies** et après il est possible de faire un test pour vérifier la bonne connexion avec les serveurs Tuya.
 
 - le paramètre "Activation automatique" permet d'activer ou de désactiver, ainsi que la visibilité de l'objet automatiquement lors d'une découverte si ceux-ci sont en ligne ou pas. Si la valeur est à Non alors, à la 1ère découverte, aucun objet ne sera activé.
+- le paramètre "Timeout" défini par défaut à 5 secondes, pour les requêtes à l'API Tuya.
 
 
 
