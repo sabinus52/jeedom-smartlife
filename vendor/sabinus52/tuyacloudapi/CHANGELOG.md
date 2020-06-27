@@ -1,5 +1,12 @@
 # Changelog
 
+### v0.7 - 27/06/2020
+
+- Add source example
+- Timeout configurable
+- Fix
+
+
 ### v0.6.1 - 24/01/2020
 
 - Fix compatibility

@@ -47,9 +47,10 @@ class SmartLife extends eqLogic {
         $password = config::byKey('password', 'SmartLife');
         $country = config::byKey('country', 'SmartLife');
         $platform = config::byKey('platform', 'SmartLife');
+        $timeout = (config::byKey('timeout', 'SmartLife') != '') ? config::byKey('timeout', 'SmartLife') : '5';
 
-        log::add('SmartLife', 'debug', "CONNECTION : $user ($country) $platform");
-        return new TuyaCloudApi(new Session($user, $password, $country, $platform));
+        log::add('SmartLife', 'debug', "CONNECTION : $user ($country) $platform - $timeout s");
+        return new TuyaCloudApi(new Session($user, $password, $country, $platform, $timeout));
     }
 
 

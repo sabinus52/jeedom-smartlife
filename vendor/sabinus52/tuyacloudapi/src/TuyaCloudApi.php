@@ -132,7 +132,7 @@ class TuyaCloudApi
             ),
         ));
         $response = json_decode((string) $response->getBody(), true);
-        $this->session->checkResponse($response, sprintf('Failed to get response from %s', $name));
+        $this->session->checkResponse($response, sprintf('Failed to get "%s" response from Cloud Tuya', $name));
 
         return $response;
     }

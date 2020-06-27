@@ -1,3 +1,11 @@
+# Version 1.2 du 27 juin 2020
+
+- Ajout d'un paramètre timeout des requêtes au CLoud Tuya pour ceux qui ont un réseau lent ou mal configuré
+- Ajout d'un paramètre "Activation automatique" des objets lors de la découverte
+- Mise à jour de l'API
+- Documentation : ajout d'un complément sur la compatibilité des équipements SmartLife
+
+
 # Version 1.1.1 du 24 janvier 2020
 
 - Fix compatibilité version PHP < 7.0

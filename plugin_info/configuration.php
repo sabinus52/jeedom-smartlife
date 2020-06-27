@@ -60,6 +60,24 @@ if (!isConnect()) {
             </div>
             <div class="col-lg-5">Sauvegarder les paramètres avant de faire le test</div>
         </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">{{Activation automatique}}</label>
+            <div class="col-lg-3">
+                <select class="configKey form-control" data-l1key="autoenable">
+                    <option value="1">Oui</option>
+                    <option value="0">Non</option>
+                </select>
+            </div>
+            <div class="col-lg-5">Active ou désactive les objets automatiquement lors de la découverte si ceux-ci sont online ou pas.<br>
+                Si la valeur est à Non alors, à la 1ère découverte, aucun objet ne sera activé</div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">{{Timeout}}</label>
+            <div class="col-lg-3">
+                <input class="configKey form-control" data-l1key="timeout" value="5" />
+            </div>
+            <div class="col-lg-5">Timeout des requêtes à l'API en secondes</div>
+        </div>
   </fieldset>
 </form>
 

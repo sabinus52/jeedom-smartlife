@@ -18,6 +18,12 @@ class Session
 {
 
     /**
+     * Timeout des requêtes HTTP
+     */
+    const TIMEOUT = 2.0;
+
+
+    /**
      * Utilisateur de connection
      * 
      * @var String
@@ -59,6 +65,13 @@ class Session
      */
     private $token;
 
+    /**
+     * Valeur du timeout en secondes
+     * 
+     * @var Float
+     */
+    private $timeout;
+
 
     /**
      * Constructeur
@@ -67,14 +80,16 @@ class Session
      * @param String  $password : Mot de passe
      * @param Integer $country  : Code du pays
      * @param String  $biztype  : Type de la plateforme
+     * @param Float   $timeout  : Timeout des requêtes http en secondes
      */
-    public function __construct($username, $password, $country, $biztype = null)
+    public function __construct($username, $password, $country, $biztype = null, $timeout = self::TIMEOUT)
     {
         $this->username = $username;
         $this->password = $password;
         $this->countryCode = $country;
         $this->platform = new Platform($biztype);
         $this->token = new Token();
+        $this->timeout = $timeout;
         $this->client = $this->_createClient();
     }
 
@@ -116,8 +131,8 @@ class Session
     {
         return new Client(array(
             'base_uri' => $this->platform->getBaseUrl(),
-            'connect_timeout' => 2.0,
-            'timeout' => 2.0,
+            'connect_timeout' => $this->timeout,
+            'timeout' => $this->timeout,
         ));
     }
 
@@ -177,8 +192,11 @@ class Session
      * @param String $message : Message par défaut
      * @throws Exception
      */
-    public function checkResponse(array $response, $message = null)
+    public function checkResponse($response, $message = null)
     {
+        if ( empty($response) ) {
+            throw new \Exception($message.' : Datas return null');
+        }
         if ( isset($response['responseStatus']) && $response['responseStatus'] === 'error' ) {
             $message = isset($response['errorMsg']) ? $response['errorMsg'] : $message;
             throw new \Exception($message);

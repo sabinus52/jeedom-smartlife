@@ -195,12 +195,14 @@ class SmartLifeDevice
         $smartlife->setConfiguration('deviceCmdInfos', serialize($cmdInfos));
 
         // Désactive si l'objet n'est plus en ligne
-        if ($this->device->isOnline()) {
-			$smartlife->setIsEnable(1);
-            $smartlife->setIsVisible(1);
-        } else {
-            $smartlife->setIsEnable(0);
-            $smartlife->setIsVisible(0);
+        if (config::byKey('autoenable', 'SmartLife')) {
+            if ($this->device->isOnline()) {
+			    $smartlife->setIsEnable(1);
+                $smartlife->setIsVisible(1);
+            } else {
+                $smartlife->setIsEnable(0);
+                $smartlife->setIsVisible(0);
+            }
         }
         
         // Sauvegarde et retour de l'objet
