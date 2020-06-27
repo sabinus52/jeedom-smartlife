@@ -337,17 +337,17 @@
     },
     {
         "name": "sabinus52/tuyacloudapi",
-        "version": "0.6.1",
-        "version_normalized": "0.6.1.0",
+        "version": "0.7",
+        "version_normalized": "0.7.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/sabinus52/TuyaCloudApi.git",
-            "reference": "c144721dba8dd455a011dd6b7d33804cf9c4260f"
+            "reference": "3ec0f157719dd4ce63992a5cadde1715e8feaae2"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/sabinus52/TuyaCloudApi/zipball/c144721dba8dd455a011dd6b7d33804cf9c4260f",
-            "reference": "c144721dba8dd455a011dd6b7d33804cf9c4260f",
+            "url": "https://api.github.com/repos/sabinus52/TuyaCloudApi/zipball/3ec0f157719dd4ce63992a5cadde1715e8feaae2",
+            "reference": "3ec0f157719dd4ce63992a5cadde1715e8feaae2",
             "shasum": ""
         },
         "require": {
@@ -355,7 +355,7 @@
             "mexitek/phpcolors": "*",
             "php": "^5.2||^7"
         },
-        "time": "2020-01-24T16:22:20+00:00",
+        "time": "2020-06-27T15:34:29+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {

@@ -1,30 +1,18 @@
-# TuyaCloudApi
-Library to control the Tuya device
+<?php
 
-## Support devices
-
-- Switch
-- Scene
-- Light
-- Cover
-
-
-## Installation
-
-~~~ bash
-composer require sabinus52/tuyacloudapi
-~~~
-
-
-## Example
-
-~~~ php
-require __DIR__ . '../vendor/autoload.php';
+require 'bootstrap.php';
 
 use Sabinus\TuyaCloudApi\TuyaCloudApi;
 use Sabinus\TuyaCloudApi\Session\Session;
 use Sabinus\TuyaCloudApi\Session\Platform;
 
+/**
+ * @param String Identifiant de connexion
+ * @param String Mot de passe
+ * @param String Code pays
+ * @param String Plateforme (tuya ou smartlife)
+ * @param Float timeout des requêtes http en secondes
+ */
 $session = new Session($argv[1], $argv[2], '33', Platform::SMART_LIFE, 5.0);
 
 // Initialize object API
@@ -93,6 +81,4 @@ sleep(5);
 $rep = $api->sendEvent($device->getStopEvent());
 // Ouvre le volet
 $rep = $api->sendEvent($device->getOpenEvent());
-~~~
 
-See the file `./test/exemple.php`
