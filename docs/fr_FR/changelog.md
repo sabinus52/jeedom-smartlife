@@ -1,3 +1,7 @@
+ A partir de septembre 2020, la plugin pour la version 3 de Jeedom ne bénéficiera plus des nouvelles mises à jour.
+ Il sera necessaire de migrer vers la version 4 pour profiter des nouvelles fonctionnalités et des corrections.
+
+
 # Version 1.1.1 du 24 janvier 2020
 
 - Fix compatibilité version PHP < 7.0

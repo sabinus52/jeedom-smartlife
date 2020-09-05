@@ -5,18 +5,16 @@
 
 Ce plugin permet de contrôler les objects connectés SmartLife ou Tuya.
 
-
 **Objets UNIQUEMENT compatibles** :
 - Prises connectées
 - Scènes
 - Interrupteurs pour volets roulants
 - Ampoules connectées
 
-Tous les autres objets ne sont pas pris en compte. Certains objets comme le détecteur de porte, le détecteur de mouvement, la sirène ne sont pas reconnus par l'API et ne seront donc **JAMAIS** gérés par le plugin.
+Voir le chapitre [Objets compatibles](#Objets%20compatibles) pour savoir si votre objet sera compatible.
 
-A partir de différents retours de chacun, certains objets de type `lampe` ont un comportement différent en fonction du fabriquant. Avec ce constat, il est particulièrement difficile d'adapter et d'apporter des corrections pour ces équipements.
 
-> <span style="color:red">**ATTENTION**</span> : Depuis le 17 décembre 2019, le CLoud Tuya ne retourne plus le statut de la couleur pour les ampoules d'où l'erreur : `Param was not an HSL array`. C'est peut être un problème temporaire chez Tuya, j'ai donc désactivé la mise à jour de ce statut pour éviter les erreurs. L'action sur le changement de la couleur semble toujours fonctionner.
+>  A partir de septembre 2020, la plugin pour la version 3 de Jeedom ne bénéficiera plus des nouvelles mises à jour. Il sera necessaire de migrer vers la version 4 pour profiter des nouvelles fonctionnalités et des corrections.
 
 
 # Configuration du plugin
@@ -29,6 +27,9 @@ Après téléchargement du plugin, il vous suffit juste d’activer celui-ci et 
 - Nom de l'application qui a été utilisée lors de l'inscription
 
 **Sauvegarder les informations précédemment saisies** et après il est possible de faire un test pour vérifier la bonne connexion avec les serveurs Tuya.
+
+- le paramètre "Activation automatique" permet d'activer ou de désactiver, ainsi que la visibilité de l'objet automatiquement lors d'une découverte si ceux-ci sont en ligne ou pas. Si la valeur est à Non alors, à la 1ère découverte, aucun objet ne sera activé.
+- le paramètre "Timeout" défini par défaut à 5 secondes, pour les requêtes à l'API Tuya.
 
 
 
@@ -58,7 +59,34 @@ Pour l'activer et choisir la fréquence de mise à jour, aller dans le *Moteur d
 **Notes importantes à ce sujet :**
 
 - L'état de l'objet est rafraichit après une action effectuée dans Jeedom.
-- Si une action est réalisée depuis l'application SmartLife ou Tuya sur son smartphone, alors l'état de l'objet **ne sera pas mis à jour** dans ce cas. Pour contourner, il est possible d'intéragir avec le plugin IFTTT.
+- Si une action est réalisée depuis l'application SmartLife ou Tuya sur son smartphone, alors l'état de l'objet **ne sera pas mis à jour** dans ce cas.
+
+
+
+# Objets compatibles
+
+
+### Objets UNIQUEMENT compatibles :
+- Prises connectées
+- Scènes
+- Interrupteurs pour volets roulants
+- Ampoules connectées
+
+
+### Objets NON compatibles :
+- Détecteur de porte
+- Détecteur de mouvement
+- Sirène
+- Caméra
+
+Ces objets de type *"à risque"* ne sont pas recommandés à être pilotés par le Cloud, donc ils  ne seront **JAMAIS** intégrés dans le plugin.
+
+
+### Notes importantes
+
+A partir de différents retours de chacun, certains objets de type `lampe` ont un comportement différent en fonction du fabriquant. Avec ce constat, il est particulièrement difficile d'adapter et d'apporter des corrections pour ces équipements.
+
+> <span style="color:red">**ATTENTION**</span> : Depuis le 17 décembre 2019, le CLoud Tuya ne retourne plus le statut de la couleur pour les ampoules d'où l'erreur : `Param was not an HSL array`. C'est peut être un problème temporaire chez Tuya, j'ai donc désactivé la mise à jour de ce statut pour éviter les erreurs. L'action sur le changement de la couleur semble toujours fonctionner.
 
 
 
