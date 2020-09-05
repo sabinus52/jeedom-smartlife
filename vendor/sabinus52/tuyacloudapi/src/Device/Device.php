@@ -142,7 +142,7 @@ abstract class Device
     {
         sleep(1);
         $response = $api->controlDevice($this->id, 'QueryDevice', array(), 'query');
-        $this->setData($response['payload']['data']);
+        if (isset($response['payload']['data'])) $this->setData($response['payload']['data']);
         return true;
     }
 
