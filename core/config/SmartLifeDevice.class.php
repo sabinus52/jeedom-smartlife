@@ -190,6 +190,7 @@ class SmartLifeDevice
         // Enregistre les commandes de type "infos" pour la mise à jour des états
         $cmdInfos = array();
         foreach ($commands as $command) {
+            if ( ! $this->setCommandSpecific($command) ) continue;
             if ( $command['type'] == 'info' ) $cmdInfos[] = $command['logicalId'];
         }
         $smartlife->setConfiguration('deviceCmdInfos', serialize($cmdInfos));
@@ -222,6 +223,8 @@ class SmartLifeDevice
         $order = 0;
         foreach ($commands as $command) {
             $command['order'] = $order++;
+            // Si pas de support pour cette commande, on ne la crée pas
+            if ( ! $this->setCommandSpecific($command) ) continue;
             $smartlife->addCommand($command);
             log::add('SmartLife', 'debug', 'CREATE DEVICE '.$this->device->getId().' : SET command  = '.$command['logicalId']);
         }
@@ -244,6 +247,30 @@ class SmartLifeDevice
             log::add('SmartLife', 'debug', 'ERROR : Impossible de charger le fichier '.$filecfg);
         }
         return ( isset($result[$type]) ) ? $result[$type] : null;
+    }
+
+
+    /**
+     * Ajuste la configuration de la commande en fonction du type de l'objet
+     *
+     * @param Array $command : Configuration de la commande
+     **/
+    public function setCommandSpecific(array & $command)
+    {
+        switch ($this->device->getType()) {
+            case DeviceFactory::TUYA_CLIMATE :
+                if ( $command['logicalId'] == 'TEMPERATURE' || $command['logicalId'] == 'THERMOSTAT' ) {
+                    // Affecte les valeurs min et max en fonction des valeurs du climatiseur
+                    $command['configuration']['minValue'] = $this->device->getMinTemperature();
+                    $command['configuration']['maxValue'] = $this->device->getMaxTemperature();
+                }
+                if ( $command['logicalId'] == 'TEMPERATURE' ) {
+                    // Si pas de retour de température courante
+                    if ( $this->device->getTemperature() === null ) return false;
+                }
+                break;
+        }
+        return true;
     }
 
 }

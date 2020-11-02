@@ -21,6 +21,7 @@ class DeviceFactory
     const TUYA_LIGHT   = 'light';
     const TUYA_COVER   = 'cover';
     const TUYA_SCENE   = 'scene';
+    const TUYA_CLIMATE = 'climate';
 
 
     /**
@@ -30,7 +31,7 @@ class DeviceFactory
      */
     static public function getTypeAvailable()
     {
-        return array(self::TUYA_SCENE, self::TUYA_SWITCH, self::TUYA_COVER, self::TUYA_LIGHT);
+        return array(self::TUYA_SCENE, self::TUYA_SWITCH, self::TUYA_COVER, self::TUYA_LIGHT, self::TUYA_CLIMATE);
     }
 
     
@@ -57,6 +58,10 @@ class DeviceFactory
                 break;
             case self::TUYA_SCENE :
                 $device = new SceneDevice($datas['id'], $datas['name']);
+                $device->setData($datas['data']);
+                break;
+            case self::TUYA_CLIMATE :
+                $device = new ClimateDevice($datas['id'], $datas['name'], $datas['icon']);
                 $device->setData($datas['data']);
                 break;
             default:
@@ -90,6 +95,9 @@ class DeviceFactory
                 break;
             case self::TUYA_SCENE :
                 $device = new SceneDevice($id);
+                break;
+            case self::TUYA_CLIMATE :
+                $device = new ClimateDevice($id);
                 break;
             default:
                 return null;

@@ -16,16 +16,17 @@ $eqLogics = eqLogic::byType($plugin->getId());
       <br>
       <span>{{Découverte des objets}}</span>
     </div>
-    <div class="cursor eqLogicAction logoSecondary" data-action="gotoPluginConf">
+      <div class="cursor eqLogicAction logoSecondary" data-action="gotoPluginConf">
       <i class="fas fa-wrench"></i>
-      <br>
-      <span>{{Configuration}}</span>
-    </div>
+    <br>
+    <span>{{Configuration}}</span>
+  </div>
   </div>
   <legend><i class="fas fa-table"></i> {{Mes équipements}}</legend>
 	   <input class="form-control" placeholder="{{Rechercher}}" id="in_searchEqlogic" />
 <div class="eqLogicThumbnailContainer">
     <?php
+// Affiche la liste des équipements
 foreach ($eqLogics as $eqLogic) {
 	$opacity = ($eqLogic->getIsEnable()) ? '' : 'disableCard';
 	echo '<div class="eqLogicDisplayCard cursor '.$opacity.'" data-eqLogic_id="' . $eqLogic->getId() . '">';
@@ -46,7 +47,7 @@ foreach ($eqLogics as $eqLogic) {
 		</div>
   <ul class="nav nav-tabs" role="tablist">
     <li role="presentation"><a href="#" class="eqLogicAction" aria-controls="home" role="tab" data-toggle="tab" data-action="returnToThumbnailDisplay"><i class="fa fa-arrow-circle-left"></i></a></li>
-    <li role="presentation" class="active"><a href="#eqlogictab" aria-controls="home" role="tab" data-toggle="tab"><i class="fa fa-tachometer"></i> {{Equipement}}</a></li>
+    <li role="presentation" class="active"><a href="#eqlogictab" aria-controls="home" role="tab" data-toggle="tab"><i class="fas fa-tachometer-alt"></i> {{Equipement}}</a></li>
     <li role="presentation"><a href="#commandtab" aria-controls="profile" role="tab" data-toggle="tab"><i class="fa fa-list-alt"></i> {{Commandes}}</a></li>
   </ul>
   <div class="tab-content" style="height:calc(100% - 50px);overflow:auto;overflow-x: hidden;">
@@ -125,5 +126,7 @@ foreach (jeeObject::all() as $object) {
 </div>
 </div>
 
+<!-- Inclusion du fichier javascript du plugin (dossier, nom_du_fichier, extension_du_fichier, nom_du_plugin) -->
 <?php include_file('desktop', 'SmartLife', 'js', 'SmartLife');?>
+<!-- Inclusion du fichier javascript du core - NE PAS MODIFIER NI SUPPRIMER -->
 <?php include_file('core', 'plugin.template', 'js');?>

@@ -1,6 +1,13 @@
 # Changelog
 
-### v0.7 - 27/06/2020
+### v1.0 - 02/11/2020
+
+- Fix return data null
+- Add object **Climate**
+- Librairie `GuzzleHttp` frozen version in 6.5
+
+
+### v0.7 - 27/06/2020
 
 - Add source example
 - Timeout configurable
