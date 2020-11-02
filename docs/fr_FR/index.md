@@ -10,6 +10,7 @@ Ce plugin permet de contrôler les objects connectés SmartLife ou Tuya.
 - Scènes
 - Interrupteurs pour volets roulants
 - Ampoules connectées
+- Climatiseur ***en version BETA***
 
 Voir le chapitre [Objets compatibles](#Objets%20compatibles) pour savoir si votre objet sera compatible.
 
@@ -69,6 +70,7 @@ Pour l'activer et choisir la fréquence de mise à jour, aller dans le *Moteur d
 - Scènes
 - Interrupteurs pour volets roulants
 - Ampoules connectées
+- Climatiseurs et certaines vannes thermostatiques
 
 
 ### Objets NON compatibles :

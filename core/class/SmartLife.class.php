@@ -373,7 +373,7 @@ class SmartLife extends eqLogic {
         $smartlifeDevice = new SmartLifeDevice($device);
         foreach ($cmdInfos as $info) {
             // FIXME : API tuya ne retourne plus le statut sur la couleur et la température
-            if ($info == 'TEMPERATURE' || $info == 'COLORHUE' || $info == 'SATURATION') continue;
+            if ($info == 'COLORHUE' || $info == 'SATURATION') continue;
             $value = $smartlifeDevice->getValueCommandInfo($info);
             log::add('SmartLife', 'debug', 'UPDATE '.$deviceID.' : checkAndUpdateCmd '.$info.' = '.$value);
             $this->checkAndUpdateCmd($info, $value);
