@@ -13,4 +13,4 @@ workspace/
 *.code-workspace
 
 # Test
-test.php
+*.test.php
