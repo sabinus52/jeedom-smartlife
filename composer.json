@@ -10,5 +10,8 @@
     ],
     "require": {
         "sabinus52/tuyacloudapi": "*"
-    }    
+    },
+    "config": {
+        "platform-check": false
+    }
 }

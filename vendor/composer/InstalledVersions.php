@@ -14,12 +14,12 @@ class InstalledVersions
 private static $installed = array (
   'root' => 
   array (
-    'pretty_version' => 'dev-develop',
-    'version' => 'dev-develop',
+    'pretty_version' => 'dev-master',
+    'version' => 'dev-master',
     'aliases' => 
     array (
     ),
-    'reference' => 'e2b5ced30746b4769d6084aa1d6b87582c710c41',
+    'reference' => '8c30d35de276af90d841edf0f4467910320c6cb3',
     'name' => 'jeedom/smartlife',
   ),
   'versions' => 
@@ -53,12 +53,12 @@ private static $installed = array (
     ),
     'jeedom/smartlife' => 
     array (
-      'pretty_version' => 'dev-develop',
-      'version' => 'dev-develop',
+      'pretty_version' => 'dev-master',
+      'version' => 'dev-master',
       'aliases' => 
       array (
       ),
-      'reference' => 'e2b5ced30746b4769d6084aa1d6b87582c710c41',
+      'reference' => '8c30d35de276af90d841edf0f4467910320c6cb3',
     ),
     'mexitek/phpcolors' => 
     array (
