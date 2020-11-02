@@ -1,3 +1,11 @@
+# Version 1.3 du 2 novembre 2020
+
+- **Ajout de l'objet de type *climatiseur*** valable aussi pour les thermostats et vannes thermostatiques. *Seul le changement de température est intégré pour le moment.*
+- Mise à jour des librairies
+- Plugin au norme de la version 4 de Jeedom
+- Fix si le Cloud Tuya retourne des données vides
+
+
 # Version 1.2 du 27 juin 2020
 
 - Ajout d'un paramètre timeout des requêtes au CLoud Tuya pour ceux qui ont un réseau lent ou mal configuré
