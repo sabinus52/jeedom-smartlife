@@ -1,3 +1,8 @@
+# Version 1.3.1 du 2 novembre 2020
+
+- Désactivation de la vérification de la plateforme de `composer`
+
+
 # Version 1.3 du 2 novembre 2020
 
 - **Ajout de l'objet de type *climatiseur*** valable aussi pour les thermostats et vannes thermostatiques. *Seul le changement de température est intégré pour le moment.*
