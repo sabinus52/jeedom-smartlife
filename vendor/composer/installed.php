@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '8c30d35de276af90d841edf0f4467910320c6cb3',
+    'reference' => '6caf9ab7a20e5a137f3fdc0681ec7fb8cfe138b7',
     'name' => 'jeedom/smartlife',
   ),
   'versions' => 
@@ -45,16 +45,16 @@
       'aliases' => 
       array (
       ),
-      'reference' => '8c30d35de276af90d841edf0f4467910320c6cb3',
+      'reference' => '6caf9ab7a20e5a137f3fdc0681ec7fb8cfe138b7',
     ),
     'mexitek/phpcolors' => 
     array (
-      'pretty_version' => 'v1.0.1',
-      'version' => '1.0.1.0',
+      'pretty_version' => '0.5',
+      'version' => '0.5.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '37a374e21649c25e348c838d70c7d3c76584d47e',
+      'reference' => '9d7cf28aab475a26b9f5be4f9dc4106736956678',
     ),
     'psr/http-message' => 
     array (
@@ -83,12 +83,12 @@
     ),
     'sabinus52/tuyacloudapi' => 
     array (
-      'pretty_version' => '1.0.0',
-      'version' => '1.0.0.0',
+      'pretty_version' => '1.0.1',
+      'version' => '1.0.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => '3e2db5a43374adc00be06671e3b48a4ec16a9ba5',
+      'reference' => 'b89832cb9f2f50aaf69adb5e88d2666681c836da',
     ),
   ),
 );
