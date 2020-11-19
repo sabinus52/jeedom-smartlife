@@ -1,3 +1,8 @@
+# Version 1.3.2 du 19 novembre 2020
+
+- Limite de la version de la dépendance de la librairie `PhpColors`
+
+
 # Version 1.3.1 du 2 novembre 2020
 
 - Désactivation de la vérification de la plateforme de `composer`
