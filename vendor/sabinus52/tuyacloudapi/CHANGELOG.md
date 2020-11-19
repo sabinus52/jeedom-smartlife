@@ -1,5 +1,10 @@
 # Changelog
 
+### v1.0.1 - 19/11/2020
+
+- Library `PhpColors` frozen version in 0.*
+
+
 ### v1.0 - 02/11/2020
 
 - Fix return data null

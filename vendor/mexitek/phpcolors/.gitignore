@@ -2,4 +2,3 @@
 *.*.bak
 vendor/*
 composer.lock
-.idea
