@@ -14,6 +14,7 @@ Ce plugin permet de contrôler les objects connectés SmartLife ou Tuya.
 
 Voir le chapitre [Objets compatibles](#Objets%20compatibles) pour savoir si votre objet sera compatible.
 
+<span style="color:orange">**Merci de lire les [notes importantes](#Notes%20importantes).**</span>
 
 
 # Configuration du plugin
@@ -57,6 +58,7 @@ Pour l'activer et choisir la fréquence de mise à jour, aller dans le *Moteur d
 
 **Notes importantes à ce sujet :**
 
+- ***Pour éviter trop de connexions au Cloud Tuya, il est préférable de ne pas descendre la fréquence en dessous des 5 min.***
 - L'état de l'objet est rafraichit après une action effectuée dans Jeedom.
 - Si une action est réalisée depuis l'application SmartLife ou Tuya sur son smartphone, alors l'état de l'objet **ne sera pas mis à jour** dans ce cas.
 
@@ -97,6 +99,7 @@ A partir de différents retours de chacun, certains objets de type `lampe` ont u
 
 > <span style="color:red">**ATTENTION**</span> : Depuis le 17 décembre 2019, le CLoud Tuya ne retourne plus le statut de la couleur pour les ampoules d'où l'erreur : `Param was not an HSL array`. C'est peut être un problème temporaire chez Tuya, j'ai donc désactivé la mise à jour de ce statut pour éviter les erreurs. L'action sur le changement de la couleur semble toujours fonctionner.
 
+> <span style="color:red">**ATTENTION**</span> : Depuis le 25 novembre 2020, le CLoud Tuya n'autorise qu'une ouverture de session toutes les minutes. Pour éviter une attente de 60s entre les commandes, **il est recommandé dans vos scénarios de ne pas exécuter les commandes en parallèle**.
 
 
 # Dépannage

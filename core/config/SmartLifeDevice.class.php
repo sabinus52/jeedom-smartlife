@@ -91,6 +91,7 @@ class SmartLifeDevice
                 $retry = 0;
             } catch (Throwable $th) {
                 log::add('SmartLife', 'debug', 'Erreur de connexion au cloud Tuya : '.$th->getMessage());
+                sleep(62);
                 if ($retry > 0) continue;
                 log::add('SmartLife', 'debug', $msgLog.' : '.print_r($th, true));
                 log::add('SmartLife', 'error', 'Erreur de connexion au cloud Tuya : '.$th->getMessage());
