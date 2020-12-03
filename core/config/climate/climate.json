@@ -63,7 +63,7 @@
             },
             {
                 "name": "Thermostat",
-                "logicalId": "SetTemperature",
+                "logicalId": "SetThermostat",
 				"type": "action",
 				"subType": "slider",
 				"generic_type" : "HEATING_OTHER",
