@@ -1,3 +1,11 @@
+# Version 1.3.3 du 3 décembre 2020
+
+> <span style="color:red">**ATTENTION**</span> : Depuis le 25 novembre 2020, le CLoud Tuya n'autorise qu'une ouverture de session toutes les minutes. Pour éviter une attente de 60s entre les commandes, **il est recommandé dans vos scénarios de ne pas exécuter les commandes en parallèle**. Pour la mise à jour des statuts dans la tâche planifiée, **il est préférable de ne pas descendre la fréquence en dessous des 5 min**.
+
+- Fix **temporairement** l'erreur du Cloud Tuya : *you cannot auth exceed once in 60 seconds*
+- Fix la fonction de changement de température pour les objets de type *climatiseur*
+
+
 # Version 1.3.2 du 19 novembre 2020
 
 - Limite de la version de la dépendance de la librairie `PhpColors`
