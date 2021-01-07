@@ -1,3 +1,13 @@
+# Version 1.3.4 du 7 janvier 2021
+
+> <span style="color:blue">**Information**</span> : Cette version corrige l'erreur bloquante "*you cannot auth exceed once in 60 seconds*" pour la plupart des utilisateurs.
+
+> <span style="color:red">**ATTENTION**</span> : Par contre, Tuya n'autorise la découverte des objets qu'**1 fois toutes les 5 minutes**. Du coup, la tâche planifiée de mise à jour des statuts **ne doit pas** descendre sous une fréquence de **6 min**.
+
+- Fix l'erreur du Cloud Tuya : *you cannot auth exceed once in 60 seconds*
+
+
+
 # Version 1.3.3 du 3 décembre 2020
 
 > <span style="color:red">**ATTENTION**</span> : Depuis le 25 novembre 2020, le CLoud Tuya n'autorise qu'une ouverture de session toutes les minutes. Pour éviter une attente de 60s entre les commandes, **il est recommandé dans vos scénarios de ne pas exécuter les commandes en parallèle**. Pour la mise à jour des statuts dans la tâche planifiée, **il est préférable de ne pas descendre la fréquence en dessous des 5 min**.
