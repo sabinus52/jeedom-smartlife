@@ -14,7 +14,8 @@
     "require": {
         "php": "^5.2||^7",
         "guzzlehttp/guzzle": "6.5.0",
-        "mexitek/phpcolors": "0.*"
+        "mexitek/phpcolors": "0.*",
+        "symfony/filesystem": "3.*"
     },
     "autoload": {
         "psr-4" : {
