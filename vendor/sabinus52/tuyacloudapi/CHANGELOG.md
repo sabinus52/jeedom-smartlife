@@ -1,5 +1,10 @@
 # Changelog
 
+### v1.1.0 - 07/01/2021
+
+- Save token in the file system
+
+
 ### v1.0.1 - 19/11/2020
 
 - Library `PhpColors` frozen version in 0.*
