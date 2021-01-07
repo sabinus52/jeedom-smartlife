@@ -26,6 +26,8 @@ use Sabinus\TuyaCloudApi\Session\Session;
 use Sabinus\TuyaCloudApi\Session\Platform;
 
 $session = new Session($argv[1], $argv[2], '33', Platform::SMART_LIFE, 5.0);
+// FACULTATIF : Change le dossier de stockage du jeton, par défaut dans sys_get_temp_dir()
+$session->setFolderStorePool('/tmp');
 
 // Initialize object API
 $api = new TuyaCloudApi($session);
@@ -44,12 +46,12 @@ $device->activate($api);
 
 
 /**
- * Prise : Méthodfe 1
+ * Prise : Méthode 1
  */
 $device = $api->getDeviceById('012345678901234598');
 // Allume la prise
 $rep = $api->sendEvent($device->getTurnOnEvent());
-// Mets à jour l'objet pour récupér le dernier état
+// Mets à jour l'objet pour récupérer le dernier état
 $device->update($api);
 print 'Etat : ' . $device->getState();
 
