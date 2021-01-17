@@ -12,10 +12,17 @@ namespace Sabinus\TuyaCloudApi\Session;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Uri;
 use GuzzleHttp\Psr7\UriResolver;
+use Sabinus\TuyaCloudApi\Tools\TokenPool;
 
 
 class Session
 {
+
+    /**
+     * Timeout des requêtes HTTP
+     */
+    const TIMEOUT = 2.0;
+
 
     /**
      * Utilisateur de connection
@@ -59,6 +66,20 @@ class Session
      */
     private $token;
 
+    /**
+     * Pool du jeton de connexion Tuya
+     * 
+     * @var TokenPool
+     */
+    private $tokenPool;
+
+    /**
+     * Valeur du timeout en secondes
+     * 
+     * @var Float
+     */
+    private $timeout;
+
 
     /**
      * Constructeur
@@ -67,14 +88,17 @@ class Session
      * @param String  $password : Mot de passe
      * @param Integer $country  : Code du pays
      * @param String  $biztype  : Type de la plateforme
+     * @param Float   $timeout  : Timeout des requêtes http en secondes
      */
-    public function __construct($username, $password, $country, $biztype = null)
+    public function __construct($username, $password, $country, $biztype = null, $timeout = self::TIMEOUT)
     {
         $this->username = $username;
         $this->password = $password;
         $this->countryCode = $country;
         $this->platform = new Platform($biztype);
         $this->token = new Token();
+        $this->tokenPool = new TokenPool();
+        $this->timeout = $timeout;
         $this->client = $this->_createClient();
     }
 
@@ -86,9 +110,21 @@ class Session
      */
     public function getToken()
     {
-        if ( !$this->token->has() ) {
+        $this->token = $this->tokenPool->fetchTokenFromCache();
+
+        if ( is_null($this->token) ) {
+            // Pas de token sauvegardé sur le FS
+            $this->token = new Token();
             $this->_createToken();
+        } else {
+            // Token sauvegardé trouvé mais vérifie que celui-ci ne soit pas vide et bien un objet Token
+            if ( ! $this->token instanceof Token || ! $this->token->has() ) {
+                $this->token = new Token();
+                $this->_createToken();
+            }
         }
+
+        // Rafrachit le jeton s'il n'est plus valide
         if ( !$this->token->isValid() ) {
             $this->_refreshToken();
         }
@@ -116,8 +152,8 @@ class Session
     {
         return new Client(array(
             'base_uri' => $this->platform->getBaseUrl(),
-            'connect_timeout' => 2.0,
-            'timeout' => 2.0,
+            'connect_timeout' => $this->timeout,
+            'timeout' => $this->timeout,
         ));
     }
 
@@ -140,8 +176,9 @@ class Session
         $response = json_decode((string) $response->getBody(), true);
         $this->checkResponse($response, 'Failed to get a token');
 
-        // Affecte le résultat dans le token
+        // Affecte le résultat dans le token et le sauvegarde
         $this->token->set($response);
+        $this->tokenPool->storeTokenInCache($this->token);
 
         // La valeur du token retoune la region pour indiquer sur quelle plateforme, on doit se connecter
         $this->platform->setRegionFromToken($this->token->get());
@@ -167,6 +204,7 @@ class Session
 
         // Affecte le résultat dans le token
         $this->token->set($response);
+        $this->tokenPool->storeTokenInCache($this->token);
     }
 
 
@@ -177,12 +215,26 @@ class Session
      * @param String $message : Message par défaut
      * @throws Exception
      */
-    public function checkResponse(array $response, $message = null)
+    public function checkResponse($response, $message = null)
     {
+        if ( empty($response) ) {
+            throw new \Exception($message.' : Datas return null');
+        }
         if ( isset($response['responseStatus']) && $response['responseStatus'] === 'error' ) {
             $message = isset($response['errorMsg']) ? $response['errorMsg'] : $message;
             throw new \Exception($message);
         }
+    }
+
+
+    /**
+     * Change le dossier de sauvegarde du token
+     * 
+     * @param String $folder
+     */
+    public function setFolderStorePool($folder)
+    {
+        $this->tokenPool->setFolder($folder);
     }
 
 }

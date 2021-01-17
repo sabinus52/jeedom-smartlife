@@ -43,9 +43,9 @@ class LightDevice extends Device implements DeviceInterface
      */
     public function getBrightness()
     {
-        /*if ($this->data['color_mode'] == 'colour')
+        if ($this->data['color_mode'] == 'colour')
             return $this->data['color']['brightness'];
-        else*/
+        else
             return round($this->data['brightness'] / 255 * 100);
     }
 

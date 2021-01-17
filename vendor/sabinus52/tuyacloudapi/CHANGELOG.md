@@ -1,5 +1,29 @@
 # Changelog
 
+### v1.1.0 - 07/01/2021
+
+- Save token in the file system
+
+
+### v1.0.1 - 19/11/2020
+
+- Library `PhpColors` frozen version in 0.*
+
+
+### v1.0 - 02/11/2020
+
+- Fix return data null
+- Add object **Climate**
+- Librairie `GuzzleHttp` frozen version in 6.5
+
+
+### v0.7 - 27/06/2020
+
+- Add source example
+- Timeout configurable
+- Fix
+
+
 ### v0.6.1 - 24/01/2020
 
 - Fix compatibility
