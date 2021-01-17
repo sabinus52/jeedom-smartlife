@@ -58,6 +58,7 @@ Pour l'activer et choisir la fréquence de mise à jour, aller dans le *Moteur d
 
 **Notes importantes à ce sujet :**
 
+- ***Le Cloud Tuya interdit un trop grand nombre de connexion, il est <span style="color:red">**IMPERATIF et OBLIGATOIRE**</span> de ne pas descendre la fréquence en dessous des <span style="color:orange">6 min</span>.***
 - L'état de l'objet est rafraichit après une action effectuée dans Jeedom.
 - Si une action est réalisée depuis l'application SmartLife ou Tuya sur son smartphone, alors l'état de l'objet **ne sera pas mis à jour** dans ce cas.
 
