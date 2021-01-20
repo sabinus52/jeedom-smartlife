@@ -2,6 +2,10 @@
  Il sera necessaire de migrer vers la version 4 pour profiter des nouvelles fonctionnalités et des corrections.
 
 
+# Version 1.1.4 du 20 janvier 2021
+
+- Fix check composer
+
 # Version 1.1.3 du 17 janvier 2021
 
 > <span style="color:blue">**Information**</span> : Cette version corrige l'erreur bloquante "*you cannot auth exceed once in 60 seconds*" pour la plupart des utilisateurs.

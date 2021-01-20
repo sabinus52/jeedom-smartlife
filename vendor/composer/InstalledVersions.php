@@ -19,7 +19,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '688463bbbb61d591223c74a0d31398fd0ce1a39d',
+    'reference' => '9b90b176631c2dbdc31eee7db29c531a9487584d',
     'name' => 'jeedom/smartlife',
   ),
   'versions' => 
@@ -58,7 +58,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '688463bbbb61d591223c74a0d31398fd0ce1a39d',
+      'reference' => '9b90b176631c2dbdc31eee7db29c531a9487584d',
     ),
     'mexitek/phpcolors' => 
     array (
