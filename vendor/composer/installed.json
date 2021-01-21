@@ -359,17 +359,17 @@
         },
         {
             "name": "sabinus52/tuyacloudapi",
-            "version": "1.1.0",
-            "version_normalized": "1.1.0.0",
+            "version": "1.2.0",
+            "version_normalized": "1.2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sabinus52/TuyaCloudApi.git",
-                "reference": "f2e8b75568de46d1c39879c658ee7dff05a5f503"
+                "reference": "f3b6c15027a5eb5586ae9f33ebaa4aded599c9af"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sabinus52/TuyaCloudApi/zipball/f2e8b75568de46d1c39879c658ee7dff05a5f503",
-                "reference": "f2e8b75568de46d1c39879c658ee7dff05a5f503",
+                "url": "https://api.github.com/repos/sabinus52/TuyaCloudApi/zipball/f3b6c15027a5eb5586ae9f33ebaa4aded599c9af",
+                "reference": "f3b6c15027a5eb5586ae9f33ebaa4aded599c9af",
                 "shasum": ""
             },
             "require": {
@@ -378,7 +378,7 @@
                 "php": "^5.2||^7",
                 "symfony/filesystem": "3.*"
             },
-            "time": "2021-01-07T20:20:06+00:00",
+            "time": "2021-01-21T19:13:59+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -405,7 +405,7 @@
             ],
             "support": {
                 "issues": "https://github.com/sabinus52/TuyaCloudApi/issues",
-                "source": "https://github.com/sabinus52/TuyaCloudApi/tree/1.1.0"
+                "source": "https://github.com/sabinus52/TuyaCloudApi/tree/1.2.0"
             },
             "install-path": "../sabinus52/tuyacloudapi"
         },
