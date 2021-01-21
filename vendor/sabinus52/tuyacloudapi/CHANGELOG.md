@@ -1,5 +1,10 @@
 # Changelog
 
+### v1.2.0 - 21/01/2021
+
+- Thermostat (x10)
+
+
 ### v1.1.0 - 07/01/2021
 
 - Save token in the file system

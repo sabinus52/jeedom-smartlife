@@ -1,3 +1,8 @@
+# Version 1.3.5 du 21 janvier 2021
+
+- Fix le problème des climatiseurs qui ont une température avec un multiplicateur de 10
+
+
 # Version 1.3.4 du 7 janvier 2021
 
 > <span style="color:blue">**Information**</span> : Cette version corrige l'erreur bloquante "*you cannot auth exceed once in 60 seconds*" pour la plupart des utilisateurs.
@@ -5,7 +10,6 @@
 > <span style="color:red">**ATTENTION**</span> : Par contre, Tuya n'autorise la découverte des objets qu'**1 fois toutes les 5 minutes**. Du coup, la tâche planifiée de mise à jour des statuts **ne doit pas** descendre sous une fréquence de **6 min**.
 
 - Fix l'erreur du Cloud Tuya : *you cannot auth exceed once in 60 seconds*
-
 
 
 # Version 1.3.3 du 3 décembre 2020
