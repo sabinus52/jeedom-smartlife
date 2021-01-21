@@ -57,10 +57,7 @@ class ClimateDevice extends Device implements DeviceInterface
      */
     public function getThermostat()
     {
-        if ( $this->isUnitFahrenheit() )
-            return $this->convertFahrenheitToCelsius($this->data['temperature']);
-        else
-            return $this->data['temperature'];
+        return $this->parseTemperature($this->data['temperature']);
     }
 
 
@@ -72,10 +69,7 @@ class ClimateDevice extends Device implements DeviceInterface
     public function getTemperature()
     {
         if ( ! isset($this->data['current_temperature']) ) return null;
-        if ( $this->isUnitFahrenheit() )
-            return $this->convertFahrenheitToCelsius($this->data['current_temperature']);
-        else
-            return $this->data['current_temperature'];
+        return $this->parseTemperature($this->data['current_temperature']);
     }
 
 
@@ -114,10 +108,7 @@ class ClimateDevice extends Device implements DeviceInterface
      */
     public function getMinTemperature()
     {
-        if ( $this->isUnitFahrenheit() )
-            return $this->convertFahrenheitToCelsius($this->data['min_temper']);
-        else
-            return $this->data['min_temper'];
+        return $this->parseTemperature($this->data['min_temper']);
     }
 
 
@@ -128,10 +119,7 @@ class ClimateDevice extends Device implements DeviceInterface
      */
     public function getMaxTemperature()
     {
-        if ( $this->isUnitFahrenheit() )
-            return $this->convertFahrenheitToCelsius($this->data['max_temper']);
-        else
-            return $this->data['max_temper'];
+        return $this->parseTemperature($this->data['max_temper']);
     }
 
 
@@ -142,6 +130,7 @@ class ClimateDevice extends Device implements DeviceInterface
      */
     public function getUnitTemperature()
     {
+        if ( ! isset($this->data['temp_unit'] ) ) return self::CELSIUS;
         return $this->data['temp_unit'];
     }
 
@@ -242,8 +231,7 @@ class ClimateDevice extends Device implements DeviceInterface
      */
     public function getSetThermostatEvent($value)
     {
-        $temp = ( $this->isUnitFahrenheit() ) ? $value : $this->convertCelsiusToFahrenheit($value);
-        return new DeviceEvent($this, 'temperatureSet', array('value' => $temp));
+        return new DeviceEvent($this, 'temperatureSet', array('value' => $this->generateThermostat($value)));
     }
 
     /**
@@ -255,8 +243,7 @@ class ClimateDevice extends Device implements DeviceInterface
      */
     public function setThermostat(TuyaCloudApi $api, $value)
     {
-        $temp = ( $this->isUnitFahrenheit() ) ? $value : $this->convertCelsiusToFahrenheit($value);
-        return $api->controlDevice($this->id, 'temperatureSet', array('value' => $temp));
+        return $api->controlDevice($this->id, 'temperatureSet', array('value' => $this->generateThermostat($value)));
     }
 
 
@@ -305,6 +292,37 @@ class ClimateDevice extends Device implements DeviceInterface
     public function setMode(TuyaCloudApi $api, $value)
     {
         return $api->controlDevice($this->id, 'modeSet', array('value' => $value));
+    }
+
+
+    /**
+     * Parse le retour de la température en fonction de son unité et de sa valeur
+     * 
+     * @param Float $value : Température
+     * @return Float
+     */
+    private function parseTemperature($value)
+    {
+        if ( $this->isUnitFahrenheit() )
+            return $this->convertFahrenheitToCelsius($value);
+        elseif ( $value >= 65 )
+            return round($value / 10, 1);
+        else
+            return $value;
+    }
+
+
+    /**
+     * Génération de la température duu Thermostat en fonction de son unité
+     */
+    private function generateThermostat($value)
+    {
+        if ( $this->isUnitFahrenheit() ) 
+            return $this->convertCelsiusToFahrenheit($value);
+        elseif ( $this->data['temperature'] >= 65 )
+            return $value * 10;
+        else
+            return $value;
     }
 
 
