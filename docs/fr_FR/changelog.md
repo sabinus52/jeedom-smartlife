@@ -6,6 +6,14 @@
 
 - Fix check composer
 
+Pour ceux qui sont bloqués avec une version trop ancienne de PHP, voici la procédure pour désactiver cette vérification :
+1. Se connecter en ssh sur la box
+2. Editer le fichier `/var/www/html/plugins/SmartLife/vendor/composer/autoload_real.php`
+3. Mettre en commentaire la ligne **25** (`// require __DIR__ . '/platform_check.php';`)
+4. Sauvegarder la modification
+5. Rafraîchir la page pour vérifier que tout est ok
+6. Puis mettre à jour le plugin *SmartLife*
+
 # Version 1.1.3 du 17 janvier 2021
 
 > <span style="color:blue">**Information**</span> : Cette version corrige l'erreur bloquante "*you cannot auth exceed once in 60 seconds*" pour la plupart des utilisateurs.
