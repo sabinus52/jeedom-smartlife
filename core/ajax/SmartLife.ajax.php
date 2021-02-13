@@ -37,7 +37,7 @@ try {
     }
     
     if (init('action') == 'discover') {
-		SmartLife::discoverDevices(init('mode')); // TODO get error message
+		SmartLife::discoverDevices(); // TODO get error message
 		if ($res === null)
             ajax::success();
         else
