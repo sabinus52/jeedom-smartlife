@@ -23,6 +23,7 @@ require_once __DIR__ . '/../config/SmartLifeDevice.class.php';
 
 use Sabinus\TuyaCloudApi\TuyaCloudApi;
 use Sabinus\TuyaCloudApi\Session\Session;
+use Sabinus\TuyaCloudApi\Request\Request;
 use Sabinus\TuyaCloudApi\Device\DeviceFactory;
 use Sabinus\TuyaCloudApi\Device\Device;
 use Sabinus\TuyaCloudApi\Tools\Color;
@@ -31,8 +32,13 @@ use Sabinus\TuyaCloudApi\Tools\Color;
 class SmartLife extends eqLogic {
     /*     * *************************Attributs****************************** */
 
-    static public $api = null;
+    static private $sessionCloudTuya = null;
 
+    static private $codeQueryCloudTuya = [ 
+        Request::RETURN_SUCCESS => 'OK',
+        Request::RETURN_INCACHE => 'INCACHE',
+        Request::RETURN_ERROR   => 'ERROR'
+    ];
 
     /*     * ***********************Methode static*************************** */
 
@@ -41,17 +47,19 @@ class SmartLife extends eqLogic {
      * 
      * @return TuyaCloudApi
      */
-    static public function createTuyaCloudAPI()
+    static public function getSessionTuya()
     {
-        $user = config::byKey('user', 'SmartLife');
-        $password = config::byKey('password', 'SmartLife');
-        $country = config::byKey('country', 'SmartLife');
-        $platform = config::byKey('platform', 'SmartLife');
-        $timeout = (config::byKey('timeout', 'SmartLife') != '') ? config::byKey('timeout', 'SmartLife') : '5';
+        if ( self::$sessionCloudTuya == null ) {
+            $user = config::byKey('user', 'SmartLife');
+            $password = config::byKey('password', 'SmartLife');
+            $country = config::byKey('country', 'SmartLife');
+            $platform = config::byKey('platform', 'SmartLife');
+            $timeout = (config::byKey('timeout', 'SmartLife') != '') ? config::byKey('timeout', 'SmartLife') : '5';
 
-        log::add('SmartLife', 'debug', "CONNECTION : $user ($country) $platform - $timeout s");
-        if ( self::$api == null ) self::$api = new TuyaCloudApi(new Session($user, $password, $country, $platform, $timeout));
-        return self::$api;
+            log::add('SmartLife', 'debug', "NEW SESSION : $user ($country) $platform - $timeout s");
+            self::$sessionCloudTuya = new Session($user, $password, $country, $platform, $timeout);
+        }
+        return self::$sessionCloudTuya;
     }
 
 
@@ -63,10 +71,14 @@ class SmartLife extends eqLogic {
     static public function checkConnection()
     {
         log::add('SmartLife', 'debug', 'CHECK CONNECTION : Start');
-        $api = SmartLife::createTuyaCloudAPI();
+        $session = SmartLife::getSessionTuya();
+        $api = new TuyaCloudApi($session);
         try {
-            $devices = $api->discoverDevices();
+            $result = $api->checkConnection();
         } catch (Throwable $th) {
+            $result = false;
+        }
+        if ( !$result ) {
             log::add('SmartLife', 'error', 'Erreur de connexion au cloud Tuya : '.$th->getMessage());
             log::add('SmartLife', 'debug', 'CHECK CONNECTION : '.print_r($th, true));
             log::add('SmartLife', 'debug', 'CHECK CONNECTION : End');
@@ -81,20 +93,12 @@ class SmartLife extends eqLogic {
     /**
      * Recherche les équipements
      * 
-     * @param String $mode = Mode de recherche (scantuya | fetch)
      * @return Array of Device
      */
     static public function discoverDevices($mode = '')
     {
         log::add('SmartLife', 'debug', 'SEARCH DEVICE : Start');
         $api = SmartLife::createTuyaCloudAPI();
-
-        // Récupération des équipements déjà existants
-        $devicesExisting = array();
-        foreach (self::byType('SmartLife') as $eqLogic) {
-            $devicesExisting[$eqLogic->getId()] = $eqLogic->getLogicalId();
-            log::add('SmartLife', 'debug', 'SEARCH DEVICE : Objet déjà existant -> '.$eqLogic->getName().' ('.$eqLogic->getLogicalId().')');
-        }
 
         // Recherche des équipements depuis le Cloud
         $result = array();
@@ -149,31 +153,6 @@ class SmartLife extends eqLogic {
     }
 
 
-    /**
-     * Retourne la liste des equipements par type pour la listebox
-     * 
-     * @return Array
-     */
-    static public function getDevicesByType()
-    {
-        // Récupération des équipements depuis la configuration Jeedom
-        $devices = config::byKey('devices', 'SmartLife');
-        if (empty($devices)) {
-            $devices = self::discoverDevices('fetch');
-        } else {
-            $devices = unserialize($devices);
-        }
-
-        // Regroupement par type
-        $result = array();
-        foreach ($devices as $id => $device) {
-            $result[$device['type']][$id] = $device;
-        }
-        return $result;
-    }
-
-
-
     /*
      * Fonction exécutée automatiquement toutes les minutes par Jeedom
       public static function cron() {
@@ -217,7 +196,7 @@ class SmartLife extends eqLogic {
             return null;
         }
 
-		foreach (self::byType('SmartLife') as $eqLogic) {
+        foreach (self::byType('SmartLife') as $eqLogic) {
             $deviceID = $eqLogic->getLogicalId();
             $device = $api->getDeviceById($deviceID);
             if ($device == null) {
@@ -373,8 +352,6 @@ class SmartLife extends eqLogic {
         $cmdInfos = unserialize($this->getConfiguration('deviceCmdInfos'));
         $smartlifeDevice = new SmartLifeDevice($device);
         foreach ($cmdInfos as $info) {
-            // FIXME : API tuya ne retourne plus le statut sur la couleur et la température
-            if ($info == 'COLORHUE' || $info == 'SATURATION') continue;
             $value = $smartlifeDevice->getValueCommandInfo($info);
             log::add('SmartLife', 'debug', 'UPDATE '.$deviceID.' : checkAndUpdateCmd '.$info.' = '.$value);
             $this->checkAndUpdateCmd($info, $value);
