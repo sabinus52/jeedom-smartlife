@@ -26,7 +26,6 @@ require_once __DIR__ . '/../config/SmartLifeDevice.class.php';
 
 use Sabinus\TuyaCloudApi\TuyaCloudApi;
 use Sabinus\TuyaCloudApi\Session\Session;
-use Sabinus\TuyaCloudApi\Request\Request;
 use Sabinus\TuyaCloudApi\Device\DeviceFactory;
 use Sabinus\TuyaCloudApi\Device\Device;
 use Sabinus\TuyaCloudApi\Tools\Color;
@@ -36,12 +35,6 @@ class SmartLife extends eqLogic {
     /*     * *************************Attributs****************************** */
 
     static private $sessionCloudTuya = null;
-
-    static private $codeQueryCloudTuya = [ 
-        Request::RETURN_SUCCESS => 'OK',
-        Request::RETURN_INCACHE => 'INCACHE',
-        Request::RETURN_ERROR   => 'ERROR'
-    ];
 
 
     /**
@@ -116,6 +109,7 @@ class SmartLife extends eqLogic {
         try {
             $result = $api->discoverDevices();
             $devices = $api->getAllDevices();
+            SmartLifeLog::debug('DISCOVERY', 'Découverte de '.count($devices).' devices', $result);
         } catch (Throwable $th) {
             log::add('SmartLife', 'error', 'Erreur de connexion au cloud Tuya : '.$th->getMessage());
             log::add('SmartLife', 'debug', 'DISCOVERY : '.print_r($th, true));
@@ -173,39 +167,48 @@ class SmartLife extends eqLogic {
      */
     public static function updateAll()
     {
-        log::add('SmartLife', 'debug', 'UPDATE : Start');
+        SmartLifeLog::begin('UPDATE');
     
-        $api = SmartLife::createTuyaCloudAPI();
+        $session = SmartLife::getSessionTuya();
+        $api = new TuyaCloudApi($session);
         try {
             $result = $api->discoverDevices();
-            log::add('SmartLife', 'debug', 'UPDATE : Découverte de '.count($result).' devices');
+            SmartLifeLog::debug('UPDATE', 'Découverte de '.count($api->getAllDevices()).' devices', $result);
         } catch (Throwable $th) {
-            log::add('SmartLife', 'error', 'UPDATE : Erreur de connexion au cloud Tuya : '.$th->getMessage());
-            log::add('SmartLife', 'debug', 'UPDATE : '.print_r($th, true));
-            log::add('SmartLife', 'debug', 'UPDATE : End');
+            log::add('SmartLife', 'error', 'UPDATE ALL : Erreur de connexion au cloud Tuya : '.$th->getMessage());
+            log::add('SmartLife', 'debug', 'UPDATE ALL : '.print_r($th, true));
+            SmartLifeLog::end('UPDATE');
             return null;
         }
 
+        //  Pour chaque objet enregistré dans Jeedom
         foreach (self::byType('SmartLife') as $eqLogic) {
+            // Récupère l'objet depuis la découverte
             $deviceID = $eqLogic->getLogicalId();
             $device = $api->getDeviceById($deviceID);
             if ($device == null) {
-                log::add('SmartLife', 'debug', 'UPDATE '.$deviceID.' : '.$eqLogic->getName().' non trouvé lors de la récupération des status');
+                $device = DeviceFactory::createDeviceFromId($session, $eqLogic->getLogicalId(), $eqLogic->getConfiguration('tuyaType'));
+                SmartLifeLog::header('UPDATE', $device, 'Non trouvé lors de la découverte');
                 continue;
             }
-            if ($device->getType() == DeviceFactory::TUYA_SCENE) continue;
-            log::add('SmartLife', 'debug', 'UPDATE '.$deviceID.' : '.$eqLogic->getName());
+            SmartLifeLog::header('UPDATE', $device);
+            //  Pas de mise à jour pour les scènes
+            if ($device->getType() == DeviceFactory::TUYA_SCENE) {
+                SmartLifeLog::debug('UPDATE', $device, 'type=scene -> PAS DE MISE A JOUR');
+                continue;
+            }
+            // Pas de mise à jour pour les objets non activés
 			if ($eqLogic->getIsEnable() == 0) {
-                log::add('SmartLife', 'debug', 'UPDATE '.$deviceID.' : Non activé -> PAS DE MISE à JOUR');
+                SmartLifeLog::debug('UPDATE', $device, 'enable=false -> PAS DE MISE A JOUR');
 				continue;
             }
-            log::add('SmartLife', 'debug', 'UPDATE '.$deviceID.' : '.print_r($device, true));
 
+            // Mise à jour de l'eqLogic
             $eqLogic->update($device);
             
         }
     
-        log::add('SmartLife', 'debug', 'UPDATE : End');
+        SmartLifeLog::end('UPDATE');
     }
 
 
@@ -338,15 +341,26 @@ class SmartLife extends eqLogic {
      */
     private function update(Device $device)
     {
-        $deviceID = $this->getLogicalId();
-        $cmdInfos = unserialize($this->getConfiguration('deviceCmdInfos'));
         $smartlifeDevice = new SmartLifeDevice($device);
-        foreach ($cmdInfos as $info) {
-            $value = $smartlifeDevice->getValueCommandInfo($info);
-            log::add('SmartLife', 'debug', 'UPDATE '.$deviceID.' : checkAndUpdateCmd '.$info.' = '.$value);
-            $this->checkAndUpdateCmd($info, $value);
+
+        // Récupère les commandes de type "info"
+        $cmdInfos = cmd::byEqLogicId($this->getId(), 'info');
+        foreach ($cmdInfos as $cmd) {
+
+            // Récupère la valeur
+            $value = $smartlifeDevice->getValueCommandInfo( $cmd->getLogicalId() );
+
+            // Mise à jour de la commande
+            if ( is_null($value) ) {
+                $message = '(non mis à jour)';
+            } else {
+                $this->checkAndUpdateCmd($cmd->getLogicalId(), $value);
+                $message = '= '.$value;
+            }
+            SmartLifeLog::debug('UPDATE', $device, $cmd->getLogicalId().' '.$message);
         }
-        $this->setConfiguration('device', serialize($device));
+
+        $this->setConfiguration('tuyaData', serialize($device->getData()));
         $this->save(true);
     }
 
