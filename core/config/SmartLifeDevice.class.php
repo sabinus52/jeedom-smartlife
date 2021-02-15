@@ -37,31 +37,24 @@ class SmartLifeDevice
      * @param Array $params : Paramètres de la fonction $functionName
      * @param String $msgLog : Message de log en rapport à la fonction
      */
-    public function callFunctionEvent($functionName, array $params, $msgLog)
+    public function callFunctionEvent($functionName, array $params, $actionLog)
     {
         $retry = 3;
         while ($retry > 0) {
             $retry--;
-            log::add('SmartLife', 'debug', $msgLog.' : tentative '.(3-$retry));
+            SmartLifeLog::debug($actionLog, $this->device, 'Tentative '.(3-$retry).' - '.$functionName.'('.implode(',', $params).')');
             try {
-                switch ( count($params) ) {
-                    case 3 : $return = $this->device->$functionName($params[0], $params[1], $params[2]); break;
-                    case 2 : $return = $this->device->$functionName($params[0], $params[1]); break;
-                    case 1 : $return = $this->device->$functionName($params[0]); break;
-                    case 0 : $return = $this->device->$functionName(); break;
-                }
+                $result = call_user_func_array( array($this->device, $functionName), $params );
                 $retry = 0;
             } catch (Throwable $th) {
                 log::add('SmartLife', 'debug', 'Erreur de connexion au cloud Tuya : '.$th->getMessage());
-                sleep(62);
                 if ($retry > 0) continue;
                 log::add('SmartLife', 'debug', $msgLog.' : '.print_r($th, true));
                 log::add('SmartLife', 'error', 'Erreur de connexion au cloud Tuya : '.$th->getMessage());
                 throw new Exception(__('Erreur de connexion au cloud Tuya : '.$th->getMessage(),__FILE__));
             }
         }
-        log::add('SmartLife', 'debug', ' $return1 = '.$return);
-        return $return;
+        return $result;
     }
 
 

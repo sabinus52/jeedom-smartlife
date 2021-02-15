@@ -370,16 +370,7 @@ class SmartLife extends eqLogic {
      */
     public function refresh()
     {
-        if ( !SmartLife::$api) SmartLife::$api = SmartLife::createTuyaCloudAPI();
-        $device = unserialize($this->getConfiguration('tuya'));
-        log::add('SmartLife', 'info', 'REFRESH '.$this->getLogicalId().' : '.$this->getName());
-
-        // Mise à jour avec 3 tentatives
-        $smartlifeDevice = new SmartLifeDevice($device);
-        $smartlifeDevice->callFunctionEvent(SmartLife::$api, 'update', array(), 'REFRESH');
-        log::add('SmartLife', 'debug', 'REFRESH '.$this->getLogicalId().' : '.print_r($device, true));
-
-        $this->update($device);
+        $this->sendAction('update');
     }
 
 
@@ -391,18 +382,19 @@ class SmartLife extends eqLogic {
      */
     public function sendAction($action, array $params = array())
     {
-        if ( !SmartLife::$api) SmartLife::$api = SmartLife::createTuyaCloudAPI();
-        $device = unserialize($this->getConfiguration('tuya'));
-        log::add('SmartLife', 'debug', 'SEND EVENT '.$this->getLogicalId().' : '.$this->getName());
-        log::add('SmartLife', 'debug', 'SEND EVENT '.$this->getLogicalId().' : '.print_r($device, true));
-        log::add('SmartLife', 'info',  'SEND EVENT '.$this->getLogicalId().' : '.$action.'('.implode(',', $params).')');
-
+        $session = SmartLife::getSessionTuya();
+        $device = DeviceFactory::createDeviceFromId($session, $this->getLogicalId(), $this->getConfiguration('tuyaType'), $this->getConfiguration('tuyaName'));
+        $device->setData( $this->getConfiguration('tuyaData') );
+        SmartLifeLog::header('SEND EVENT', $device);
+        
         // Exécution ce l'énènement de l'action
         $smartlifeDevice = new SmartLifeDevice($device);
-        $smartlifeDevice->callFunctionEvent(SmartLife::$api, $action, $params, 'SEND EVENT');
+        $result = $smartlifeDevice->callFunctionEvent($action, $params, 'SEND EVENT');
+        SmartLifeLog::debug('SEND EVENT', $device, $action.'('.implode(',', $params).')', $result);
+        SmartLifeLog::debugData('SEND EVENT', $device);
 
-        sleep(3);
-        $this->refresh();
+        // Mise à jour des infos
+        $this->update($device);
     }
 
 }
