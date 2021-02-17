@@ -172,10 +172,38 @@ class SmartLifeDiscovery
         foreach ($commands as $command) {
             $command['order'] = $order++;
             // Si pas de support pour cette commande, on ne la crée pas
-            //if ( ! $this->setCommandSpecific($command) ) continue; // TODO
+            if ( ! $this->setCommandSpecific($command) ) continue;
             $this->eqLogic->addCommand($command, $this->device);
             SmartLifeLog::debug('DISCOVERY', $this->device, 'SET command  = '.$command['logicalId']);
         }
     }
-    
+
+
+    /**
+     * Ajuste la configuration de la commande en fonction du type de l'objet
+     *
+     * @param Array $command : Configuration de la commande
+     **/
+    public function setCommandSpecific(array & $command)
+    {
+        switch ($this->device->getType()) {
+            case DeviceFactory::TUYA_CLIMATE :
+                if ( $command['logicalId'] == 'TEMPERATURE' || $command['logicalId'] == 'THERMOSTAT' ) {
+                    // Affecte les valeurs min et max en fonction des valeurs du climatiseur
+                    $command['configuration']['minValue'] = $this->device->getMinTemperature();
+                    $command['configuration']['maxValue'] = $this->device->getMaxTemperature();
+                }
+                if ( $command['logicalId'] == 'TEMPERATURE' && ! $this->device->getSupportTemperature() ) return false;
+                break;
+            case DeviceFactory::TUYA_LIGHT :
+                // Si pas de support de la couleur
+                if ( $command['logicalId'] == 'COLORHUE' ) return false;
+                if ( $command['logicalId'] == 'SetColor' && ! $this->device->getSupportColor() ) return false;
+                // Si pas de support de la température
+                if ( $command['logicalId'] == 'TEMPERATURE' && ! $this->device->getSupportTemperature() ) return false;
+                if ( $command['logicalId'] == 'SetTemperature' && ! $this->device->getSupportTemperature() ) return false;
+        }
+        return true;
+    }
+
 }
