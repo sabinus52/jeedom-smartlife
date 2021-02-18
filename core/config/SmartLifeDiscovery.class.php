@@ -52,13 +52,13 @@ class SmartLifeDiscovery
     {
         // Vérification de l'équipement
         if ( empty($this->device) || empty($this->device->getId()) || empty($this->device->getName()) || empty($this->device->getType()) ) {
-            SmartLifeLog::debug('DISCOVERY', 'Information manquante pour ajouter l\'équipement : '.$this->device);
+            SmartLifeLog::info('DISCOVERY', 'Information manquante pour ajouter l\'équipement : '.$this->device);
             return;
         }
 
         // Si objet non reconnu
         if ( $this->isUnknow() ) {
-            SmartLifeLog::debug('DISCOVERY', 'Objet non pris en compte '.$this->device);
+            SmartLifeLog::info('DISCOVERY', 'Objet non pris en compte '.$this->device);
             return;
         }
 
@@ -106,14 +106,14 @@ class SmartLifeDiscovery
         // Créer le nouvel équipement s'il n'existe pas
 		if ( !is_object($this->eqLogic) ) {
             $this->newSmartLifeEqLogic();
-            SmartLifeLog::debug('DISCOVERY', $this->device, '!!! NOUVEL objet trouvé !!!');
+            SmartLifeLog::info('DISCOVERY', $this->device, '!!! NOUVEL objet trouvé !!!');
         }
         $this->saveEqLogic();
 
         // Création des commandes
         $this->createCommands($configCmdDevice->getCommands());
 
-        SmartLifeLog::debug('DISCOVERY', $this->device, 'Objet ajouté avec succès');
+        SmartLifeLog::info('DISCOVERY', $this->device, 'Objet ajouté avec succès');
         return $this->isNew;
     }
 

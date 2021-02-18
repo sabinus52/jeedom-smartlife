@@ -73,7 +73,7 @@ class SmartLife extends eqLogic {
      */
     static public function checkConnection()
     {
-        log::add('SmartLife', 'debug', 'CHECK CONNECTION : Start');
+        SmartLifeLog::begin('CHECK CONNECTION');
         $session = SmartLife::getSessionTuya();
         $api = new TuyaCloudApi($session);
         try {
@@ -82,13 +82,12 @@ class SmartLife extends eqLogic {
             $result = false;
         }
         if ( !$result ) {
-            log::add('SmartLife', 'error', 'Erreur de connexion au cloud Tuya : '.$th->getMessage());
-            log::add('SmartLife', 'debug', 'CHECK CONNECTION : '.print_r($th, true));
-            log::add('SmartLife', 'debug', 'CHECK CONNECTION : End');
+            SmartLifeLog::exception('CHECK CONNECTION', $th);
+            SmartLifeLog::end('CHECK CONNECTION');
             throw new Exception(__($th->getMessage(),__FILE__));
         }
-        log::add('SmartLife', 'debug', 'CHECK CONNECTION : OK');
-        log::add('SmartLife', 'debug', 'CHECK CONNECTION : End');
+        SmartLifeLog::info('CHECK CONNECTION', ($result) ? 'OK' : 'ERROR');
+        SmartLifeLog::end('CHECK CONNECTION');
         return true;
     }
 
@@ -100,7 +99,7 @@ class SmartLife extends eqLogic {
      */
     static public function discoverDevices()
     {
-        SmartLifeLog::debug('DISCOVERY', '=== BEGIN ===================================================');
+        SmartLifeLog::begin('DISCOVERY');
         $session = SmartLife::getSessionTuya();
         $api = new TuyaCloudApi($session);
 
@@ -109,11 +108,11 @@ class SmartLife extends eqLogic {
         try {
             $result = $api->discoverDevices();
             $devices = $api->getAllDevices();
-            SmartLifeLog::debug('DISCOVERY', 'Découverte de '.count($devices).' devices', $result);
+            SmartLifeLog::debug('DISCOVERY', 'TuyaCloudApi::discoverDevices()', $result);
+            SmartLifeLog::info('DISCOVERY', 'Découverte de '.count($devices).' devices');
         } catch (Throwable $th) {
-            log::add('SmartLife', 'error', 'Erreur de connexion au cloud Tuya : '.$th->getMessage());
-            log::add('SmartLife', 'debug', 'DISCOVERY : '.print_r($th, true));
-            log::add('SmartLife', 'debug', 'DISCOVERY : End');
+            SmartLifeLog::exception('DISCOVERY', $th);
+            SmartLifeLog::end('DISCOVERY');
             event::add('jeedom::alert', array(
 				'level' => 'danger',
 				'page' => 'SmartLife',
@@ -121,6 +120,8 @@ class SmartLife extends eqLogic {
 			));
             return null;
         }
+
+        // Pour chaque objets trouvés
         foreach ($devices as $device) {
 
             $discover = new SmartLifeDiscovery($device);
@@ -131,7 +132,7 @@ class SmartLife extends eqLogic {
 
         // Sauvegarde la liste dans la configuration Jeedom
         config::save('devices', serialize($result), 'SmartLife');
-        SmartLifeLog::debug('DISCOVERY', '=== END =====================================================');
+        SmartLifeLog::end('DISCOVERY');
 
         return $result;
     }
@@ -173,10 +174,10 @@ class SmartLife extends eqLogic {
         $api = new TuyaCloudApi($session);
         try {
             $result = $api->discoverDevices();
-            SmartLifeLog::debug('UPDATE', 'Découverte de '.count($api->getAllDevices()).' devices', $result);
+            SmartLifeLog::debug('DISCOVERY', 'TuyaCloudApi::discoverDevices()', $result);
+            SmartLifeLog::info('UPDATE', 'Découverte de '.count($api->getAllDevices()).' devices', $result);
         } catch (Throwable $th) {
-            log::add('SmartLife', 'error', 'UPDATE ALL : Erreur de connexion au cloud Tuya : '.$th->getMessage());
-            log::add('SmartLife', 'debug', 'UPDATE ALL : '.print_r($th, true));
+            SmartLifeLog::exception('UPDATE', $th);
             SmartLifeLog::end('UPDATE');
             return null;
         }

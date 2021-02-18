@@ -47,11 +47,11 @@ class SmartLifeDevice
                 $result = call_user_func_array( array($this->device, $functionName), $params );
                 $retry = 0;
             } catch (Throwable $th) {
-                log::add('SmartLife', 'debug', 'Erreur de connexion au cloud Tuya : '.$th->getMessage());
+                SmartLifeLog::debug('SEND EVENT', 'Erreur de connexion au cloud Tuya : '.$th->getMessage());
                 if ($retry > 0) continue;
-                log::add('SmartLife', 'debug', $msgLog.' : '.print_r($th, true));
-                log::add('SmartLife', 'error', 'Erreur de connexion au cloud Tuya : '.$th->getMessage());
-                throw new Exception(__('Erreur de connexion au cloud Tuya : '.$th->getMessage(),__FILE__));
+                SmartLifeLog::exception('SEND EVENT', $th);
+                SmartLifeLog::end('SEND EVENT');
+                throw new Exception(__('Erreur de connexion au cloud Tuya : '.$th->getMessage(), __FILE__));
             }
         }
         return $result;
