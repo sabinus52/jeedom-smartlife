@@ -9,17 +9,20 @@
 
 namespace Sabinus\TuyaCloudApi\Device;
 
+use Sabinus\TuyaCloudApi\Session\Session;
 
- interface DeviceInterface
- {
+
+interface DeviceInterface
+{
 
     /**
      * Constructeur
      * 
-     * @param String $id   : Identifiant du device
-     * @param String $name : Nom du device
-     * @param String $icon : URL de l'icone du device
+     * @param String $session : Session
+     * @param String $id      : Identifiant du device
+     * @param String $name    : Nom du device
+     * @param String $icon    : URL de l'icone du device
      */
-    public function __construct($id, $name = '', $icon = '');
+    public function __construct(Session $session, $id, $name = '', $icon = '');
 
- }
+}

@@ -14,12 +14,12 @@ class InstalledVersions
 private static $installed = array (
   'root' => 
   array (
-    'pretty_version' => 'dev-master',
-    'version' => 'dev-master',
+    'pretty_version' => 'dev-develop',
+    'version' => 'dev-develop',
     'aliases' => 
     array (
     ),
-    'reference' => '2701400457cc111baeb99a581d661898907fe610',
+    'reference' => 'c84a60f69d5167bb2ace4a57f0469aa76e12e7dd',
     'name' => 'jeedom/smartlife',
   ),
   'versions' => 
@@ -53,12 +53,12 @@ private static $installed = array (
     ),
     'jeedom/smartlife' => 
     array (
-      'pretty_version' => 'dev-master',
-      'version' => 'dev-master',
+      'pretty_version' => 'dev-develop',
+      'version' => 'dev-develop',
       'aliases' => 
       array (
       ),
-      'reference' => '2701400457cc111baeb99a581d661898907fe610',
+      'reference' => 'c84a60f69d5167bb2ace4a57f0469aa76e12e7dd',
     ),
     'mexitek/phpcolors' => 
     array (
@@ -96,30 +96,12 @@ private static $installed = array (
     ),
     'sabinus52/tuyacloudapi' => 
     array (
-      'pretty_version' => '1.2.0',
-      'version' => '1.2.0.0',
+      'pretty_version' => '2.0.0',
+      'version' => '2.0.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'f3b6c15027a5eb5586ae9f33ebaa4aded599c9af',
-    ),
-    'symfony/filesystem' => 
-    array (
-      'pretty_version' => 'v3.4.47',
-      'version' => '3.4.47.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => 'e58d7841cddfed6e846829040dca2cca0ebbbbb3',
-    ),
-    'symfony/polyfill-ctype' => 
-    array (
-      'pretty_version' => 'v1.22.0',
-      'version' => '1.22.0.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => 'c6c942b1ac76c82448322025e084cadc56048b4e',
+      'reference' => '0177e53e1b2d805090d88545ec61476ad186ba30',
     ),
   ),
 );

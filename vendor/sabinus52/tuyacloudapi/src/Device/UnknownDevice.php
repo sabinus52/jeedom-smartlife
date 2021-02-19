@@ -9,7 +9,7 @@
 
 namespace Sabinus\TuyaCloudApi\Device;
 
-use Sabinus\TuyaCloudApi\TuyaCloudApi;
+use Sabinus\TuyaCloudApi\Session\Session;
 
 
 class UnknownDevice extends Device implements DeviceInterface
@@ -26,9 +26,9 @@ class UnknownDevice extends Device implements DeviceInterface
     /**
      * Constructeur
      */
-    public function __construct($id, $name = '', $icon = '')
+    public function __construct(Session $session, $id, $name = '', $icon = '')
     {
-        parent::__construct($id, $name, $icon);
+        parent::__construct($session, $id, $name, $icon);
         $this->type = DeviceFactory::TUYA_UNKNOWN;
     }
 

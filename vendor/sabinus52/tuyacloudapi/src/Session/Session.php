@@ -12,7 +12,7 @@ namespace Sabinus\TuyaCloudApi\Session;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Uri;
 use GuzzleHttp\Psr7\UriResolver;
-use Sabinus\TuyaCloudApi\Tools\TokenPool;
+use Sabinus\TuyaCloudApi\Tools\CachePool;
 
 
 class Session
@@ -22,7 +22,6 @@ class Session
      * Timeout des requêtes HTTP
      */
     const TIMEOUT = 2.0;
-
 
     /**
      * Utilisateur de connection
@@ -69,7 +68,7 @@ class Session
     /**
      * Pool du jeton de connexion Tuya
      * 
-     * @var TokenPool
+     * @var CachePool
      */
     private $tokenPool;
 
@@ -97,7 +96,7 @@ class Session
         $this->countryCode = $country;
         $this->platform = new Platform($biztype);
         $this->token = new Token();
-        $this->tokenPool = new TokenPool();
+        $this->tokenPool = new CachePool(Token::CACHE_FILE);
         $this->timeout = $timeout;
         $this->client = $this->_createClient();
     }
@@ -110,7 +109,7 @@ class Session
      */
     public function getToken()
     {
-        $this->token = $this->tokenPool->fetchTokenFromCache();
+        $this->token = $this->tokenPool->fetchFromCache(Token::CACHE_DELAY);
 
         if ( is_null($this->token) ) {
             // Pas de token sauvegardé sur le FS
@@ -178,7 +177,7 @@ class Session
 
         // Affecte le résultat dans le token et le sauvegarde
         $this->token->set($response);
-        $this->tokenPool->storeTokenInCache($this->token);
+        $this->tokenPool->storeInCache($this->token);
 
         // La valeur du token retoune la region pour indiquer sur quelle plateforme, on doit se connecter
         $this->platform->setRegionFromToken($this->token->get());
@@ -204,7 +203,7 @@ class Session
 
         // Affecte le résultat dans le token
         $this->token->set($response);
-        $this->tokenPool->storeTokenInCache($this->token);
+        $this->tokenPool->storeInCache($this->token);
     }
 
 

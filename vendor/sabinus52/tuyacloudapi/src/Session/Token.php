@@ -14,6 +14,17 @@ class Token
 {
 
     /**
+     * Délai du cache (illimité reconnexion si le '$expireTime' arrive à son terme)
+     */
+    const CACHE_DELAY = 9999999;
+
+    /**
+     * Fichier du cache du token
+     */
+    const CACHE_FILE = 'tuya.token';
+
+
+    /**
      * Jeton principal
      * 
      * @param String

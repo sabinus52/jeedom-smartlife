@@ -1,5 +1,16 @@
 # Changelog
 
+### Version 2.0.0 - 19/02/2021
+
+Quelques changements majeurs ([voir la release note](RELEASE-2.md)) :
+- Aucun changement sur la session
+- Création d'une classe abstraite `Request` pour chaque type de requêtes `DiscoveryRequest`, `QueryRequest` et `ControlRequest`
+- Membre d'une `Session` inclus dans les classes `Device`
+- Suppression de la classe `DeviceEvent`
+- Ajout de fonction de test de connexion
+- Corrections et améliorations diverses
+
+
 ### v1.2.0 - 21/01/2021
 
 - Thermostat (x10)

@@ -11,9 +11,7 @@ namespace Sabinus\TuyaCloudApi;
 
 use Sabinus\TuyaCloudApi\Session\Session;
 use Sabinus\TuyaCloudApi\Device\Device;
-use Sabinus\TuyaCloudApi\Device\DeviceFactory;
-use Sabinus\TuyaCloudApi\Device\DeviceEvent;
-use GuzzleHttp\Psr7\Uri;
+use Sabinus\TuyaCloudApi\Request\DiscoveryRequest;
 
 
 class TuyaCloudApi
@@ -39,25 +37,56 @@ class TuyaCloudApi
     public function __construct(Session $session)
     {
         $this->session = $session;
+        $this->devices = [];
+    }
+
+
+    /**
+     * Retourne la session
+     * 
+     * @return Session
+     */
+    public function getSession()
+    {
+        return $this->session;
+    }
+
+
+    /**
+     * Vérifie la connexion
+     * 
+     * @return Boolean
+     */
+    public function checkConnection()
+    {
+        $token = $this->session->getToken();
+        return ( $token ) ? true : false;
     }
 
 
     /**
      * Recherche tous les équipements disponibles pour cette session
      * 
-     * @return Array
+     * @return Boolean
      */
     public function discoverDevices()
     {
-        $response = $this->_request('Discovery', 'discovery');
+        $reqDiscovery = new DiscoveryRequest($this->session);
+        $result = $reqDiscovery->request();
+        $this->devices = $reqDiscovery->fetchDevices();
+        return $result;
+    }
 
-        //print_r($response['payload']['devices']);
-        $this->devices = array();
-        foreach ($response['payload']['devices'] as $datas) {
-            $this->devices[] = DeviceFactory::createDeviceFromDatas($datas);
-        }
+
+    /**
+     * Retourne la liste des objets trouvés
+     * 
+     * @return Array of Device
+     */
+    public function getAllDevices()
+    {
+        if ( empty($this->devices) ) $this->discoverDevices();
         return $this->devices;
-       
     }
 
 
@@ -69,72 +98,12 @@ class TuyaCloudApi
      */
     public function getDeviceById($id)
     {
+        if ( empty($this->devices) ) $this->discoverDevices();
         foreach ($this->devices as $device) {
             if ($device && $device->getId() == $id)
                 return $device;
         }
         return null;
-    }
-
-
-    /**
-     * Envoi une requête de controle de l'équipement
-     * 
-     * @param String $id        : Identifiant du device
-     * @param String $action    : Valeur de l'action à effectuer
-     * @param Array  $payload   : Données à envoyer
-     * @param String $namespace : Espace de nom
-     * @return Array
-     */
-    public function controlDevice($id, $action, array $payload = [], $namespace = 'control')
-    {
-        $payload['devId'] = $id;
-        return $this->_request($action, $namespace, $payload);
-    }
-
-
-    /**
-     * Envoi un évènement de controle de l'équipement
-     * 
-     * @param DeviceEvent $event     : Objet de l'évènement à effectuer sur l'équipement
-     * @param String      $namespace : Espace de nom
-     * @return Array
-     */
-    public function sendEvent(DeviceEvent $event, $namespace = 'control')
-    {
-        return $this->_request($event->getAction(), $namespace, $event->getPayload());
-    }
-
-
-    /**
-     * Effectue une requête HTTP dans le Cloud Tuya
-     * 
-     * @param String $name      : Valeur de l'action à effectuer
-     * @param String $namespace : Espace de nom
-     * @param Array  $payload   : Données à envoyer
-     * @return Array
-     */
-    private function _request($name, $namespace, array $payload = [])
-    {
-        $token = $this->session->getToken();
-        if (!$token) return null;
-        
-        $response = $this->session->getClient()->post(new Uri('/homeassistant/skill'), array(
-            'json' => array(
-                'header' => array(
-                    'name'           => $name,
-                    'namespace'      => $namespace,
-                    'payloadVersion' => 1,
-                ),
-                    'payload' => $payload + array(
-                    'accessToken'    => $token,
-                ),
-            ),
-        ));
-        $response = json_decode((string) $response->getBody(), true);
-        $this->session->checkResponse($response, sprintf('Failed to get "%s" response from Cloud Tuya', $name));
-
-        return $response;
     }
 
 }
