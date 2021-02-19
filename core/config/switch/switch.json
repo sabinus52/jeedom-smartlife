@@ -1,9 +1,9 @@
 {
-	"switch": {
-		"name": "Prise",
-		"group" : "",
-		"commands": [
-			{
+    "switch": {
+        "name": "Prise",
+        "group" : "",
+        "commands": [
+            {
                 "name" : "Status",
                 "logicalId" : "STATE",
                 "type" : "info",
@@ -11,10 +11,10 @@
                 "generic_type": "ENERGY_STATE",
                 "isVisible" : true,
                 "isHistorized": false,
-				"template": {
-					"dashboard": "prise",
-					"mobile": "prise"
-				}
+                "template": {
+                    "dashboard": "prise",
+                    "mobile": "prise"
+                }
             },
             {
                 "name" : "Refresh",
@@ -22,23 +22,23 @@
                 "type" : "action",
                 "subType" : "other",
                 "isVisible" : true
-			},
-			{
+            },
+            {
                 "name" : "Allumer",
                 "logicalId" : "TurnOn",
                 "type" : "action",
                 "subType" : "other",
                 "generic_type" : "ENERGY_ON",
                 "isVisible" : true
-			},
-			{
-				"name" : "Eteindre",
+            },
+            {
+                "name" : "Eteindre",
                 "logicalId" : "TurnOff",
                 "type" : "action",
                 "subType" : "other",
                 "generic_type" : "ENERGY_OFF",
                 "isVisible" : true
-			}
-		]
-	}
+            }
+        ]
+    }
 }

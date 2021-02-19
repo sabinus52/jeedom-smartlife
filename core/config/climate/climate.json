@@ -1,42 +1,42 @@
 {
-	"climate": {
-		"name": "Climatiseur",
-		"group" : "",
-		"commands": [
-			{
+    "climate": {
+        "name": "Climatiseur",
+        "group" : "",
+        "commands": [
+            {
                 "name" : "Status",
                 "logicalId" : "STATE",
                 "type" : "info",
                 "subType" : "binary",
                 "generic_type": "",
                 "isVisible" : true,
-				"isHistorized": false
-			},
-			{
+                "isHistorized": false
+            },
+            {
                 "name": "Temperature",
                 "logicalId": "TEMPERATURE",
-				"type": "info",
-				"subType": "numeric",
-				"generic_type" : "THERMOSTAT_TEMPERATURE",
-				"configuration": {
-					"minValue": 18,
-					"maxValue": 32
-				},
-				"isVisible": true,
-				"isHistorized": false
+                "type": "info",
+                "subType": "numeric",
+                "generic_type" : "THERMOSTAT_TEMPERATURE",
+                "configuration": {
+                    "minValue": 18,
+                    "maxValue": 32
+                },
+                "isVisible": true,
+                "isHistorized": false
             },
             {
                 "name": "Thermostat-Info",
                 "logicalId": "THERMOSTAT",
-				"type": "info",
-				"subType": "numeric",
-				"generic_type" : "THERMOSTAT_TEMPERATURE",
-				"configuration": {
-					"minValue": 18,
-					"maxValue": 32
-				},
-				"isVisible": 0,
-				"isHistorized": false
+                "type": "info",
+                "subType": "numeric",
+                "generic_type" : "THERMOSTAT_TEMPERATURE",
+                "configuration": {
+                    "minValue": 18,
+                    "maxValue": 32
+                },
+                "isVisible": 0,
+                "isHistorized": false
             },
             {
                 "name" : "Refresh",
@@ -44,17 +44,17 @@
                 "type" : "action",
                 "subType" : "other",
                 "isVisible" : true
-			},
-			{
+            },
+            {
                 "name" : "Allumer",
                 "logicalId" : "TurnOn",
                 "type" : "action",
                 "subType" : "other",
                 "generic_type" : "HEATING_ON",
                 "isVisible" : true
-			},
-			{
-				"name" : "Eteindre",
+            },
+            {
+                "name" : "Eteindre",
                 "logicalId" : "TurnOff",
                 "type" : "action",
                 "subType" : "other",
@@ -64,16 +64,16 @@
             {
                 "name": "Thermostat",
                 "logicalId": "SetThermostat",
-				"type": "action",
-				"subType": "slider",
-				"generic_type" : "HEATING_OTHER",
-				"configuration": {
-					"minValue": 18,
-					"maxValue": 32
-				},
-				"isVisible": 1,
-				"value": "THERMOSTAT"
-			}
-		]
-	}
+                "type": "action",
+                "subType": "slider",
+                "generic_type" : "HEATING_OTHER",
+                "configuration": {
+                    "minValue": 18,
+                    "maxValue": 32
+                },
+                "isVisible": 1,
+                "value": "THERMOSTAT"
+            }
+        ]
+    }
 }
