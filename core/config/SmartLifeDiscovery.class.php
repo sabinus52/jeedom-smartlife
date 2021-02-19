@@ -142,7 +142,7 @@ class SmartLifeDiscovery
         $this->eqLogic->setConfiguration('tuyaID', $this->device->getId());
         $this->eqLogic->setConfiguration('tuyaType', $this->device->getType());
         $this->eqLogic->setConfiguration('tuyaName', $this->device->getName());
-        $this->eqLogic->setConfiguration('tuyaData', serialize($this->device->getData()));
+        $this->eqLogic->setConfiguration('tuyaData', $this->device->getData());
 
         // Désactive si l'objet n'est plus en ligne
         if (config::byKey('autoenable', 'SmartLife')) {
@@ -156,7 +156,6 @@ class SmartLifeDiscovery
         }
         
         // Sauvegarde
-        //$this->eqLogic->setDevice2($this->device); // TODO
         $this->eqLogic->save(true);
     }
 
