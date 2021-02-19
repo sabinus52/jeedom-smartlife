@@ -10,7 +10,7 @@ Ce plugin permet de contrôler les objects connectés SmartLife ou Tuya.
 - Scènes
 - Interrupteurs pour volets roulants
 - Ampoules connectées
-- Climatiseur ***en version BETA***
+- Climatiseur
 
 Voir le chapitre [Objets compatibles](#Objets%20compatibles) pour savoir si votre objet sera compatible.
 
@@ -58,10 +58,13 @@ Pour l'activer et choisir la fréquence de mise à jour, aller dans le *Moteur d
 
 **Notes importantes à ce sujet :**
 
-- ***Le Cloud Tuya interdit un trop grand nombre de connexion, il est <span style="color:red">**IMPERATIF et OBLIGATOIRE**</span> de ne pas descendre la fréquence en dessous des <span style="color:orange">6 min</span>.***
-- L'état de l'objet est rafraichit après une action effectuée dans Jeedom.
+**Depuis 2021, le Cloud Tuya a rajouté de nouvelles restrictions encore plus contraignantes :**
+- Découverte des objets : ***1 fois toutes les 10 minutes***
+- Recupération des états d'un objet : ***1 fois toutes les 2 minutes***
+- Si une personne possède 20 objets, il faudra dans ce cas 20 minutes pour récupérer tous les états de ses objets.
 - Si une action est réalisée depuis l'application SmartLife ou Tuya sur son smartphone, alors l'état de l'objet **ne sera pas mis à jour** dans ce cas.
 
+<span style="color:red">Je conseille donc de ne pas descendre la fréquence en dessous de **11 min**.</span>
 
 
 # Objets compatibles
@@ -88,18 +91,24 @@ Ces objets ne seront donc **JAMAIS** gérés par le plugin.
 
 Pour savoir si un objet peut être **ÉVENTUELLEMENT** compatible, il faut passer les logs en mode *debug*, et vérifier qu'on a une ligne de type suivante :
 ~~~
-[2099-01-01 00:00:00][DEBUG] : SEARCH DEVICE : Objet non pris en compte Sabinus\TuyaCloudApi\Device\UnknownDevice Object ( [devType:protected] => climate [id:protected] => 0000000000000000000000 [type:protected] => unknown [name:protected] => Nom objet [icon:protected] => https://images.tuyaeu.com/smart/icon/123456789.png [data:protected] => Array ( [online] => [state] => false ) )
+[2099-01-01 00:00:00][DEBUG] : DISCOVERY : Objet non pris en compte Sabinus\TuyaCloudApi\Device\UnknownDevice Object ( [devType:protected] => climate [id:protected] => 0000000000000000000000 [type:protected] => unknown [name:protected] => Nom objet [icon:protected] => https://images.tuyaeu.com/smart/icon/123456789.png [data:protected] => Array ( [online] => [state] => false ) )
 ~~~
 Si c'est le cas, merci d'ouvrir une [`issue sur Github`](https://github.com/sabinus52/jeedom-smartlife/issues) et je verrai si c'est possible ou pas d'intégrer ce type d'objet dans le plugin.
 
 
 ### Notes importantes
 
-A partir de différents retours de chacun, certains objets de type `lampe` ont un comportement différent en fonction du fabriquant. Avec ce constat, il est particulièrement difficile d'adapter et d'apporter des corrections pour ces équipements.
+A partir de différents retours de chacun, certains objets de type `lampe` et `climatiseur` ont un comportement différent en fonction du fabriquant. Avec ce constat, il est particulièrement difficile d'adapter et d'apporter des corrections pour ces équipements.
 
 > <span style="color:red">**ATTENTION**</span> : Depuis le 17 décembre 2019, le CLoud Tuya ne retourne plus le statut de la couleur pour les ampoules d'où l'erreur : `Param was not an HSL array`. C'est peut être un problème temporaire chez Tuya, j'ai donc désactivé la mise à jour de ce statut pour éviter les erreurs. L'action sur le changement de la couleur semble toujours fonctionner.
 
 > <span style="color:red">**ATTENTION**</span> : Depuis le 25 novembre 2020, le CLoud Tuya n'autorise qu'une ouverture de session toutes les minutes. Pour éviter une attente de 60s entre les commandes, **il est recommandé dans vos scénarios de ne pas exécuter les commandes en parallèle**.
+
+> <span style="color:red">**ATTENTION**</span> : Depuis 2021, le Cloud Tuya a rajouté de nouvelles restrictions encore plus contraignantes (voir information plus haut)
+
+Avec ces nouvelles restrictions, il est de plus en plus dur de faire des rafraichissements des états des objets.
+
+Pour ceux qui veulent absolument le retour des états, je vous conseille d'utiliser le plugin [wifilightV2](https://market.jeedom.com/index.php?v=d&p=market_display&id=2793)
 
 
 # Dépannage
