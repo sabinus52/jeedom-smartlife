@@ -1,3 +1,13 @@
+# Version 2.0.0 du 19 février 2021
+
+> <span style="color:red">**ATTENTION**</span> : Depuis 2021, le Cloud Tuya a rajouté de nouvelles restrictions encore plus contraignantes (lire la doc à ce sujet)
+
+- **Reécriture du code du plugin**
+- Mise à jour de l'API pour la prise en compte des nouvelles restrictions
+- Amélioration des logs
+- Code retour des requêtes au Cloud
+- Suppression des commandes 'infos' dont le Cloud ne remonte plus l'état
+
 # Version 1.3.5 du 21 janvier 2021
 
 - Fix le problème des climatiseurs qui ont une température avec un multiplicateur de 10
