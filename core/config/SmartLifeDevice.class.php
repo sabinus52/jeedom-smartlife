@@ -3,7 +3,6 @@
  * Classe d'un équipement SmartLife
  */
 
-use Sabinus\TuyaCloudApi\TuyaCloudApi;
 use Sabinus\TuyaCloudApi\Device\Device;
 use Sabinus\TuyaCloudApi\Device\DeviceFactory;
 use Sabinus\TuyaCloudApi\Tools\Color;
@@ -12,24 +11,12 @@ use Sabinus\TuyaCloudApi\Tools\Color;
 class SmartLifeDevice
 {
 
-    const FILE_CONFIG = '/../config/%s/%s.json';
-
-
     /**
-     * Objet du device retourné par l'API
+     * Objet du device
      * 
      * @param Device
      */
     private $device;
-
-
-    /**
-     * Si nouvel équipement créé
-     * 
-     * @param Boolean
-     */
-    private $isNew;
-
 
 
     /**
@@ -40,64 +27,34 @@ class SmartLifeDevice
     public function __construct(Device $device)
     {
         $this->device = $device;
-        $this->isNew = false;
-    }
-
-
-    /**
-     * Si device connu par mon API
-     * 
-     * @return Boolean
-     */
-    public function isUnknow()
-    {
-        return ( $this->device->getType() == DeviceFactory::TUYA_UNKNOWN );
-    }
-
-
-    /**
-     * Si équipement déjà créé dans Jeedom
-     * 
-     * @return Boolean
-     */
-    public function isExistInJeedom()
-    {
-        $smartlife = SmartLife::byLogicalId($this->device->getId(), 'SmartLife');
-        return ( is_object($smartlife) );
     }
 
 
     /**
      * Appele la fonction d'évènement pour un équipement SamrtLife
      * 
-     * @param TuyaCloudApi $api
      * @param String $functionName : Nom de la fonction de l'évènement
      * @param Array $params : Paramètres de la fonction $functionName
      * @param String $msgLog : Message de log en rapport à la fonction
      */
-    public function callFunctionEvent(TuyaCloudApi $api, $functionName, array $params, $msgLog)
+    public function callFunctionEvent($functionName, array $params, $actionLog)
     {
         $retry = 3;
         while ($retry > 0) {
             $retry--;
-            log::add('SmartLife', 'debug', $msgLog.' : tentative '.(3-$retry));
+            SmartLifeLog::debug($actionLog, $this->device, 'Tentative '.(3-$retry).' - '.$functionName.'('.implode(',', $params).')');
             try {
-                switch ( count($params) ) {
-                    case 3 : $this->device->$functionName($api, $params[0], $params[1], $params[2]); break;
-                    case 2 : $this->device->$functionName($api, $params[0], $params[1]); break;
-                    case 1 : $this->device->$functionName($api, $params[0]); break;
-                    case 0 : $this->device->$functionName($api); break;
-                }
+                $result = call_user_func_array( array($this->device, $functionName), $params );
                 $retry = 0;
             } catch (Throwable $th) {
-                log::add('SmartLife', 'debug', 'Erreur de connexion au cloud Tuya : '.$th->getMessage());
-                sleep(62);
+                SmartLifeLog::debug('SEND EVENT', 'Erreur de connexion au cloud Tuya : '.$th->getMessage());
                 if ($retry > 0) continue;
-                log::add('SmartLife', 'debug', $msgLog.' : '.print_r($th, true));
-                log::add('SmartLife', 'error', 'Erreur de connexion au cloud Tuya : '.$th->getMessage());
-                throw new Exception(__('Erreur de connexion au cloud Tuya : '.$th->getMessage(),__FILE__));
+                SmartLifeLog::exception('SEND EVENT', $th);
+                SmartLifeLog::end('SEND EVENT');
+                throw new Exception(__('Erreur de connexion au cloud Tuya : '.$th->getMessage(), __FILE__));
             }
         }
+        return $result;
     }
 
 
@@ -110,10 +67,15 @@ class SmartLifeDevice
     public function getValueCommandInfo($cmdInfo)
     {
         switch ($cmdInfo) {
-            case 'COLORHUE':
-                $value = array('H' => $this->device->getColorHue(), 'S' => $this->device->getColorSaturation(), 'L' => $this->device->getBrightness());
-                return  '#'.Color::hslToHex($value);
+            /*case 'COLORHUE' :
+                return null; // HACK API Tuya ne retourne plus le statut sur la couleur
+                //$value = array('H' => $this->device->getColorHue(), 'S' => $this->device->getColorSaturation(), 'L' => $this->device->getBrightness());
+                //return  '#'.Color::hslToHex($value);
                 break;
+            case 'SATURATION' :
+                return null; // HACK API Tuya ne retourne plus le statut sur la saturation
+            case 'TEMPERATURE' :
+                if ( $this->device->getType() == DeviceFactory::TUYA_LIGHT ) return null; // HACK API Tuya ne retourne plus le statut sur la température pour les lampes*/
             case 'STATE' :
                 $value = $this->device->getState();
                 if ( $this->device->getType() == DeviceFactory::TUYA_COVER ) {
@@ -128,150 +90,12 @@ class SmartLifeDevice
                 }
                 break;
             default:
-                $functionName = 'get'.ucfirst($cmdInfo);
-                return $this->device->$functionName();
+                //if ( is_callable( array($this->device, 'get'.ucfirst($cmdInfo)) ) )
+                return call_user_func( array($this->device, 'get'.ucfirst($cmdInfo)) );
                 break;
         }
-    }
 
-
-    /**
-     * Crée l'objet Jeedom de l'équipement trouvé sur le Cloud Tuya
-     * 
-     * @return SmartLife
-     */
-    public function createEqLogic()
-    {
-        log::add('SmartLife', 'info', 'CREATE DEVICE '.$this->device->getId().': Objet en cours d\'inclusion "'.$this->device->getName().'" de type \''.$this->device->getType().'\'');
-
-        // Vérification de la configuration de l'équipement
-        $configs = $this->loadJSON();
-        if ( ! $configs ) {
-            log::add('SmartLife', 'error', 'CREATE DEVICE '.$this->device->getId().' : Type d\'équipement non pris en charge "'.$this->device->getType().'" pour "'.$this->device->getName().'"');
-            return false;
-        }
-
-        // Récupère l'instance de l'objet Jeedom à créer
-        $smartlife = $this->getInstanceEqLogicSmartLife($configs['commands']);
-
-        // Création des commandes
-        $this->createCommands($smartlife, $configs['commands']);
-
-        log::add('SmartLife', 'info', 'CREATE DEVICE '.$this->device->getId().' : Objet ajouté avec succès "'.$this->device->getName().'" ('.$this->device->getId().') de type \''.$this->device->getType().'\'');
-		return $this->isNew;
-	}
-
-
-    /**
-     * Retourne l'instance de l'objet Jeedom à créer
-     * 
-     * @param Array $commands : Liste des commandes
-     * @return SmartLife
-     */
-    private function getInstanceEqLogicSmartLife(array $commands)
-    {
-        // Recherche si l'objet existe déjà
-        $smartlife = SmartLife::byLogicalId($this->device->getId(), 'SmartLife');
-
-        // Créer le nouvel équipement s'il n'existe pas
-		if ( !is_object($smartlife) ) {
-            $this->isNew = true;
-			$smartlife = new SmartLife();
-			$smartlife->setEqType_name('SmartLife');
-            $smartlife->setLogicalId($this->device->getId());
-            $smartlife->setName($this->device->getName() . ' ' . $this->device->getId());
-        }
-
-        // Affecte la configuration du device
-        $smartlife->setConfiguration('tuyaID', $this->device->getId());
-        $smartlife->setConfiguration('tuyaType', $this->device->getType());
-        $smartlife->setConfiguration('tuyaName', $this->device->getName());
-        $smartlife->setConfiguration('tuya', serialize($this->device));
-
-        // Enregistre les commandes de type "infos" pour la mise à jour des états
-        $cmdInfos = array();
-        foreach ($commands as $command) {
-            if ( ! $this->setCommandSpecific($command) ) continue;
-            if ( $command['type'] == 'info' ) $cmdInfos[] = $command['logicalId'];
-        }
-        $smartlife->setConfiguration('deviceCmdInfos', serialize($cmdInfos));
-
-        // Désactive si l'objet n'est plus en ligne
-        if (config::byKey('autoenable', 'SmartLife')) {
-            if ($this->device->isOnline()) {
-			    $smartlife->setIsEnable(1);
-                $smartlife->setIsVisible(1);
-            } else {
-                $smartlife->setIsEnable(0);
-                $smartlife->setIsVisible(0);
-            }
-        }
-        
-        // Sauvegarde et retour de l'objet
-        $smartlife->save(true);
-        return $smartlife;
-    }
-
-
-    /**
-     * Crée les commandes de l'objet EqLogic de type SmartLife
-     * 
-     * @param SmartLife $smartlife : EqLogic de type SmartLife
-     * @param Array $commands : Liste des commandes à créer
-     */
-    private function createCommands(SmartLife $smartlife, array $commands)
-    {
-        $order = 0;
-        foreach ($commands as $command) {
-            $command['order'] = $order++;
-            // Si pas de support pour cette commande, on ne la crée pas
-            if ( ! $this->setCommandSpecific($command) ) continue;
-            $smartlife->addCommand($command);
-            log::add('SmartLife', 'debug', 'CREATE DEVICE '.$this->device->getId().' : SET command  = '.$command['logicalId']);
-        }
-    }
-
-
-    /**
-     * Chargement de la configuration d'un équipement depuis le fichier JSON
-     * 
-     * @return Array
-     */
-    private function loadJSON()
-    {
-        $type = $this->device->getType();
-        $filecfg = sprintf(__DIR__.self::FILE_CONFIG, $type, $type);
-        $content = file_get_contents( $filecfg );
-        if ( is_json($content) ) {
-            $result = json_decode($content, true);
-        } else {
-            log::add('SmartLife', 'debug', 'ERROR : Impossible de charger le fichier '.$filecfg);
-        }
-        return ( isset($result[$type]) ) ? $result[$type] : null;
-    }
-
-
-    /**
-     * Ajuste la configuration de la commande en fonction du type de l'objet
-     *
-     * @param Array $command : Configuration de la commande
-     **/
-    public function setCommandSpecific(array & $command)
-    {
-        switch ($this->device->getType()) {
-            case DeviceFactory::TUYA_CLIMATE :
-                if ( $command['logicalId'] == 'TEMPERATURE' || $command['logicalId'] == 'THERMOSTAT' ) {
-                    // Affecte les valeurs min et max en fonction des valeurs du climatiseur
-                    $command['configuration']['minValue'] = $this->device->getMinTemperature();
-                    $command['configuration']['maxValue'] = $this->device->getMaxTemperature();
-                }
-                if ( $command['logicalId'] == 'TEMPERATURE' ) {
-                    // Si pas de retour de température courante
-                    if ( $this->device->getTemperature() === null ) return false;
-                }
-                break;
-        }
-        return true;
+        return null;
     }
 
 }

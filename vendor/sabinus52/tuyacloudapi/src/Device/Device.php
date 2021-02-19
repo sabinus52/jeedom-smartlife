@@ -9,12 +9,21 @@
 
 namespace Sabinus\TuyaCloudApi\Device;
 
-use Sabinus\TuyaCloudApi\TuyaCloudApi;
+use Sabinus\TuyaCloudApi\Session\Session;
+use Sabinus\TuyaCloudApi\Request\QueryRequest;
+use Sabinus\TuyaCloudApi\Request\ControlRequest;
 
 
 abstract class Device
 {
-   
+
+    /**
+     * Session au Cloud
+     * 
+     * @var Session
+     */
+    protected $session;
+
     /**
      * Identifiant de l'équipement
      * 
@@ -54,15 +63,26 @@ abstract class Device
     /**
      * Constructeur
      * 
-     * @param String $id   : Identifiant du device
-     * @param String $name : Nom du device
-     * @param String $icon : URL de l'icone du device
+     * @param String $session : Session
+     * @param String $id      : Identifiant du device
+     * @param String $name    : Nom du device
+     * @param String $icon    : URL de l'icone du device
      */
-    public function __construct($id, $name = '', $icon = '')
+    public function __construct(Session $session, $id, $name = '', $icon = '')
     {
+        $this->session = $session;
         $this->id = $id;
         if ($name) $this->name = $name;
         if ($icon) $this->icon = $icon;
+    }
+
+
+    /**
+     * Affecte le nom de l'objet
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
     }
 
 
@@ -133,17 +153,54 @@ abstract class Device
 
 
     /**
-     * Mise à jour des données de l'équipement
+     * Retourne les données de l'équipement
      * 
-     * @param TuyaCloudApi $api
      * @return Array
      */
-    public function update(TuyaCloudApi $api)
+    public function getData()
     {
-        sleep(1);
-        $response = $api->controlDevice($this->id, 'QueryDevice', array(), 'query');
-        if (isset($response['payload']['data'])) $this->setData($response['payload']['data']);
-        return true;
+        return $this->data;
+    }
+
+
+    /**
+     * @return String
+     */
+    public function __toString()
+    {
+        return $this->getId().' ('.$this->getType().') : '.$this->getName().' '.print_r($this->getData(), true);
+    }
+
+
+    /**
+     * Mise à jour des données de l'équipement
+     * 
+     * @return Integer
+     */
+    public function update()
+    {
+        $payload['devId'] = $this->id;
+        $query = new QueryRequest($this->session);
+        $query->setDeviceID($this->id);
+        $result = $query->request('QueryDevice', $payload);
+
+        if ( $query->getDatas() != null ) $this->setData($query->getDatas());
+        return $result;
+    }
+
+
+    /**
+     * Envoi une requête de controle de l'équipement
+     * 
+     * @param String $action  : Valeur de l'action à effectuer
+     * @param Array  $payload : Données à envoyer
+     * @return Integer
+     */
+    protected function control($action, $payload)
+    {
+        $payload['devId'] = $this->id;
+        $query = new ControlRequest($this->session);
+        return $query->request($action, $payload);
     }
 
 }

@@ -9,7 +9,8 @@
 
 namespace Sabinus\TuyaCloudApi\Device;
 
-use Sabinus\TuyaCloudApi\TuyaCloudApi;
+use Sabinus\TuyaCloudApi\Session\Session;
+use Sabinus\TuyaCloudApi\Request\Request;
 
 
 class SwitchDevice extends Device implements DeviceInterface
@@ -18,9 +19,9 @@ class SwitchDevice extends Device implements DeviceInterface
     /**
      * Constructeur
      */
-    public function __construct($id, $name = '', $icon = '')
+    public function __construct(Session $session, $id, $name = '', $icon = '')
     {
-        parent::__construct($id, $name, $icon);
+        parent::__construct($session, $id, $name, $icon);
         $this->type = DeviceFactory::TUYA_SWITCH;
     }
 
@@ -35,48 +36,41 @@ class SwitchDevice extends Device implements DeviceInterface
         return $this->data['state'];
     }
 
+
+    /**
+     * Affecte le statut de la prise
+     * 
+     * @param Boolean
+     */
+    public function setState($state)
+    {
+        $this->data['state'] = $state;
+    }
+
     
     /**
      * Allume la prise
      * 
-     * @return DeviceEvent
-     */
-    public function getTurnOnEvent()
-    {
-        return new DeviceEvent($this, 'turnOnOff', array('value' => 1));
-    }
-
-    /**
-     * Allume la prise
-     * 
-     * @param TuyaCloudApi $api
      * @return Array
      */
-    public function turnOn(TuyaCloudApi $api)
+    public function turnOn()
     {
-        return $api->controlDevice($this->id, 'turnOnOff', array('value' => 1));
+        $result = $this->control('turnOnOff', array('value' => 1));
+        if ($result == Request::RETURN_SUCCESS) $this->setState(true);
+        return $result;
     }
 
 
     /**
      * Eteins la prise
      * 
-     * @return DeviceEvent
-     */
-    public function getTurnOffEvent()
-    {
-        return new DeviceEvent($this, 'turnOnOff', array('value' => 0));
-    }
-
-    /**
-     * Eteins la prise
-     * 
-     * @param TuyaCloudApi $api
      * @return Array
      */
-    public function turnOff(TuyaCloudApi $api)
+    public function turnOff()
     {
-        return $api->controlDevice($this->id, 'turnOnOff', array('value' => 0));
+        $result = $this->control('turnOnOff', array('value' => 0));
+        if ($result == Request::RETURN_SUCCESS) $this->setState(false);
+        return $result;
     }
     
 }

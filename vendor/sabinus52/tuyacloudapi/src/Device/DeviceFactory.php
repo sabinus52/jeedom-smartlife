@@ -9,6 +9,8 @@
 
 namespace Sabinus\TuyaCloudApi\Device;
 
+use Sabinus\TuyaCloudApi\Session\Session;
+
 
 class DeviceFactory
 {
@@ -38,34 +40,35 @@ class DeviceFactory
     /**
      * Créer l'objet de l'équipement à partir des données reçus par la découverte des devices
      * 
+     * @param Session $session
      * @param Array $datas
      * @return Device
      */
-    static public function createDeviceFromDatas(array $datas)
+    static public function createDeviceFromDatas(Session $session, array $datas)
     {
         switch ($datas['dev_type']) {
             case self::TUYA_SWITCH :
-                $device = new SwitchDevice($datas['id'], $datas['name'], $datas['icon']);
+                $device = new SwitchDevice($session, $datas['id'], $datas['name'], $datas['icon']);
                 $device->setData($datas['data']);
                 break;
             case self::TUYA_LIGHT :
-                $device = new LightDevice($datas['id'], $datas['name'], $datas['icon']);
+                $device = new LightDevice($session, $datas['id'], $datas['name'], $datas['icon']);
                 $device->setData($datas['data']);
                 break;
             case self::TUYA_COVER :
-                $device = new CoverDevice($datas['id'], $datas['name'], $datas['icon']);
+                $device = new CoverDevice($session, $datas['id'], $datas['name'], $datas['icon']);
                 $device->setData($datas['data']);
                 break;
             case self::TUYA_SCENE :
-                $device = new SceneDevice($datas['id'], $datas['name']);
+                $device = new SceneDevice($session, $datas['id'], $datas['name']);
                 $device->setData($datas['data']);
                 break;
             case self::TUYA_CLIMATE :
-                $device = new ClimateDevice($datas['id'], $datas['name'], $datas['icon']);
+                $device = new ClimateDevice($session, $datas['id'], $datas['name'], $datas['icon']);
                 $device->setData($datas['data']);
                 break;
             default:
-                $device = new UnknownDevice($datas['id'], $datas['name'], $datas['icon']);
+                $device = new UnknownDevice($session, $datas['id'], $datas['name'], $datas['icon']);
                 $device->setData($datas['data']);
                 $device->setDevType($datas['dev_type']);
                 break;
@@ -77,32 +80,35 @@ class DeviceFactory
     /**
      * Créer l'objet vierge de l'équipement à partir de son ID et son type
      * 
+     * @param Session $session
      * @param String $id   : Identifiant de l'équipement
      * @param String $type : Type de l'équipement
+     * @param String $name : Nom de l'équipement
      * @return Device
      */
-    static public function createDeviceFromId($id, $type)
+    static public function createDeviceFromId(Session $session, $id, $type, $name = null)
     {
         switch ($type) {
             case self::TUYA_SWITCH :
-                $device = new SwitchDevice($id);
+                $device = new SwitchDevice($session, $id);
                 break;
             case self::TUYA_LIGHT :
-                $device = new LightDevice($id);
+                $device = new LightDevice($session, $id);
                 break;
             case self::TUYA_COVER :
-                $device = new CoverDevice($id);
+                $device = new CoverDevice($session, $id);
                 break;
             case self::TUYA_SCENE :
-                $device = new SceneDevice($id);
+                $device = new SceneDevice($session, $id);
                 break;
             case self::TUYA_CLIMATE :
-                $device = new ClimateDevice($id);
+                $device = new ClimateDevice($session, $id);
                 break;
             default:
                 return null;
                 break;
         }
+        $device->setName($name);
         return $device;
     }
 

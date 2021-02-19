@@ -8,7 +8,8 @@
  */
 namespace Sabinus\TuyaCloudApi\Device;
 
-use Sabinus\TuyaCloudApi\TuyaCloudApi;
+use Sabinus\TuyaCloudApi\Session\Session;
+use Sabinus\TuyaCloudApi\Request\Request;
 
 
 class CoverDevice extends Device implements DeviceInterface
@@ -17,9 +18,9 @@ class CoverDevice extends Device implements DeviceInterface
     /**
      * Constructeur
      */
-    public function __construct($id, $name = '', $icon = '')
+    public function __construct(Session $session, $id, $name = '', $icon = '')
     {
-        parent::__construct($id, $name, $icon);
+        parent::__construct($session, $id, $name, $icon);
         $this->type = DeviceFactory::TUYA_COVER;
     }
 
@@ -47,68 +48,52 @@ class CoverDevice extends Device implements DeviceInterface
 
 
     /**
-     * Ouvre le volet
+     * Affecte le statut de la prise
      * 
-     * @return DeviceEvent
+     * @param Integer
      */
-    public function getOpenEvent()
+    public function setState($state)
     {
-        return new DeviceEvent($this, 'turnOnOff', array('value' => 1));
+        $this->data['state'] = $state;
     }
+
 
     /**
      * Ouvre le volet
      * 
-     * @param TuyaCloudApi $api
      * @return Array
      */
-    public function open(TuyaCloudApi $api)
+    public function open()
     {
-        return $api->controlDevice($this->id, 'turnOnOff', array('value' => 1));
+        $result = $this->control('turnOnOff', array('value' => 1));
+        if ($result == Request::RETURN_SUCCESS) $this->setState(1);
+        return $result;
     }
 
 
     /**
      * Ferme le volet
      * 
-     * @return DeviceEvent
-     */
-    public function getCloseEvent()
-    {
-        return new DeviceEvent($this, 'turnOnOff', array('value' => 0));
-    }
-
-    /**
-     * Ferme le volet
-     * 
-     * @param TuyaCloudApi $api
      * @return Array
      */
-    public function close(TuyaCloudApi $api)
+    public function close()
     {
-        return $api->controlDevice($this->id, 'turnOnOff', array('value' => 0));
+        $result = $this->control('turnOnOff', array('value' => 0));
+        if ($result == Request::RETURN_SUCCESS) $this->setState(2);
+        return $result;
     }
 
 
     /**
      * Stoppe le volet
      * 
-     * @return DeviceEvent
-     */
-    public function getStopEvent()
-    {
-        return new DeviceEvent($this, 'startStop', array('value' => 0));
-    }
-
-    /**
-     * Stoppe le volet
-     * 
-     * @param TuyaCloudApi $api
      * @return Array
      */
-    public function stop(TuyaCloudApi $api)
+    public function stop()
     {
-        return $api->controlDevice($this->id, 'startStop', array('value' => 0));
+        $result = $this->control('startStop', array('value' => 0));
+        if ($result == Request::RETURN_SUCCESS) $this->setState(3);
+        return $result;
     }
     
 }

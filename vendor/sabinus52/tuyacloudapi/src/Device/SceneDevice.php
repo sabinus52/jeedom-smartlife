@@ -9,7 +9,7 @@
 
 namespace Sabinus\TuyaCloudApi\Device;
 
-use Sabinus\TuyaCloudApi\TuyaCloudApi;
+use Sabinus\TuyaCloudApi\Session\Session;
 
 
 class SceneDevice extends Device implements DeviceInterface
@@ -18,9 +18,9 @@ class SceneDevice extends Device implements DeviceInterface
     /**
      * Constructeur
      */
-    public function __construct($id, $name = '', $icon = '')
+    public function __construct(Session $session, $id, $name = '', $icon = '')
     {
-        parent::__construct($id, $name, $icon);
+        parent::__construct($session, $id, $name, $icon);
         $this->type = DeviceFactory::TUYA_SCENE;
     }
 
@@ -39,32 +39,20 @@ class SceneDevice extends Device implements DeviceInterface
     /**
      * Active la scène
      * 
-     * @return DeviceEvent
-     */
-    public function getActivateEvent()
-    {
-        return new DeviceEvent($this, 'turnOnOff', array('value' => 1));
-    }
-
-    /**
-     * Active la scène
-     * 
-     * @param TuyaCloudApi $api
      * @return Array
      */
-    public function activate(TuyaCloudApi $api)
+    public function activate()
     {
-        return $api->controlDevice($this->id, 'turnOnOff', array('value' => 1));
+        return $this->control('turnOnOff', array('value' => 1));
     }
     
 
     /**
      * Mise à jour des données de l'équipement
      * 
-     * @param TuyaCloudApi $api
      * @return Array
      */
-    public function update(TuyaCloudApi $api)
+    public function update()
     {
         return true;
     }

@@ -9,7 +9,8 @@
 
 namespace Sabinus\TuyaCloudApi\Device;
 
-use Sabinus\TuyaCloudApi\TuyaCloudApi;
+use Sabinus\TuyaCloudApi\Session\Session;
+use Sabinus\TuyaCloudApi\Request\Request;
 
 
 class ClimateDevice extends Device implements DeviceInterface
@@ -32,9 +33,9 @@ class ClimateDevice extends Device implements DeviceInterface
     /**
      * Constructeur
      */
-    public function __construct($id, $name = '', $icon = '')
+    public function __construct(Session $session, $id, $name = '', $icon = '')
     {
-        parent::__construct($id, $name, $icon);
+        parent::__construct($session, $id, $name, $icon);
         $this->type = DeviceFactory::TUYA_CLIMATE;
     }
 
@@ -68,7 +69,7 @@ class ClimateDevice extends Device implements DeviceInterface
      */
     public function getTemperature()
     {
-        if ( ! isset($this->data['current_temperature']) ) return null;
+        if ( ! $this->getSupportTemperature() ) return null;
         return $this->parseTemperature($this->data['current_temperature']);
     }
 
@@ -147,6 +148,17 @@ class ClimateDevice extends Device implements DeviceInterface
 
 
     /**
+     * Retourne si le climatiseur supporte le retour de la température courante
+     * 
+     * @return Boolean
+     */
+    public function getSupportTemperature()
+    {
+        return (isset($this->data['current_temperature'])) ? true : false;
+    }
+
+
+    /**
      * Retourne si le climatiseur supporte la vitesse
      * 
      * @return Boolean
@@ -182,44 +194,22 @@ class ClimateDevice extends Device implements DeviceInterface
     /**
      * Allume le climatiseur
      * 
-     * @return DeviceEvent
-     */
-    public function getTurnOnEvent()
-    {
-        return new DeviceEvent($this, 'turnOnOff', array('value' => 1));
-    }
-
-    /**
-     * Allume le climatiseur
-     * 
-     * @param TuyaCloudApi $api
      * @return Array
      */
-    public function turnOn(TuyaCloudApi $api)
+    public function turnOn()
     {
-        return $api->controlDevice($this->id, 'turnOnOff', array('value' => 1));
+        return $this->control('turnOnOff', array('value' => 1));
     }
 
 
     /**
      * Eteins le climatiseur
      * 
-     * @return DeviceEvent
-     */
-    public function getTurnOffEvent()
-    {
-        return new DeviceEvent($this, 'turnOnOff', array('value' => 0));
-    }
-
-    /**
-     * Eteins le climatiseur
-     * 
-     * @param TuyaCloudApi $api
      * @return Array
      */
-    public function turnOff(TuyaCloudApi $api)
+    public function turnOff()
     {
-        return $api->controlDevice($this->id, 'turnOnOff', array('value' => 0));
+        return $this->control('turnOnOff', array('value' => 0));
     }
 
 
@@ -227,23 +217,11 @@ class ClimateDevice extends Device implements DeviceInterface
      * Affecte la température du climatiseur
      * 
      * @param Integer $value : Valeur de la température
-     * @return DeviceEvent
-     */
-    public function getSetThermostatEvent($value)
-    {
-        return new DeviceEvent($this, 'temperatureSet', array('value' => $this->generateThermostat($value)));
-    }
-
-    /**
-     * Affecte la température du climatiseur
-     * 
-     * @param TuyaCloudApi $api
-     * @param Integer $value : Valeur de la température
      * @return Array
      */
-    public function setThermostat(TuyaCloudApi $api, $value)
+    public function setThermostat($value)
     {
-        return $api->controlDevice($this->id, 'temperatureSet', array('value' => $this->generateThermostat($value)));
+        return $this->control('temperatureSet', array('value' => $this->generateThermostat($value)));
     }
 
 
@@ -251,23 +229,11 @@ class ClimateDevice extends Device implements DeviceInterface
      * Affecte la vitesse du climatiseur
      * 
      * @param Integer $value : Valeur de la vitesse
-     * @return DeviceEvent
-     */
-    public function getSetSpeedWindEvent($value)
-    {
-        return new DeviceEvent($this, 'windSpeedSet', array('value' => $value));
-    }
-
-    /**
-     * Affecte la vitesse du climatiseur
-     * 
-     * @param TuyaCloudApi $api
-     * @param Integer $value : Valeur de la vitesse
      * @return Array
      */
-    public function setSpeedWind(TuyaCloudApi $api, $value)
+    public function setSpeedWind($value)
     {
-        return $api->controlDevice($this->id, 'windSpeedSet', array('value' => $value));
+        return $this->control('windSpeedSet', array('value' => $value));
     }
 
 
@@ -275,23 +241,11 @@ class ClimateDevice extends Device implements DeviceInterface
      * Affecte le mode du climatiseur
      * 
      * @param Integer $value : Valeur du mode
-     * @return DeviceEvent
-     */
-    public function getSetModeEvent($value)
-    {
-        return new DeviceEvent($this, 'modeSet', array('value' => $value));
-    }
-
-    /**
-     * Affecte le mode du climatiseur
-     * 
-     * @param TuyaCloudApi $api
-     * @param Integer $value : Valeur du mode
      * @return Array
      */
-    public function setMode(TuyaCloudApi $api, $value)
+    public function setMode($value)
     {
-        return $api->controlDevice($this->id, 'modeSet', array('value' => $value));
+        return $this->control('modeSet', array('value' => $value));
     }
 
 
