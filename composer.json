@@ -9,7 +9,7 @@
         }
     ],
     "require": {
-        "sabinus52/tuyacloudapi": "*"
+        "sabinus52/tuyacloudapi": "dev-jeedom"
     },
     "config": {
         "platform-check": false
