@@ -25,7 +25,7 @@ class DiscoveryRequest extends Request implements RequestInterface
     /**
      * Délai entre 2 requêtes de découverte (restriction Tuya)
      */
-    const CACHE_DELAY = 600;
+    const CACHE_DELAY = 900;
 
     /**
      * Fichier du cache de la découverte

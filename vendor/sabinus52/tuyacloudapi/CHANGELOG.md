@@ -1,5 +1,10 @@
 # Changelog
 
+### Version 2.0.1 - 17/01/2022
+
+- Increase cache delay for discovery
+
+
 ### Version 2.0.0 - 19/02/2021
 
 Quelques changements majeurs ([voir la release note](RELEASE-2.md)) :

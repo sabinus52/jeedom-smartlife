@@ -58,13 +58,13 @@ Pour l'activer et choisir la fréquence de mise à jour, aller dans le *Moteur d
 
 **Notes importantes à ce sujet :**
 
-**Depuis 2021, le Cloud Tuya a rajouté de nouvelles restrictions encore plus contraignantes :**
-- Découverte des objets : ***1 fois toutes les 10 minutes***
+**Depuis 2021, le Cloud Tuya a rajouté de nouvelles restrictions encore plus contraignantes, puis aussi début 2022 :**
+- Découverte des objets : ***1 fois toutes les 15 minutes***
 - Recupération des états d'un objet : ***1 fois toutes les 2 minutes***
 - Si une personne possède 20 objets, il faudra dans ce cas 20 minutes pour récupérer tous les états de ses objets.
 - Si une action est réalisée depuis l'application SmartLife ou Tuya sur son smartphone, alors l'état de l'objet **ne sera pas mis à jour** dans ce cas.
 
-<span style="color:red">Je conseille donc de ne pas descendre la fréquence en dessous de **11 min**.</span>
+<span style="color:red">Je conseille donc de ne pas descendre la fréquence en dessous de **17 min**.</span>
 
 
 # Objets compatibles
@@ -106,7 +106,12 @@ A partir de différents retours de chacun, certains objets de type `lampe` et `c
 
 > <span style="color:red">**ATTENTION**</span> : Depuis 2021, le Cloud Tuya a rajouté de nouvelles restrictions encore plus contraignantes (voir information plus haut)
 
+> <span style="color:red">**ATTENTION**</span> : Depuis le début de l'année 2022, le Cloud Tuya a encore rajouté de nouvelles restrictions
+
 Avec ces nouvelles restrictions, il est de plus en plus dur de faire des rafraichissements des états des objets.
+
+Si cela devait continuer dans ce sens, je ne verrai plus l'intérêt de maintenir ce plugin. Je conseille de fuir les objets 
+Wifi Tuya qui ne sont pas adaptés à la vraie domotique.
 
 Pour ceux qui veulent absolument le retour des états, je vous conseille d'utiliser le plugin [wifilightV2](https://market.jeedom.com/index.php?v=d&p=market_display&id=2793)
 
