@@ -16,3 +16,5 @@ composer.lock
 
 # Espace de travail
 workspace/
+env_vars
+DEVELOP*.md
