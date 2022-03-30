@@ -84,3 +84,33 @@ function addCmdToTable(_cmd) {
     }
     jeedom.cmd.changeType($('#table_cmd tbody tr:last'), init(_cmd.subType));
 }
+
+
+$('#bt_recreatecommand').on('click', function () {
+    bootbox.confirm('{{Etes-vous sûr de vouloir reconfigurer toutes les commandes ?<br> Cela ne va pas supprimer les commandes existantes mais juste remettre la configuration par défaut}}', function (result) {
+        if (result) {
+            $.ajax({
+                type: "POST",
+                url: "plugins/SmartLife/core/ajax/SmartLife.ajax.php",
+                data: {
+                    action: "reCreateCommand",
+                    id: $('.eqLogicAttr[data-l1key=id]').value()
+                },
+                dataType: 'json',
+                global: false,
+                error: function (request, status, error) {
+                    handleAjaxError(request, status, error);
+                },
+                success: function (data) {
+                    if (data.state != 'ok') {
+                        $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                        return;
+                    }
+                    $('#div_alert').showAlert({message: '{{Opération réalisée avec succès}}', level: 'success'});
+                    $('.eqLogicDisplayCard[data-eqLogic_id=' + $('.eqLogicAttr[data-l1key=id]').value() + ']').click();
+                }
+            });
+        }
+    });
+   
+});
