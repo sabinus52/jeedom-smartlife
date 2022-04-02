@@ -1,3 +1,10 @@
+# Version 2.1.0 du 2 avril 2022
+
+- Renommages des commandes *Allumer* et *Eteindre*
+- Bouton pour recréer les commandes
+- Mise à jour des patches de sécurité des dépendances
+
+
 # Version 2.0.1 du 17 janvier 2022
 
 > <span style="color:red">**ATTENTION**</span> : Depuis début 2022, le Cloud Tuya a rajouté **ENCORE** de nouvelles restrictions (lire la doc à ce sujet)
