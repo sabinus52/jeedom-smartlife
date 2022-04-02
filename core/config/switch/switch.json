@@ -9,7 +9,7 @@
                 "type" : "info",
                 "subType" : "binary",
                 "generic_type": "ENERGY_STATE",
-                "isVisible" : true,
+                "isVisible" : 0,
                 "isHistorized": false,
                 "template": {
                     "dashboard": "prise",
@@ -24,20 +24,30 @@
                 "isVisible" : true
             },
             {
-                "name" : "Allumer",
+                "name" : "On",
                 "logicalId" : "TurnOn",
                 "type" : "action",
                 "subType" : "other",
                 "generic_type" : "ENERGY_ON",
-                "isVisible" : true
+                "isVisible" : true,
+                "template": {
+                    "dashboard": "prise",
+                    "mobile": "prise"
+                },
+                "value": "STATE"
             },
             {
-                "name" : "Eteindre",
+                "name" : "Off",
                 "logicalId" : "TurnOff",
                 "type" : "action",
                 "subType" : "other",
                 "generic_type" : "ENERGY_OFF",
-                "isVisible" : true
+                "isVisible" : true,
+                "template": {
+                    "dashboard": "prise",
+                    "mobile": "prise"
+                },
+                "value": "STATE"
             }
         ]
     }

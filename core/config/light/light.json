@@ -9,7 +9,7 @@
                 "type" : "info",
                 "subType" : "binary",
                 "generic_type": "LIGHT_STATE",
-                "isVisible" : true,
+                "isVisible" : 0,
                 "isHistorized": false,
                 "template": {
                     "dashboard": "light",
@@ -47,20 +47,30 @@
                 "isVisible" : true
             },
             {
-                "name" : "Allumer",
+                "name" : "On",
                 "logicalId" : "TurnOn",
                 "type" : "action",
                 "subType" : "other",
                 "generic_type" : "LIGHT_ON",
-                "isVisible" : true
+                "isVisible" : true,
+                "template": {
+                    "dashboard": "light",
+                    "mobile": "light"
+                },
+                "value": "STATE"
             },
             {
-                "name" : "Eteindre",
+                "name" : "Off",
                 "logicalId" : "TurnOff",
                 "type" : "action",
                 "subType" : "other",
                 "generic_type" : "LIGHT_OFF",
-                "isVisible" : true
+                "isVisible" : true,
+                "template": {
+                    "dashboard": "light",
+                    "mobile": "light"
+                },
+                "value": "STATE"
             },
             {
                 "name": "Luminosité",
