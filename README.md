@@ -7,6 +7,8 @@ Utilisation de mon API : https://github.com/sabinus52/TuyaCloudApi
 
 ![logo](docs/images/icon-48.png)
 
+**INFO** : Vu la médiocrité des objets Tuya en Wifi, je ne vois plus l'intérêt à faire des évolutions pour ce plugin. Ces objets ne sont vraiment pas destinés à faire de la domotique.
+
 
 ## Installation
 
