@@ -254,11 +254,33 @@ class SmartLife extends eqLogic {
 
 
     /**
+     * Met à jour les commandes du Plugin
+     */
+    public function reCreateCommandSmartLife()
+    {
+        $session = SmartLife::getSessionTuya();
+        $device = DeviceFactory::createDeviceFromId($session, $this->getLogicalId(), $this->getConfiguration('tuyaType'), $this->getConfiguration('tuyaName'));
+        $device->setData( $this->getConfiguration('tuyaData') );
+        $smartlifeDevice = new SmartLifeDevice($device);
+
+        SmartLifeLog::begin('RECREATE CMD');
+        SmartLifeLog::info('RECREATE CMD', $device, 'Rafraichissement des commandes');
+
+        $configCmdDevice = new SmartLifeConfig($device);
+        foreach ($configCmdDevice->getCommands() as $command) {
+            $this->addCommand($command, $device, true);
+        }
+
+        SmartLifeLog::end('RECREATE CMD');
+    }
+
+
+    /**
      * Ajout des commandes à Jeedom
      * 
      * @param Array $config : Configuration de la commande
      */
-    public function addCommand(Array $config, Device $device)
+    public function addCommand(Array $config, Device $device, $force = false)
     {
         $cmdDevice = $this->getCmd(null, $config['logicalId']);
         if ( !is_object($cmdDevice) ) {
@@ -278,6 +300,11 @@ class SmartLife extends eqLogic {
             // Assigne les paramètres du JSON à chaque fonction de l'eqLogic
             utils::a2o($cmdDevice, $config);
             SmartLifeLog::debug('DISCOVERY', $device, 'ADD COMMAND '.$config['logicalId']);
+        }
+
+        if ( $force ) {
+            utils::a2o($cmdDevice, $config);
+            SmartLifeLog::info('RECREATE CMD', $device, 'ADD '.$config['logicalId']);
         }
 
         // Ne doit pas être changé

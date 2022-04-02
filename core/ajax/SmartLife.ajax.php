@@ -35,7 +35,16 @@ try {
         if ($res !== null)
 		    ajax::success(); // TODO si erreur
     }
-    
+
+    if (init('action') == 'reCreateCommand') {
+        $eqLogic = SmartLife::byId(init('id'));
+        if (!is_object($eqLogic)) {
+            throw new Exception(__('SmartLife eqLogic non trouvé : ', __FILE__) . init('id'));
+        }
+        $eqLogic->reCreateCommandSmartLife();
+        ajax::success();
+    }
+
     if (init('action') == 'discover') {
 		SmartLife::discoverDevices(); // TODO get error message
 		if ($res === null)

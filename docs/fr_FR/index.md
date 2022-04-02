@@ -14,6 +14,8 @@ Ce plugin permet de contrôler les objects connectés SmartLife ou Tuya.
 
 Voir le chapitre [Objets compatibles](#Objets%20compatibles) pour savoir si votre objet sera compatible.
 
+<span style="color:red">**INFO** : Vu la médiocrité des objets Tuya en Wifi, je ne vois plus l'intérêt à faire des évolutions pour ce plugin. Ces objets ne sont vraiment pas destinés à faire de la domotique. Je maintiendrai les correctifs et la mise à jour des patchs de sécurité.</span>
+
 <span style="color:orange">**Merci de lire les [notes importantes](#Notes%20importantes).**</span>
 
 
@@ -107,6 +109,8 @@ A partir de différents retours de chacun, certains objets de type `lampe` et `c
 > <span style="color:red">**ATTENTION**</span> : Depuis 2021, le Cloud Tuya a rajouté de nouvelles restrictions encore plus contraignantes (voir information plus haut)
 
 > <span style="color:red">**ATTENTION**</span> : Depuis le début de l'année 2022, le Cloud Tuya a encore rajouté de nouvelles restrictions
+
+> <span style="color:red">**NOTE** d'avril 2022</span> : Vu la médiocrité des objets Tuya en Wifi, je ne vois plus l'intérêt à faire des évolutions pour ce plugin. Ces objets ne sont vraiment pas destinés à faire de la domotique.
 
 Avec ces nouvelles restrictions, il est de plus en plus dur de faire des rafraichissements des états des objets.
 
